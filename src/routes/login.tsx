@@ -4,7 +4,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import { getEmailByPhone } from "@/lib/auth.functions";
+import { signInWithPhone } from "@/lib/auth.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
@@ -24,20 +24,21 @@ function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      let email = identifier.trim().toLowerCase();
       if (mode === "phone") {
-        const { email: found } = await getEmailByPhone({ data: { phone: identifier } });
-        email = found.trim().toLowerCase();
-      }
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        if (/invalid login credentials/i.test(error.message)) {
-          if (mode === "phone") {
-            throw new Error("Numéro de téléphone ou mot de passe incorrect.");
+        const { access_token, refresh_token } = await signInWithPhone({
+          data: { phone: identifier, password },
+        });
+        const { error } = await supabase.auth.setSession({ access_token, refresh_token });
+        if (error) throw new Error("Identifiants incorrects");
+      } else {
+        const email = identifier.trim().toLowerCase();
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          if (/invalid login credentials/i.test(error.message)) {
+            throw new Error("Email ou mot de passe incorrect. Si ce compte a été créé avec Google, clique sur “Définir / réinitialiser mon mot de passe”.");
           }
-          throw new Error("Email ou mot de passe incorrect. Si ce compte a été créé avec Google, clique sur “Définir / réinitialiser mon mot de passe”.");
+          throw error;
         }
-        throw error;
       }
       navigate({ to: "/compte" });
     } catch (err: any) {

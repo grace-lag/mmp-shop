@@ -151,10 +151,31 @@ export async function toggleLikeAnnonce(annonceId: string): Promise<boolean> {
   return true;
 }
 
+const ALLOWED_IMAGE_MIME: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "image/gif": "gif",
+};
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+function assertImageFile(file: File) {
+  const ext = ALLOWED_IMAGE_MIME[file.type];
+  if (!ext) {
+    throw new Error("Format non supporté. Utilise JPG, PNG, WEBP ou GIF.");
+  }
+  if (file.size > MAX_IMAGE_BYTES) {
+    throw new Error("Image trop volumineuse (max 5 Mo).");
+  }
+  return ext;
+}
+
 export async function uploadAnnonceImage(file: File, userId: string): Promise<string> {
-  const ext = file.name.split(".").pop() || "jpg";
+  const ext = assertImageFile(file);
   const path = `${userId}/${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage.from("annonces-images").upload(path, file, { upsert: false });
+  const { error } = await supabase.storage
+    .from("annonces-images")
+    .upload(path, file, { upsert: false, contentType: file.type });
   if (error) throw error;
   const { data } = supabase.storage.from("annonces-images").getPublicUrl(path);
   return data.publicUrl;
@@ -173,7 +194,7 @@ export async function createAnnonce(input: Omit<Annonce, "id" | "created_at" | "
 }
 
 export async function uploadAvatar(file: File, userId: string): Promise<string> {
-  const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+  const ext = assertImageFile(file);
   const path = `${userId}/avatar.${ext}`;
   const { error } = await supabase.storage
     .from("avatars")
