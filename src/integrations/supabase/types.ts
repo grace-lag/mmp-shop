@@ -329,9 +329,10 @@ export type Database = {
         }
         Returns: boolean
       }
-      increment_annonce_views:
-        | { Args: { _id: string }; Returns: undefined }
-        | { Args: { _id: string; _session_id?: string }; Returns: undefined }
+      increment_annonce_views: {
+        Args: { _id: string; _session_id?: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "user"
