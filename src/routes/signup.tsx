@@ -192,7 +192,38 @@ function SignupPage() {
         </label>
         <input className="search-input" type="email" placeholder="Email *" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
         <input className="search-input" type="tel" placeholder="Téléphone *" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} required />
-        <input className="search-input" type="password" placeholder="Mot de passe (min 6 caractères) *" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} minLength={6} required />
+        <div style={{ position: "relative" }}>
+          <input
+            className="search-input"
+            type={showPassword ? "text" : "password"}
+            placeholder="Mot de passe (min 6 caractères) *"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            minLength={6}
+            required
+            style={{ paddingRight: 40 }}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((s) => !s)}
+            style={{
+              position: "absolute",
+              right: 8,
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: 4,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+          >
+            {showPassword ? <EyeOff size={20} color="#64748b" /> : <Eye size={20} color="#64748b" />}
+          </button>
+        </div>
 
         <div style={{ marginTop: 4 }}>
           <div style={{ fontWeight: 600, marginBottom: 6 }}>Recevoir le code de validation par :</div>
