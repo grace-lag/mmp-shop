@@ -33,6 +33,7 @@ function SignupPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const onAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;
