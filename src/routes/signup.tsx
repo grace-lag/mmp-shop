@@ -33,7 +33,6 @@ function SignupPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const onAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const f = e.target.files?.[0] ?? null;
@@ -61,7 +60,13 @@ function SignupPage() {
       email: form.email,
       options: {
         shouldCreateUser: true,
-        data: { nom: form.nom, prenom: form.prenom },
+        data: {
+          nom: form.nom,
+          prenom: form.prenom,
+          genre: form.genre,
+          date_naissance: form.date_naissance,
+          tel: form.tel,
+        },
       },
     });
     setLoading(false);
@@ -83,32 +88,55 @@ function SignupPage() {
       return toast.error(error?.message ?? "Code invalide");
     }
     const userId = data.session.user.id;
+    // Ensure the client has the freshly minted session before any RLS call
+    await supabase.auth.setSession({
+      access_token: data.session.access_token,
+      refresh_token: data.session.refresh_token,
+    });
 
     const { error: upErr } = await supabase.auth.updateUser({
       password: form.password,
-      data: { nom: form.nom, prenom: form.prenom },
+      data: {
+        nom: form.nom,
+        prenom: form.prenom,
+        genre: form.genre,
+        date_naissance: form.date_naissance,
+        tel: form.tel,
+      },
     });
-    if (upErr) {
-      setLoading(false);
-      return toast.error("Mot de passe non défini : " + upErr.message);
-    }
+    if (upErr) toast.error("Mot de passe non défini : " + upErr.message);
 
     let avatar_url: string | null = null;
     if (avatarFile) {
-      try { avatar_url = await uploadAvatar(avatarFile, userId); }
-      catch (err: any) { toast.error("Photo non enregistrée : " + (err.message ?? err)); }
+      try {
+        avatar_url = await uploadAvatar(avatarFile, userId);
+      } catch (err: any) {
+        toast.error("Photo non enregistrée : " + (err?.message ?? err));
+      }
     }
-    const { error: profErr } = await supabase.from("profiles").upsert({
+
+    const profilePayload: Record<string, any> = {
       id: userId,
       email: form.email,
-      nom: form.nom, prenom: form.prenom, genre: form.genre,
-      date_naissance: form.date_naissance, tel: form.tel,
-      ...(avatar_url ? { avatar_url } : {}),
-    }, { onConflict: "id" });
-    if (profErr) toast.error("Profil : " + profErr.message);
+      nom: form.nom,
+      prenom: form.prenom,
+      genre: form.genre,
+      date_naissance: form.date_naissance,
+      tel: form.tel,
+      updated_at: new Date().toISOString(),
+    };
+    if (avatar_url) profilePayload.avatar_url = avatar_url;
+
+    const { error: profErr } = await supabase
+      .from("profiles")
+      .upsert(profilePayload, { onConflict: "id" });
+    if (profErr) {
+      console.error("profiles upsert failed", profErr);
+      toast.error("Profil : " + profErr.message);
+    }
 
     setLoading(false);
-    toast.success("Compte créé et mot de passe activé !");
+    toast.success("Compte créé et informations enregistrées !");
     navigate({ to: "/compte" });
   };
 
@@ -192,38 +220,13 @@ function SignupPage() {
         </label>
         <input className="search-input" type="email" placeholder="Email *" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
         <input className="search-input" type="tel" placeholder="Téléphone *" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} required />
-        <div style={{ position: "relative" }}>
-          <input
-            className="search-input"
-            type={showPassword ? "text" : "password"}
-            placeholder="Mot de passe (min 6 caractères) *"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            minLength={6}
-            required
-            style={{ paddingRight: 40 }}
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword((s) => !s)}
-            style={{
-              position: "absolute",
-              right: 8,
-              top: "50%",
-              transform: "translateY(-50%)",
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: 4,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-            aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-          >
-            {showPassword ? <EyeOff size={20} color="#64748b" /> : <Eye size={20} color="#64748b" />}
-          </button>
-        </div>
+        <PasswordInput
+          placeholder="Mot de passe (min 6 caractères) *"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          minLength={6}
+          required
+        />
 
         <div style={{ marginTop: 4 }}>
           <div style={{ fontWeight: 600, marginBottom: 6 }}>Recevoir le code de validation par :</div>
