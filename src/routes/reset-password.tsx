@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { PasswordInput } from "@/components/PasswordInput";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -28,8 +29,8 @@ function ResetPasswordPage() {
     <SiteLayout activeNav="compte">
       <h1 style={{ marginTop: 16 }}>Définir mon mot de passe</h1>
       <form onSubmit={submit} style={{ display: "grid", gap: 12, maxWidth: 400 }}>
-        <input className="search-input" type="password" placeholder="Nouveau mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} minLength={6} required />
-        <input className="search-input" type="password" placeholder="Confirmer le mot de passe" value={confirm} onChange={(e) => setConfirm(e.target.value)} minLength={6} required />
+        <PasswordInput placeholder="Nouveau mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} minLength={6} required />
+        <PasswordInput placeholder="Confirmer le mot de passe" value={confirm} onChange={(e) => setConfirm(e.target.value)} minLength={6} required />
         <button className="btn-whatsapp" disabled={loading}>{loading ? "..." : "Enregistrer"}</button>
       </form>
     </SiteLayout>

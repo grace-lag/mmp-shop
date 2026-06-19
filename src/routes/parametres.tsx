@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { PasswordInput } from "@/components/PasswordInput";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadAvatar } from "@/lib/annonces";
@@ -168,8 +169,8 @@ function ParametresPage() {
 
       <form onSubmit={updatePassword} style={{ display: "grid", gap: 12, maxWidth: 500, marginTop: 32 }}>
         <h2 style={{ marginBottom: 0 }}>Mot de passe</h2>
-        <input className="search-input" type="password" placeholder="Nouveau mot de passe" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} minLength={6} required />
-        <input className="search-input" type="password" placeholder="Confirmer le nouveau mot de passe" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} minLength={6} required />
+        <PasswordInput placeholder="Nouveau mot de passe" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} minLength={6} required />
+        <PasswordInput placeholder="Confirmer le nouveau mot de passe" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} minLength={6} required />
         <button className="btn-whatsapp" disabled={savingPassword}>{savingPassword ? "..." : "Changer le mot de passe"}</button>
       </form>
     </SiteLayout>

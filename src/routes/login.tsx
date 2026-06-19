@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { PasswordInput } from "@/components/PasswordInput";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth/AuthProvider";
@@ -95,7 +96,7 @@ function LoginPage() {
         ) : (
           <input className="search-input" type="tel" placeholder="Numéro de téléphone" value={identifier} onChange={(e) => setIdentifier(e.target.value)} required />
         )}
-        <input className="search-input" type="password" placeholder="Mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <PasswordInput placeholder="Mot de passe" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button className="btn-whatsapp" disabled={loading}>{loading ? "..." : "Se connecter"}</button>
       </form>
       <button
