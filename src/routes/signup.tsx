@@ -96,11 +96,13 @@ function SignupPage() {
       try { avatar_url = await uploadAvatar(avatarFile, userId); }
       catch (err: any) { toast.error("Photo non enregistrée : " + (err.message ?? err)); }
     }
-    const { error: profErr } = await supabase.from("profiles").update({
+    const { error: profErr } = await supabase.from("profiles").upsert({
+      id: userId,
+      email: form.email,
       nom: form.nom, prenom: form.prenom, genre: form.genre,
       date_naissance: form.date_naissance, tel: form.tel,
       ...(avatar_url ? { avatar_url } : {}),
-    }).eq("id", userId);
+    }, { onConflict: "id" });
     if (profErr) toast.error("Profil : " + profErr.message);
 
     setLoading(false);
