@@ -25,6 +25,21 @@ export function SiteLayout({ children, activeNav }: { children: ReactNode; activ
     },
   });
 
+  const { data: unreadCount = 0 } = useQuery({
+    queryKey: ["unread-messages", user?.id],
+    enabled: !!user,
+    refetchInterval: 15000,
+    queryFn: async () => {
+      const { count } = await (supabase as any)
+        .from("messages")
+        .select("id", { count: "exact", head: true })
+        .eq("receiver_id", user!.id)
+        .is("read_at", null);
+      return count ?? 0;
+    },
+  });
+
+
 
   return (
     <>
