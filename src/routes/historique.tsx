@@ -95,7 +95,7 @@ function HistoriquePage() {
             Aucune discussion pour le moment. Ouvrez une annonce et cliquez sur « Message privé » pour démarrer une conversation.
           </div>
         )}
-        {conversations.map(({ partnerId, last }) => {
+        {conversations.map(({ partnerId, last, unread }) => {
           const p = profileMap.get(partnerId);
           const name = [p?.prenom, p?.nom].filter(Boolean).join(" ").trim() || "Utilisateur";
           const isMine = last.sender_id === user.id;
@@ -120,8 +120,15 @@ function HistoriquePage() {
                   <strong style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</strong>
                   <span style={{ fontSize: "0.75rem", color: "#94a3b8", flexShrink: 0 }}>{fmt(last.created_at)}</span>
                 </div>
-                <div style={{ color: "#64748b", fontSize: "0.88rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                  {isMine ? "Vous : " : ""}{last.content}
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ flex: 1, color: unread > 0 ? "#0f172a" : "#64748b", fontWeight: unread > 0 ? 600 : 400, fontSize: "0.88rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {isMine ? "Vous : " : ""}{last.content}
+                  </div>
+                  {unread > 0 && (
+                    <span style={{ background: "#16a34a", color: "white", borderRadius: 999, padding: "2px 8px", fontSize: "0.72rem", fontWeight: 700, flexShrink: 0 }}>
+                      {unread > 99 ? "99+" : unread}
+                    </span>
+                  )}
                 </div>
               </div>
             </Link>
