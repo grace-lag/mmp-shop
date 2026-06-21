@@ -110,13 +110,22 @@ function ChatPage() {
       </div>
 
       <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, height: 400, overflowY: "auto", marginTop: 12, background: "#fafafa" }}>
-        {(messages ?? []).map((m: any) => (
-          <div key={m.id} style={{ textAlign: m.sender_id === user.id ? "right" : "left", marginBottom: 8 }}>
-            <span style={{ display: "inline-block", padding: "8px 12px", borderRadius: 14, background: m.sender_id === user.id ? "#e67e22" : "white", color: m.sender_id === user.id ? "white" : "#333", maxWidth: "75%", border: m.sender_id === user.id ? "none" : "1px solid #e5e7eb" }}>
-              {m.content}
-            </span>
-          </div>
-        ))}
+        {(messages ?? []).map((m: any) => {
+          const mine = m.sender_id === user.id;
+          const read = !!m.read_at;
+          return (
+            <div key={m.id} style={{ textAlign: mine ? "right" : "left", marginBottom: 8 }}>
+              <span style={{ display: "inline-block", padding: "8px 12px", borderRadius: 14, background: mine ? "#e67e22" : "white", color: mine ? "white" : "#333", maxWidth: "75%", border: mine ? "none" : "1px solid #e5e7eb" }}>
+                {m.content}
+                {mine && (
+                  <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#16a34a" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
+                    {read ? "✓✓" : "✓"}
+                  </span>
+                )}
+              </span>
+            </div>
+          );
+        })}
         {messages && messages.length === 0 && <p style={{ textAlign: "center", color: "#94a3b8" }}>Aucun message. Dis bonjour 👋</p>}
       </div>
 
