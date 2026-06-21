@@ -90,12 +90,38 @@ function AnnonceDetail() {
 
   return (
     <SiteLayout>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginTop: 16 }} className="annonce-grid">
+      {/* Seller header at the very top */}
+      <Link
+        to="/vendeur/$id"
+        params={{ id: annonce.seller_id ?? "" }}
+        style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", color: "inherit", marginTop: 16, marginBottom: 12 }}
+      >
+        <span
+          onClick={(e) => { if (seller?.avatar_url) { e.preventDefault(); setEnlargedAvatar(true); } }}
+          style={{
+            width: 48, height: 48, borderRadius: "50%", overflow: "hidden",
+            border: "1px solid #e2e8f0", background: "#f1f5f9",
+            display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: "#94a3b8",
+            cursor: seller?.avatar_url ? "zoom-in" : "default", flexShrink: 0,
+          }}
+        >
+          {seller?.avatar_url ? (
+            <img src={seller.avatar_url} alt={sellerLabel} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : "👤"}
+        </span>
+        <div>
+          <div style={{ fontWeight: 600 }}>{sellerLabel}</div>
+          <div style={{ fontSize: "0.85em", color: "#64748b" }}>Voir la boutique →</div>
+        </div>
+      </Link>
+
+      {/* Full-width image */}
+      <div className="annonce-grid" style={{ display: "grid", gap: 16 }}>
         <div>
           {mainImg ? (
-            <img src={mainImg} alt={annonce.title} className="annonce-main-image" style={{ width: "100%", borderRadius: 12 }} />
+            <img src={mainImg} alt={annonce.title} className="annonce-main-image" style={{ borderRadius: 12 }} />
           ) : (
-            <div style={{ aspectRatio: "1", background: "#f1f5f9", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48 }}>📷</div>
+            <div style={{ height: 380, background: "#f1f5f9", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48 }}>📷</div>
           )}
           {gallery.length > 1 && (
             <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
@@ -109,50 +135,25 @@ function AnnonceDetail() {
           <div style={{ marginTop: 12 }}>
             <AnnonceStats annonceId={id} views={annonce.views ?? 0} likes={annonce.likes_count ?? 0} />
           </div>
-
         </div>
-        <div>
-          {/* Facebook-style seller header */}
-          <Link
-            to="/vendeur/$id"
-            params={{ id: annonce.seller_id ?? "" }}
-            style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", color: "inherit", marginBottom: 12 }}
-          >
-            <span
-              onClick={(e) => { if (seller?.avatar_url) { e.preventDefault(); setEnlargedAvatar(true); } }}
-              style={{
-                width: 48, height: 48, borderRadius: "50%", overflow: "hidden",
-                border: "1px solid #e2e8f0", background: "#f1f5f9",
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: "#94a3b8",
-                cursor: seller?.avatar_url ? "zoom-in" : "default", flexShrink: 0,
-              }}
-            >
-              {seller?.avatar_url ? (
-                <img src={seller.avatar_url} alt={sellerLabel} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : "👤"}
-            </span>
-            <div>
-              <div style={{ fontWeight: 600 }}>{sellerLabel}</div>
-              <div style={{ fontSize: "0.85em", color: "#64748b" }}>Voir la boutique →</div>
-            </div>
-          </Link>
 
+        <div>
           <h1>{annonce.title}</h1>
           <p className="price" style={{ fontSize: "1.8em" }}>{formatPrice(annonce.price)}</p>
           {annonce.city && <p>📍 {annonce.city}</p>}
           {annonce.category && <p>🏷️ {annonce.category}{annonce.subcategory ? ` — ${annonce.subcategory}` : ""}</p>}
 
           <p style={{ marginTop: 16 }}>{annonce.description}</p>
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 16 }}>
-            {annonce.phone && <a href={`tel:${annonce.phone}`} className="btn-whatsapp">📞 Appeler</a>}
+          <div className="annonce-actions">
+            {annonce.phone && <a href={`tel:${annonce.phone}`} className="btn-whatsapp">📞 Appel</a>}
             {annonce.whatsapp && <a href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}`} className="btn-whatsapp" style={{ background: "#25D366" }}>💬 WhatsApp</a>}
             {user && !isOwner && annonce.seller_id && (
               <>
                 <Link to="/chat" search={{ to: annonce.seller_id }} className="btn-whatsapp" style={{ background: "#2563eb" }}>
-                  💬 Message privé
+                  ✉️ Message
                 </Link>
                 <button className="btn-whatsapp" onClick={() => toggleFav.mutate()} style={{ background: isFav ? "#dc2626" : "#64748b" }}>
-                  {isFav ? "❤️ Retirer" : "🤍 Favori"}
+                  {isFav ? "❤️ Fav" : "🤍 Fav"}
                 </button>
               </>
             )}
@@ -163,8 +164,8 @@ function AnnonceDetail() {
             )}
           </div>
         </div>
-
       </div>
+
 
       <Comments annonceId={id} />
 
