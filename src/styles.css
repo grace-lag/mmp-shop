@@ -243,8 +243,8 @@ input.search-input {
 
 .product-card img {
   width: 100% !important;
-  height: 110px !important;
-  aspect-ratio: 4 / 3;
+  height: 170px !important;
+  aspect-ratio: 3 / 4;
   object-fit: cover;
   border-radius: 7px !important;
 }
@@ -273,7 +273,7 @@ input.search-input {
     gap: 10px !important;
   }
   .product-card { padding: 8px !important; }
-  .product-card img { height: 92px !important; }
+  .product-card img { height: 150px !important; }
   .product-card h3 { font-size: 0.82rem; }
   .product-card .price { font-size: 0.82rem; }
   .hero-search {
