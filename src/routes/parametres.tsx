@@ -12,7 +12,7 @@ export const Route = createFileRoute("/parametres")({ component: ParametresPage 
 function ParametresPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ nom: "", prenom: "", genre: "", date_naissance: "", tel: "", email: "", avatar_url: "" });
+  const [form, setForm] = useState({ nom: "", prenom: "", genre: "", date_naissance: "", tel: "", whatsapp: "", email: "", avatar_url: "" });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -27,12 +27,12 @@ function ParametresPage() {
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
   useEffect(() => {
     if (!user) return;
-    supabase
+    (supabase as any)
       .from("profiles")
-      .select("nom,prenom,genre,date_naissance,tel,email,avatar_url")
+      .select("nom,prenom,genre,date_naissance,tel,whatsapp,email,avatar_url")
       .eq("id", user.id)
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data }: any) => {
         if (data) {
           setForm({
             nom: data.nom ?? "",
@@ -40,6 +40,7 @@ function ParametresPage() {
             genre: data.genre ?? "",
             date_naissance: (data as any).date_naissance ?? "",
             tel: data.tel ?? "",
+            whatsapp: data.whatsapp ?? "",
             email: data.email ?? user.email ?? "",
             avatar_url: data.avatar_url ?? "",
           });
@@ -72,11 +73,12 @@ function ParametresPage() {
         prenom: form.prenom,
         genre: form.genre,
         tel: form.tel,
+        whatsapp: form.whatsapp,
         avatar_url,
         updated_at: new Date().toISOString(),
         ...(form.date_naissance ? { date_naissance: form.date_naissance } : {}),
       };
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from("profiles")
         .upsert(updates, { onConflict: "id" });
 
@@ -88,6 +90,7 @@ function ParametresPage() {
           genre: form.genre,
           date_naissance: form.date_naissance || null,
           tel: form.tel,
+          whatsapp: form.whatsapp,
           avatar_url,
         },
       });
@@ -166,6 +169,7 @@ function ParametresPage() {
           <input className="search-input" type="date" value={form.date_naissance} max={new Date().toISOString().split("T")[0]} onChange={(e) => setForm({ ...form, date_naissance: e.target.value })} />
         </label>
         <input className="search-input" placeholder="Téléphone" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} />
+        <input className="search-input" placeholder="Numéro WhatsApp" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
 
         <button className="btn-whatsapp" disabled={saving}>{saving ? "..." : "Enregistrer le profil"}</button>
       </form>
