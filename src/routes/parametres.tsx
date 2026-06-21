@@ -60,8 +60,8 @@ function ParametresPage() {
 
   const saveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.tel.trim() || !form.whatsapp.trim()) {
-      return toast.error("Le téléphone et le numéro WhatsApp sont obligatoires.");
+    if (!form.tel.trim()) {
+      return toast.error("Le numéro de téléphone est obligatoire.");
     }
     setSaving(true);
     try {
