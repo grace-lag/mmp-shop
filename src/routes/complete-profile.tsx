@@ -86,8 +86,8 @@ function CompleteProfilePage() {
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.prenom.trim() || !form.nom.trim() || !form.tel.trim() || !form.whatsapp.trim() || !form.date_naissance) {
-      return toast.error("Tous les champs sont obligatoires.");
+    if (!form.prenom.trim() || !form.nom.trim() || !form.tel.trim() || !form.date_naissance) {
+      return toast.error("Tous les champs sont obligatoires (sauf WhatsApp).");
     }
     if (ageFromDate(form.date_naissance) < 18) {
       return toast.error("Pour utiliser MaMarketplace, vous devez avoir au moins 18 ans.");
