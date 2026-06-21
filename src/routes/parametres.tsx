@@ -171,7 +171,7 @@ function ParametresPage() {
           <span style={{ fontSize: "0.9em", color: "#475569" }}>Date de naissance</span>
           <input className="search-input" type="date" value={form.date_naissance} max={new Date().toISOString().split("T")[0]} onChange={(e) => setForm({ ...form, date_naissance: e.target.value })} />
         </label>
-        <input className="search-input" placeholder="Téléphone" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} />
+        <input className="search-input" placeholder="Téléphone" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} required />
         <input className="search-input" placeholder="Numéro WhatsApp" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} required />
 
         <button className="btn-whatsapp" disabled={saving}>{saving ? "..." : "Enregistrer le profil"}</button>
