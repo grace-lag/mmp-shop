@@ -41,6 +41,22 @@ function CompleteProfilePage() {
 
   useEffect(() => {
     if (!user) return;
+    const m: any = user.user_metadata ?? {};
+    const name = String(m.full_name ?? m.name ?? "").trim();
+    const [first, ...rest] = name.split(/\s+/);
+    setForm((current) => ({
+      ...current,
+      prenom: current.prenom || m.given_name || first || "",
+      nom: current.nom || m.family_name || rest.join(" ") || "",
+      tel: current.tel || m.tel || "",
+      whatsapp: current.whatsapp || m.whatsapp || "",
+      date_naissance: current.date_naissance || m.date_naissance || "",
+    }));
+    if (!preview && (m.avatar_url || m.picture)) setPreview(m.avatar_url || m.picture);
+  }, [user, preview]);
+
+  useEffect(() => {
+    if (!user) return;
     (supabase as any)
       .from("profiles")
       .select("nom,prenom,tel,whatsapp,date_naissance,avatar_url")
