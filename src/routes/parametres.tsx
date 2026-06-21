@@ -66,6 +66,8 @@ function ParametresPage() {
         avatar_url = await uploadAvatar(avatarFile, user.id);
       }
       const updates = {
+        id: user.id,
+        email: form.email || user.email || null,
         nom: form.nom,
         prenom: form.prenom,
         genre: form.genre,
@@ -76,10 +78,12 @@ function ParametresPage() {
       };
       const { error } = await supabase
         .from("profiles")
-        .update(updates)
-        .eq("id", user.id);
+        .upsert(updates, { onConflict: "id" });
 
       if (error) throw error;
+      if (avatar_url) {
+        await supabase.auth.updateUser({ data: { avatar_url } });
+      }
       setForm((f) => ({ ...f, avatar_url }));
       setAvatarFile(null);
       setPreview(null);
