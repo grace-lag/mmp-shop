@@ -21,6 +21,7 @@ import { Route as HistoriqueRouteImport } from './routes/historique'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ConditionsRouteImport } from './routes/conditions'
 import { Route as CompteRouteImport } from './routes/compte'
+import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CategoriesRouteImport } from './routes/categories'
 import { Route as BoutiqueRouteImport } from './routes/boutique'
@@ -92,6 +93,11 @@ const CompteRoute = CompteRouteImport.update({
   path: '/compte',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompleteProfileRoute = CompleteProfileRouteImport.update({
+  id: '/complete-profile',
+  path: '/complete-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ChatRoute = ChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/boutique': typeof BoutiqueRoute
   '/categories': typeof CategoriesRouteWithChildren
   '/chat': typeof ChatRoute
+  '/complete-profile': typeof CompleteProfileRoute
   '/compte': typeof CompteRoute
   '/conditions': typeof ConditionsRoute
   '/dashboard': typeof DashboardRoute
@@ -173,6 +180,7 @@ export interface FileRoutesByTo {
   '/annonces': typeof AnnoncesRoute
   '/boutique': typeof BoutiqueRoute
   '/chat': typeof ChatRoute
+  '/complete-profile': typeof CompleteProfileRoute
   '/compte': typeof CompteRoute
   '/conditions': typeof ConditionsRoute
   '/dashboard': typeof DashboardRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/boutique': typeof BoutiqueRoute
   '/categories': typeof CategoriesRouteWithChildren
   '/chat': typeof ChatRoute
+  '/complete-profile': typeof CompleteProfileRoute
   '/compte': typeof CompteRoute
   '/conditions': typeof ConditionsRoute
   '/dashboard': typeof DashboardRoute
@@ -224,6 +233,7 @@ export interface FileRouteTypes {
     | '/boutique'
     | '/categories'
     | '/chat'
+    | '/complete-profile'
     | '/compte'
     | '/conditions'
     | '/dashboard'
@@ -247,6 +257,7 @@ export interface FileRouteTypes {
     | '/annonces'
     | '/boutique'
     | '/chat'
+    | '/complete-profile'
     | '/compte'
     | '/conditions'
     | '/dashboard'
@@ -271,6 +282,7 @@ export interface FileRouteTypes {
     | '/boutique'
     | '/categories'
     | '/chat'
+    | '/complete-profile'
     | '/compte'
     | '/conditions'
     | '/dashboard'
@@ -296,6 +308,7 @@ export interface RootRouteChildren {
   BoutiqueRoute: typeof BoutiqueRoute
   CategoriesRoute: typeof CategoriesRouteWithChildren
   ChatRoute: typeof ChatRoute
+  CompleteProfileRoute: typeof CompleteProfileRoute
   CompteRoute: typeof CompteRoute
   ConditionsRoute: typeof ConditionsRoute
   DashboardRoute: typeof DashboardRoute
@@ -398,6 +411,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/complete-profile': {
+      id: '/complete-profile'
+      path: '/complete-profile'
+      fullPath: '/complete-profile'
+      preLoaderRoute: typeof CompleteProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/chat': {
       id: '/chat'
       path: '/chat'
@@ -492,6 +512,7 @@ const rootRouteChildren: RootRouteChildren = {
   BoutiqueRoute: BoutiqueRoute,
   CategoriesRoute: CategoriesRouteWithChildren,
   ChatRoute: ChatRoute,
+  CompleteProfileRoute: CompleteProfileRoute,
   CompteRoute: CompteRoute,
   ConditionsRoute: ConditionsRoute,
   DashboardRoute: DashboardRoute,
