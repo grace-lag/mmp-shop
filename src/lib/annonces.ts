@@ -195,10 +195,10 @@ export async function createAnnonce(input: Omit<Annonce, "id" | "created_at" | "
 
 export async function uploadAvatar(file: File, userId: string): Promise<string> {
   const ext = assertImageFile(file);
-  const path = `${userId}/avatar.${ext}`;
+  const path = `${userId}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage
     .from("avatars")
-    .upload(path, file, { upsert: true, contentType: file.type });
+    .upload(path, file, { upsert: false, contentType: file.type });
   if (error) throw error;
   const { data } = supabase.storage.from("avatars").getPublicUrl(path);
   return `${data.publicUrl}?t=${Date.now()}`;
