@@ -140,6 +140,7 @@ export function SiteLayout({ children, activeNav }: { children: ReactNode; activ
         <Link to="/historique" className={`nav-item ${isActive("historique", "/historique") ? "active" : ""}`}>
           <span className="nav-icon">💬</span>
           <span className="nav-label">Messages</span>
+          {unreadCount > 0 && <span className="nav-badge">{unreadCount > 99 ? "99+" : unreadCount}</span>}
         </Link>
         <Link to={user ? "/compte" : "/login"} className={`nav-item ${isActive("compte", "/compte") ? "active" : ""}`}>
           <span className="nav-icon">👤</span>
