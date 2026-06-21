@@ -37,8 +37,8 @@ function SignupPage() {
 
   const createAccount = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.prenom || !form.nom || !form.genre || !form.date_naissance || !form.email || !form.tel || !form.whatsapp) {
-      return toast.error("Tous les champs sont obligatoires.");
+    if (!form.prenom || !form.nom || !form.genre || !form.date_naissance || !form.email || !form.tel) {
+      return toast.error("Tous les champs sont obligatoires (sauf WhatsApp).");
     }
     if (ageFromDate(form.date_naissance) < 18) {
       return toast.error("Pour utiliser MaMarketplace, vous devez avoir au moins 18 ans.");
