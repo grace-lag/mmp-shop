@@ -26,9 +26,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const nom = meta.nom || meta.family_name || restFromName.join(" ") || "";
       const avatar_url = meta.avatar_url || meta.picture || null;
       const tel = meta.tel || u.phone || "";
-      const { data: existing } = await supabase
+      const whatsapp = meta.whatsapp || "";
+      const { data: existing } = await (supabase as any)
         .from("profiles")
-        .select("nom, prenom, avatar_url, tel, email")
+        .select("nom, prenom, avatar_url, tel, whatsapp, email")
         .eq("id", u.id)
         .maybeSingle();
       const patch: Record<string, any> = { id: u.id };
@@ -37,8 +38,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!existing?.prenom && prenom) patch.prenom = prenom;
       if (!existing?.avatar_url && avatar_url) patch.avatar_url = avatar_url;
       if (!existing?.tel && tel) patch.tel = tel;
+      if (!existing?.whatsapp && whatsapp) patch.whatsapp = whatsapp;
       if (Object.keys(patch).length > 1) {
-        await supabase.from("profiles").upsert(patch, { onConflict: "id" });
+        await (supabase as any).from("profiles").upsert(patch, { onConflict: "id" });
       }
     };
 
