@@ -110,6 +110,16 @@ function SignupPage() {
     if (avatarFile) {
       try {
         avatar_url = await uploadAvatar(avatarFile, userId);
+        await supabase.auth.updateUser({
+          data: {
+            nom: form.nom,
+            prenom: form.prenom,
+            genre: form.genre,
+            date_naissance: form.date_naissance,
+            tel: form.tel,
+            avatar_url,
+          },
+        });
       } catch (err: any) {
         toast.error("Photo non enregistrée : " + (err?.message ?? err));
       }
@@ -133,6 +143,8 @@ function SignupPage() {
     if (profErr) {
       console.error("profiles upsert failed", profErr);
       toast.error("Profil : " + profErr.message);
+      setLoading(false);
+      return;
     }
 
     setLoading(false);
