@@ -41,14 +41,20 @@ function HistoriquePage() {
     },
   });
 
-  // Group by conversation partner -> keep latest message
+  // Group by conversation partner -> keep latest message + unread count
   const conversations = useMemo(() => {
-    const map = new Map<string, Msg>();
+    const lastMap = new Map<string, Msg>();
+    const unreadMap = new Map<string, number>();
     for (const m of messages ?? []) {
       const partner = m.sender_id === user?.id ? m.receiver_id : m.sender_id;
-      if (!map.has(partner)) map.set(partner, m);
+      if (!lastMap.has(partner)) lastMap.set(partner, m);
+      if (m.receiver_id === user?.id && !m.read_at) {
+        unreadMap.set(partner, (unreadMap.get(partner) ?? 0) + 1);
+      }
     }
-    return Array.from(map.entries()).map(([partnerId, last]) => ({ partnerId, last }));
+    return Array.from(lastMap.entries()).map(([partnerId, last]) => ({
+      partnerId, last, unread: unreadMap.get(partnerId) ?? 0,
+    }));
   }, [messages, user?.id]);
 
   const partnerIds = conversations.map((c) => c.partnerId);
