@@ -118,7 +118,7 @@ function SignupPage() {
   return (
     <SiteLayout activeNav="compte">
       <h1 style={{ marginTop: 16 }}>Créer un compte</h1>
-      <form onSubmit={sendCode} style={{ display: "grid", gap: 12, maxWidth: 400 }}>
+      <form onSubmit={createAccount} style={{ display: "grid", gap: 12, maxWidth: 400 }}>
         <label style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div
             style={{
@@ -156,6 +156,7 @@ function SignupPage() {
         </label>
         <input className="search-input" type="email" placeholder="Email *" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
         <input className="search-input" type="tel" placeholder="Téléphone *" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} required />
+        <input className="search-input" type="tel" placeholder="Numéro WhatsApp *" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} required />
         <PasswordInput
           placeholder="Mot de passe (min 6 caractères) *"
           value={form.password}
@@ -164,38 +165,7 @@ function SignupPage() {
           required
         />
 
-        <div style={{ marginTop: 4 }}>
-          <div style={{ fontWeight: 600, marginBottom: 6 }}>Recevoir le code de validation par :</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 6 }}>
-            {([
-              { id: "email", label: "📧 Email", enabled: true },
-              { id: "sms", label: "📱 SMS", enabled: false },
-              { id: "whatsapp", label: "💬 WhatsApp", enabled: false },
-            ] as const).map((opt) => (
-              <button
-                key={opt.id}
-                type="button"
-                onClick={() => {
-                  if (!opt.enabled) return toast.message("Bientôt disponible. Utilise l'email pour le moment.");
-                  setChannel(opt.id);
-                }}
-                className="btn-whatsapp"
-                style={{
-                  background: channel === opt.id ? "#e67e22" : opt.enabled ? "#e5e7eb" : "#f1f5f9",
-                  color: channel === opt.id ? "white" : opt.enabled ? "#374151" : "#94a3b8",
-                  fontSize: "0.85em",
-                  padding: "10px 4px",
-                  opacity: opt.enabled ? 1 : 0.7,
-                }}
-              >
-                {opt.label}
-                {!opt.enabled && <div style={{ fontSize: "0.7em" }}>bientôt</div>}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <button className="btn-whatsapp" disabled={loading}>{loading ? "..." : "Envoyer le code"}</button>
+        <button className="btn-whatsapp" disabled={loading}>{loading ? "..." : "Créer mon compte"}</button>
       </form>
       <p style={{ marginTop: 16 }}>Déjà inscrit ? <Link to="/login">Se connecter</Link></p>
     </SiteLayout>
