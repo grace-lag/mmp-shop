@@ -49,12 +49,28 @@ function ChatPage() {
     },
   });
 
+  // Mark partner's messages as read when entering / on new messages
+  useEffect(() => {
+    if (!user || !validTo) return;
+    (async () => {
+      await (supabase as any)
+        .from("messages")
+        .update({ read_at: new Date().toISOString() })
+        .eq("receiver_id", user.id)
+        .eq("sender_id", validTo)
+        .is("read_at", null);
+      qc.invalidateQueries({ queryKey: ["unread-messages"] });
+      qc.invalidateQueries({ queryKey: ["my-messages"] });
+    })();
+  }, [user, validTo, messages?.length, qc]);
+
   useEffect(() => {
     if (!user) return;
     const channel = supabase.channel("messages")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, () => {
+      .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, () => {
         qc.invalidateQueries({ queryKey: ["messages"] });
         qc.invalidateQueries({ queryKey: ["my-messages"] });
+        qc.invalidateQueries({ queryKey: ["unread-messages"] });
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
