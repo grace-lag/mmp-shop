@@ -81,9 +81,16 @@ function ParametresPage() {
         .upsert(updates, { onConflict: "id" });
 
       if (error) throw error;
-      if (avatar_url) {
-        await supabase.auth.updateUser({ data: { avatar_url } });
-      }
+      await supabase.auth.updateUser({
+        data: {
+          nom: form.nom,
+          prenom: form.prenom,
+          genre: form.genre,
+          date_naissance: form.date_naissance || null,
+          tel: form.tel,
+          avatar_url,
+        },
+      });
       setForm((f) => ({ ...f, avatar_url }));
       setAvatarFile(null);
       setPreview(null);
