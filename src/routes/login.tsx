@@ -50,7 +50,7 @@ function LoginPage() {
   };
 
   const google = async () => {
-    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/compte" });
+    const r = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin + "/complete-profile" });
     if (r.error) toast.error("Connexion Google échouée");
   };
 
