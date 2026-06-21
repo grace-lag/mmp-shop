@@ -156,7 +156,7 @@ function SignupPage() {
         </label>
         <input className="search-input" type="email" placeholder="Email *" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
         <input className="search-input" type="tel" placeholder="Téléphone *" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} required />
-        <input className="search-input" type="tel" placeholder="Numéro WhatsApp *" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} required />
+        <input className="search-input" type="tel" placeholder="Numéro WhatsApp (optionnel)" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
         <PasswordInput
           placeholder="Mot de passe (min 6 caractères) *"
           value={form.password}
