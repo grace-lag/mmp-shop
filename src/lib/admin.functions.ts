@@ -1,8 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-// Server-side admin gate: verifies the caller has the 'admin' role using has_role()
-// before returning admin-scoped data. Client-side state cannot bypass this.
 export const getAdminAnnonces = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -19,15 +17,33 @@ export const getAdminAnnonces = createServerFn({ method: "GET" })
     }
     if (!roleRow) throw new Error("Forbidden");
 
-    const { data, error } = await supabase
+    const { data: annonces, error } = await supabase
       .from("annonces")
-      .select("id,title,price,city,seller_id,created_at")
+      .select("id,title,price,city,seller_id,created_at,image_url")
       .order("created_at", { ascending: false });
     if (error) {
       console.error("[admin] list annonces error:", error);
       throw new Error("Internal error");
     }
-    return { isAdmin: true, annonces: data ?? [] };
+
+    const sellerIds = Array.from(new Set((annonces ?? []).map((a: any) => a.seller_id).filter(Boolean)));
+    let profiles: any[] = [];
+    if (sellerIds.length > 0) {
+      const { data } = await supabase
+        .from("profiles")
+        .select("id,prenom,nom,email,avatar_url,created_at")
+        .in("id", sellerIds);
+      profiles = data ?? [];
+    }
+    const profileMap: Record<string, any> = {};
+    for (const p of profiles) profileMap[p.id] = p;
+
+    const enriched = (annonces ?? []).map((a: any) => ({
+      ...a,
+      seller: a.seller_id ? profileMap[a.seller_id] ?? null : null,
+    }));
+
+    return { isAdmin: true, annonces: enriched };
   });
 
 export const adminDeleteAnnonce = createServerFn({ method: "POST" })

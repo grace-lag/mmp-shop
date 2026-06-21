@@ -60,8 +60,8 @@ function ParametresPage() {
 
   const saveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.tel.trim() || !form.whatsapp.trim()) {
-      return toast.error("Le téléphone et le numéro WhatsApp sont obligatoires.");
+    if (!form.tel.trim()) {
+      return toast.error("Le numéro de téléphone est obligatoire.");
     }
     setSaving(true);
     try {
@@ -172,7 +172,7 @@ function ParametresPage() {
           <input className="search-input" type="date" value={form.date_naissance} max={new Date().toISOString().split("T")[0]} onChange={(e) => setForm({ ...form, date_naissance: e.target.value })} />
         </label>
         <input className="search-input" placeholder="Téléphone" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} required />
-        <input className="search-input" placeholder="Numéro WhatsApp" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} required />
+        <input className="search-input" placeholder="Numéro WhatsApp (optionnel)" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
 
         <button className="btn-whatsapp" disabled={saving}>{saving ? "..." : "Enregistrer le profil"}</button>
       </form>

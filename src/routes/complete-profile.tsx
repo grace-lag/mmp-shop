@@ -86,8 +86,8 @@ function CompleteProfilePage() {
 
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.prenom.trim() || !form.nom.trim() || !form.tel.trim() || !form.whatsapp.trim() || !form.date_naissance) {
-      return toast.error("Tous les champs sont obligatoires.");
+    if (!form.prenom.trim() || !form.nom.trim() || !form.tel.trim() || !form.date_naissance) {
+      return toast.error("Tous les champs sont obligatoires (sauf WhatsApp).");
     }
     if (ageFromDate(form.date_naissance) < 18) {
       return toast.error("Pour utiliser MaMarketplace, vous devez avoir au moins 18 ans.");
@@ -151,7 +151,7 @@ function CompleteProfilePage() {
         <input className="search-input" placeholder="Prénom *" value={form.prenom} onChange={(e) => setForm({ ...form, prenom: e.target.value })} required />
         <input className="search-input" placeholder="Nom *" value={form.nom} onChange={(e) => setForm({ ...form, nom: e.target.value })} required />
         <input className="search-input" type="tel" placeholder="Téléphone *" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} required />
-        <input className="search-input" type="tel" placeholder="Numéro WhatsApp *" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} required />
+        <input className="search-input" type="tel" placeholder="Numéro WhatsApp (optionnel)" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
         <label style={{ display: "grid", gap: 4 }}>
           <span style={{ fontSize: "0.9em", color: "#475569" }}>Date de naissance *</span>
           <input className="search-input" type="date" value={form.date_naissance} max={new Date().toISOString().split("T")[0]} onChange={(e) => setForm({ ...form, date_naissance: e.target.value })} required />

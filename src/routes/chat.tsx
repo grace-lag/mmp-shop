@@ -49,12 +49,28 @@ function ChatPage() {
     },
   });
 
+  // Mark partner's messages as read when entering / on new messages
+  useEffect(() => {
+    if (!user || !validTo) return;
+    (async () => {
+      await (supabase as any)
+        .from("messages")
+        .update({ read_at: new Date().toISOString() })
+        .eq("receiver_id", user.id)
+        .eq("sender_id", validTo)
+        .is("read_at", null);
+      qc.invalidateQueries({ queryKey: ["unread-messages"] });
+      qc.invalidateQueries({ queryKey: ["my-messages"] });
+    })();
+  }, [user, validTo, messages?.length, qc]);
+
   useEffect(() => {
     if (!user) return;
     const channel = supabase.channel("messages")
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, () => {
+      .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, () => {
         qc.invalidateQueries({ queryKey: ["messages"] });
         qc.invalidateQueries({ queryKey: ["my-messages"] });
+        qc.invalidateQueries({ queryKey: ["unread-messages"] });
       })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
@@ -94,13 +110,22 @@ function ChatPage() {
       </div>
 
       <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, height: 400, overflowY: "auto", marginTop: 12, background: "#fafafa" }}>
-        {(messages ?? []).map((m: any) => (
-          <div key={m.id} style={{ textAlign: m.sender_id === user.id ? "right" : "left", marginBottom: 8 }}>
-            <span style={{ display: "inline-block", padding: "8px 12px", borderRadius: 14, background: m.sender_id === user.id ? "#e67e22" : "white", color: m.sender_id === user.id ? "white" : "#333", maxWidth: "75%", border: m.sender_id === user.id ? "none" : "1px solid #e5e7eb" }}>
-              {m.content}
-            </span>
-          </div>
-        ))}
+        {(messages ?? []).map((m: any) => {
+          const mine = m.sender_id === user.id;
+          const read = !!m.read_at;
+          return (
+            <div key={m.id} style={{ textAlign: mine ? "right" : "left", marginBottom: 8 }}>
+              <span style={{ display: "inline-block", padding: "8px 12px", borderRadius: 14, background: mine ? "#e67e22" : "white", color: mine ? "white" : "#333", maxWidth: "75%", border: mine ? "none" : "1px solid #e5e7eb" }}>
+                {m.content}
+                {mine && (
+                  <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#16a34a" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
+                    {read ? "✓✓" : "✓"}
+                  </span>
+                )}
+              </span>
+            </div>
+          );
+        })}
         {messages && messages.length === 0 && <p style={{ textAlign: "center", color: "#94a3b8" }}>Aucun message. Dis bonjour 👋</p>}
       </div>
 
