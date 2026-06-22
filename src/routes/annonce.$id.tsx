@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Comments } from "@/components/Comments";
 import { AnnonceStats } from "@/components/AnnonceStats";
@@ -78,26 +78,35 @@ function AnnonceDetail() {
 
   const [activeImg, setActiveImg] = useState(0);
   const [enlargedAvatar, setEnlargedAvatar] = useState(false);
+  const galleryRef = useRef<HTMLDivElement>(null);
 
   if (isLoading) return <SiteLayout><p>Chargement...</p></SiteLayout>;
   if (!annonce) return <SiteLayout><p>Annonce introuvable.</p></SiteLayout>;
 
   const isOwner = user?.id === annonce.seller_id;
   const gallery = (annonce.images && annonce.images.length > 0) ? annonce.images : (annonce.image_url ? [annonce.image_url] : []);
-  const mainImg = gallery[activeImg] ?? gallery[0];
 
   const sellerLabel = seller ? `${seller.prenom ?? ""} ${seller.nom ?? ""}`.trim() || (annonce.seller_name || "Vendeur") : (annonce.seller_name || "Vendeur");
+
+  const onGalleryScroll = () => {
+    const el = galleryRef.current;
+    if (!el) return;
+    const idx = Math.round(el.scrollLeft / el.clientWidth);
+    if (idx !== activeImg) setActiveImg(idx);
+  };
+
+  const goToImg = (i: number) => {
+    const el = galleryRef.current;
+    if (!el) return;
+    el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
+  };
 
   return (
     <SiteLayout>
       {/* Seller header at the very top */}
-      <Link
-        to="/vendeur/$id"
-        params={{ id: annonce.seller_id ?? "" }}
-        style={{ display: "flex", alignItems: "center", gap: 12, textDecoration: "none", color: "inherit", marginTop: 16, marginBottom: 12 }}
-      >
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, marginBottom: 12 }}>
         <span
-          onClick={(e) => { if (seller?.avatar_url) { e.preventDefault(); setEnlargedAvatar(true); } }}
+          onClick={() => { if (seller?.avatar_url) setEnlargedAvatar(true); }}
           style={{
             width: 48, height: 48, borderRadius: "50%", overflow: "hidden",
             border: "1px solid #e2e8f0", background: "#f1f5f9",
@@ -109,28 +118,48 @@ function AnnonceDetail() {
             <img src={seller.avatar_url} alt={sellerLabel} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : "👤"}
         </span>
-        <div>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 600 }}>{sellerLabel}</div>
-          <div style={{ fontSize: "0.85em", color: "#64748b" }}>Voir la boutique →</div>
+          <Link
+            to="/vendeur/$id"
+            params={{ id: annonce.seller_id ?? "" }}
+            className="btn-whatsapp"
+            style={{ background: "#15803d", display: "inline-block", marginTop: 4, padding: "6px 14px", fontSize: "0.85rem", textDecoration: "none" }}
+          >
+            🏪 Accéder à la boutique
+          </Link>
         </div>
-      </Link>
+      </div>
 
-      {/* Full-width image */}
+      {/* Swipeable photo gallery with dots */}
       <div className="annonce-grid" style={{ display: "grid", gap: 16 }}>
         <div>
-          {mainImg ? (
-            <img src={mainImg} alt={annonce.title} className="annonce-main-image" style={{ borderRadius: 12 }} />
+          {gallery.length > 0 ? (
+            <>
+              <div
+                ref={galleryRef}
+                onScroll={onGalleryScroll}
+                className="annonce-gallery"
+              >
+                {gallery.map((src, i) => (
+                  <img key={src + i} src={src} alt={`photo ${i + 1}`} className="annonce-main-image" />
+                ))}
+              </div>
+              {gallery.length > 1 && (
+                <div className="annonce-dots">
+                  {gallery.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => goToImg(i)}
+                      aria-label={`Photo ${i + 1}`}
+                      className={`annonce-dot ${i === activeImg ? "active" : ""}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </>
           ) : (
             <div style={{ height: 380, background: "#f1f5f9", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 48 }}>📷</div>
-          )}
-          {gallery.length > 1 && (
-            <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
-              {gallery.map((src, i) => (
-                <button key={src} onClick={() => setActiveImg(i)} style={{ padding: 0, border: i === activeImg ? "2px solid #e67e22" : "2px solid transparent", borderRadius: 8, background: "none", cursor: "pointer" }}>
-                  <img src={src} alt={`photo ${i + 1}`} style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 6, display: "block" }} />
-                </button>
-              ))}
-            </div>
           )}
           <div style={{ marginTop: 12 }}>
             <AnnonceStats annonceId={id} views={annonce.views ?? 0} likes={annonce.likes_count ?? 0} />
@@ -165,6 +194,7 @@ function AnnonceDetail() {
           </div>
         </div>
       </div>
+
 
 
       <Comments annonceId={id} />

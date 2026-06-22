@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
+import { ImageIcon, Plus, X } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { CATEGORIES, CITIES, SUBCATEGORIES, createAnnonce, uploadAnnonceImage } from "@/lib/annonces";
@@ -24,6 +25,8 @@ function PosterPage() {
   });
   const [files, setFiles] = useState<File[]>([]);
   const [sellerName, setSellerName] = useState("");
+  const firstInputRef = useRef<HTMLInputElement>(null);
+  const moreInputRef = useRef<HTMLInputElement>(null);
 
   const subs = useMemo(() => SUBCATEGORIES[form.category] ?? [], [form.category]);
 
@@ -39,20 +42,24 @@ function PosterPage() {
   }, [user]);
 
   useEffect(() => {
-    // Reset subcategory when category changes
     setForm((f) => ({ ...f, subcategory: "" }));
   }, [form.category]);
 
   if (!user) return null;
 
-  const onFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const addFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     const list = e.target.files ? Array.from(e.target.files) : [];
-    setFiles(list.slice(0, 8)); // cap at 8 images
+    if (list.length === 0) return;
+    setFiles((prev) => [...prev, ...list]);
+    e.target.value = "";
   };
+
+  const removeFile = (idx: number) => setFiles((prev) => prev.filter((_, i) => i !== idx));
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.price) return toast.error("Titre et prix requis");
+    if (files.length === 0) return toast.error("Ajoute au moins une photo du produit");
     if (subs.length > 0 && !form.subcategory) return toast.error("Choisis une sous-catégorie");
     setSubmitting(true);
     try {
@@ -76,6 +83,12 @@ function PosterPage() {
     }
   };
 
+  const tileBase: React.CSSProperties = {
+    width: 96, height: 96, borderRadius: 12, border: "2px dashed #cbd5e1",
+    background: "#f8fafc", display: "flex", alignItems: "center", justifyContent: "center",
+    cursor: "pointer", color: "#64748b", flexShrink: 0,
+  };
+
   return (
     <SiteLayout activeNav="poster">
       <h1 style={{ marginTop: 16 }}>Poster une annonce</h1>
@@ -97,17 +110,47 @@ function PosterPage() {
         )}
         <input className="search-input" placeholder="Téléphone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
         <input className="search-input" placeholder="WhatsApp" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
+
         <div>
-          <label style={{ fontWeight: 600, display: "block", marginBottom: 6 }}>Photos du produit (jusqu'à 8)</label>
-          <input type="file" accept="image/*" multiple onChange={onFilesChange} />
-          {files.length > 0 && (
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
-              {files.map((f, i) => (
-                <img key={i} src={URL.createObjectURL(f)} alt={`photo ${i + 1}`} style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 8 }} />
-              ))}
-            </div>
-          )}
+          <label style={{ fontWeight: 600, display: "block", marginBottom: 8 }}>
+            Photos du produit <span style={{ color: "#64748b", fontWeight: 400, fontSize: "0.85em" }}>(au moins 1, ajoute autant que tu veux)</span>
+          </label>
+          <input ref={firstInputRef} type="file" accept="image/*" multiple onChange={addFiles} style={{ display: "none" }} />
+          <input ref={moreInputRef} type="file" accept="image/*" multiple onChange={addFiles} style={{ display: "none" }} />
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {files.length === 0 && (
+              <button type="button" onClick={() => firstInputRef.current?.click()} style={tileBase} aria-label="Importer une photo">
+                <ImageIcon size={36} />
+              </button>
+            )}
+
+            {files.map((f, i) => (
+              <div key={i} style={{ position: "relative", width: 96, height: 96 }}>
+                <img src={URL.createObjectURL(f)} alt={`photo ${i + 1}`} style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 12 }} />
+                <button
+                  type="button"
+                  onClick={() => removeFile(i)}
+                  aria-label="Retirer"
+                  style={{
+                    position: "absolute", top: -6, right: -6, width: 22, height: 22, borderRadius: "50%",
+                    background: "#dc2626", color: "#fff", border: "none", cursor: "pointer",
+                    display: "flex", alignItems: "center", justifyContent: "center", padding: 0,
+                  }}
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+
+            {files.length > 0 && (
+              <button type="button" onClick={() => moreInputRef.current?.click()} style={tileBase} aria-label="Ajouter d'autres photos">
+                <Plus size={36} />
+              </button>
+            )}
+          </div>
         </div>
+
         <button className="btn-whatsapp" type="submit" disabled={submitting}>{submitting ? "Publication..." : "Publier"}</button>
       </form>
     </SiteLayout>

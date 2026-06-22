@@ -1,10 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Smile, Pencil, Trash2, Check, X } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+
+const EMOJIS = ["😀","😂","😍","😎","🥰","😢","😡","👍","🙏","🔥","❤️","💯","🎉","✅","💬","👋","🤝","💸","📦","🚀"];
+const EDIT_WINDOW_MS = 15 * 60 * 1000;
 
 export const Route = createFileRoute("/chat")({
   validateSearch: (s: Record<string, unknown>) => ({ to: (s.to as string) || "" }),
@@ -17,8 +21,19 @@ function ChatPage() {
   const { to } = Route.useSearch();
   const qc = useQueryClient();
   const [text, setText] = useState("");
+  const [showEmoji, setShowEmoji] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingText, setEditingText] = useState("");
+  const [now, setNow] = useState(Date.now());
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
+
+  // Tick to update edit/delete window display
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 30000);
+    return () => clearInterval(t);
+  }, []);
 
   const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   const validTo = to && UUID_RE.test(to) ? to : "";
@@ -36,8 +51,10 @@ function ChatPage() {
     },
   });
 
+  const messagesKey = ["messages", user?.id, validTo] as const;
+
   const { data: messages } = useQuery({
-    queryKey: ["messages", user?.id, validTo],
+    queryKey: messagesKey,
     enabled: !!user && !!validTo,
     queryFn: async () => {
       const { data } = await supabase
@@ -49,7 +66,13 @@ function ChatPage() {
     },
   });
 
-  // Mark partner's messages as read when entering / on new messages
+  // Auto-scroll on new messages
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages?.length]);
+
+  // Mark partner's messages as read
   useEffect(() => {
     if (!user || !validTo) return;
     (async () => {
@@ -78,10 +101,65 @@ function ChatPage() {
 
   const send = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!text.trim() || !validTo) return toast.error("Destinataire requis");
-    const { error } = await supabase.from("messages").insert({ sender_id: user!.id, receiver_id: validTo, content: text });
-    if (error) return toast.error(error.message);
+    const content = text.trim();
+    if (!content || !validTo) return;
     setText("");
+    setShowEmoji(false);
+
+    // Optimistic insert so message appears immediately
+    const tempId = `temp-${Date.now()}-${Math.random()}`;
+    const optimistic = {
+      id: tempId,
+      sender_id: user!.id,
+      receiver_id: validTo,
+      content,
+      created_at: new Date().toISOString(),
+      read_at: null,
+      edited_at: null,
+      deleted_at: null,
+      _optimistic: true,
+    };
+    qc.setQueryData(messagesKey, (prev: any[] = []) => [...prev, optimistic]);
+
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({ sender_id: user!.id, receiver_id: validTo, content })
+      .select()
+      .single();
+
+    if (error) {
+      qc.setQueryData(messagesKey, (prev: any[] = []) => prev.filter((m) => m.id !== tempId));
+      toast.error(error.message);
+      setText(content);
+      return;
+    }
+    qc.setQueryData(messagesKey, (prev: any[] = []) => prev.map((m) => (m.id === tempId ? data : m)));
+  };
+
+  const startEdit = (m: any) => {
+    setEditingId(m.id);
+    setEditingText(m.content);
+  };
+
+  const saveEdit = async () => {
+    if (!editingId) return;
+    const newContent = editingText.trim();
+    if (!newContent) return;
+    const { error } = await (supabase as any)
+      .from("messages")
+      .update({ content: newContent, edited_at: new Date().toISOString() })
+      .eq("id", editingId);
+    if (error) return toast.error(error.message);
+    setEditingId(null);
+    setEditingText("");
+    qc.invalidateQueries({ queryKey: messagesKey });
+  };
+
+  const deleteMsg = async (id: string) => {
+    if (!confirm("Supprimer ce message ?")) return;
+    const { error } = await supabase.from("messages").delete().eq("id", id);
+    if (error) return toast.error(error.message);
+    qc.setQueryData(messagesKey, (prev: any[] = []) => prev.filter((m) => m.id !== id));
   };
 
   if (!user) return null;
@@ -109,29 +187,106 @@ function ChatPage() {
         <strong>{partnerName}</strong>
       </div>
 
-      <div style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, height: 400, overflowY: "auto", marginTop: 12, background: "#fafafa" }}>
+      <div ref={scrollRef} style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, height: 400, overflowY: "auto", marginTop: 12, background: "#fafafa" }}>
         {(messages ?? []).map((m: any) => {
           const mine = m.sender_id === user.id;
           const read = !!m.read_at;
+          const createdMs = new Date(m.created_at).getTime();
+          const canEdit = mine && !m._optimistic && (now - createdMs) < EDIT_WINDOW_MS;
+          const isEditing = editingId === m.id;
           return (
-            <div key={m.id} style={{ textAlign: mine ? "right" : "left", marginBottom: 8 }}>
-              <span style={{ display: "inline-block", padding: "8px 12px", borderRadius: 14, background: mine ? "#e67e22" : "white", color: mine ? "white" : "#333", maxWidth: "75%", border: mine ? "none" : "1px solid #e5e7eb" }}>
-                {m.content}
-                {mine && (
-                  <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#16a34a" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
-                    {read ? "✓✓" : "✓"}
+            <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", marginBottom: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, maxWidth: "85%" }}>
+                {mine && canEdit && !isEditing && (
+                  <div style={{ display: "flex", gap: 4 }}>
+                    <button onClick={() => startEdit(m)} aria-label="Modifier" style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
+                      <Pencil size={14} />
+                    </button>
+                    <button onClick={() => deleteMsg(m.id)} aria-label="Supprimer" style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", padding: 4 }}>
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                )}
+                {isEditing ? (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <textarea
+                      value={editingText}
+                      onChange={(e) => setEditingText(e.target.value)}
+                      rows={2}
+                      style={{ padding: "8px 12px", borderRadius: 14, border: "1px solid #cbd5e1", minWidth: 220, fontFamily: "inherit", fontSize: 15 }}
+                    />
+                    <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
+                      <button onClick={() => { setEditingId(null); setEditingText(""); }} style={{ background: "#e2e8f0", border: "none", borderRadius: 8, padding: "4px 8px", cursor: "pointer" }}>
+                        <X size={14} />
+                      </button>
+                      <button onClick={saveEdit} style={{ background: "#16a34a", color: "white", border: "none", borderRadius: 8, padding: "4px 8px", cursor: "pointer" }}>
+                        <Check size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <span style={{
+                    display: "inline-block", padding: "8px 12px", borderRadius: 14,
+                    background: mine ? "#e67e22" : "white", color: mine ? "white" : "#333",
+                    border: mine ? "none" : "1px solid #e5e7eb", wordBreak: "break-word",
+                    opacity: m._optimistic ? 0.7 : 1,
+                  }}>
+                    {m.content}
+                    {m.edited_at && (
+                      <span style={{ marginLeft: 6, fontSize: "0.72em", opacity: 0.75, fontStyle: "italic" }}>
+                        (modifié)
+                      </span>
+                    )}
+                    {mine && !m._optimistic && (
+                      <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#16a34a" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
+                        {read ? "✓✓" : "✓"}
+                      </span>
+                    )}
                   </span>
                 )}
-              </span>
+              </div>
             </div>
           );
         })}
         {messages && messages.length === 0 && <p style={{ textAlign: "center", color: "#94a3b8" }}>Aucun message. Dis bonjour 👋</p>}
       </div>
 
-      <form onSubmit={send} style={{ display: "flex", gap: 8, marginTop: 12 }}>
-        <input className="search-input" value={text} onChange={(e) => setText(e.target.value)} placeholder="Écrire un message..." style={{ flex: 1 }} />
-        <button className="btn-whatsapp">Envoyer</button>
+      {showEmoji && (
+        <div style={{ marginTop: 8, padding: 10, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 12, display: "flex", flexWrap: "wrap", gap: 6 }}>
+          {EMOJIS.map((e) => (
+            <button key={e} type="button" onClick={() => { setText((t) => t + e); }} style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", padding: 4 }}>
+              {e}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <form onSubmit={send} style={{ display: "flex", gap: 8, alignItems: "flex-end", marginTop: 12 }}>
+        <button type="button" onClick={() => setShowEmoji((v) => !v)} aria-label="Émojis"
+          style={{ background: "#f0f2f5", border: "1px solid #e2e8f0", borderRadius: 20, padding: 10, cursor: "pointer", color: "#64748b" }}>
+          <Smile size={20} />
+        </button>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(e as any); } }}
+          placeholder="Écrire un message..."
+          rows={1}
+          style={{
+            flex: 1, padding: "10px 14px", borderRadius: 20,
+            border: "1px solid #e2e8f0", background: "#f0f2f5",
+            fontFamily: "inherit", fontSize: 15, outline: "none",
+            resize: "none", minHeight: 42, maxHeight: 140,
+          }}
+        />
+        <button type="submit" disabled={!text.trim()}
+          style={{
+            padding: "10px 18px", borderRadius: 20, border: "none",
+            background: text.trim() ? "#2563eb" : "#cbd5e1", color: "#fff",
+            fontWeight: 600, fontSize: 14, cursor: text.trim() ? "pointer" : "not-allowed",
+          }}>
+          Envoyer
+        </button>
       </form>
     </SiteLayout>
   );

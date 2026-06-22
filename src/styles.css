@@ -305,6 +305,26 @@ input.search-input {
 .annonce-grid {
   grid-template-columns: 1fr !important;
 }
+.annonce-gallery {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  gap: 0;
+  border-radius: 12px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.annonce-gallery::-webkit-scrollbar { display: none; }
+.annonce-gallery > img {
+  scroll-snap-align: start;
+  flex: 0 0 100%;
+  width: 100% !important;
+  height: 380px !important;
+  object-fit: cover !important;
+  background: #f8fafc;
+  border-radius: 12px;
+}
 .annonce-main-image {
   width: 100% !important;
   max-width: 100% !important;
@@ -315,6 +335,28 @@ input.search-input {
 }
 @media (max-width: 520px) {
   .annonce-main-image { height: 260px !important; max-height: 260px !important; }
+  .annonce-gallery > img { height: 260px !important; }
+}
+.annonce-dots {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+.annonce-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background: #cbd5e1;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s;
+}
+.annonce-dot.active {
+  background: #e67e22;
+  width: 22px;
+  border-radius: 4px;
 }
 
 /* Compact action buttons row in annonce detail */
