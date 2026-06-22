@@ -198,6 +198,8 @@ export type Database = {
           annonce_id: string | null
           content: string
           created_at: string
+          deleted_at: string | null
+          edited_at: string | null
           id: string
           read_at: string | null
           receiver_id: string
@@ -207,6 +209,8 @@ export type Database = {
           annonce_id?: string | null
           content: string
           created_at?: string
+          deleted_at?: string | null
+          edited_at?: string | null
           id?: string
           read_at?: string | null
           receiver_id: string
@@ -216,6 +220,8 @@ export type Database = {
           annonce_id?: string | null
           content?: string
           created_at?: string
+          deleted_at?: string | null
+          edited_at?: string | null
           id?: string
           read_at?: string | null
           receiver_id?: string
