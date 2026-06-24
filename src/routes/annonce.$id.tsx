@@ -132,11 +132,16 @@ function AnnonceDetail() {
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 600 }}>{sellerLabel}</div>
+          {annonce.seller_id && (
+            <div style={{ marginTop: 2 }}>
+              <SellerRating sellerId={annonce.seller_id} />
+            </div>
+          )}
           <Link
             to="/vendeur/$id"
             params={{ id: annonce.seller_id ?? "" }}
             className="btn-whatsapp"
-            style={{ background: "#15803d", display: "inline-block", marginTop: 4, padding: "6px 14px", fontSize: "0.85rem", textDecoration: "none" }}
+            style={{ background: "#15803d", display: "inline-block", marginTop: 6, padding: "6px 14px", fontSize: "0.85rem", textDecoration: "none" }}
           >
             🏪 Accéder à la boutique
           </Link>
@@ -186,16 +191,28 @@ function AnnonceDetail() {
 
           <p style={{ marginTop: 16 }}>{annonce.description}</p>
           <div className="annonce-actions">
-            {annonce.phone && <a href={`tel:${annonce.phone}`} className="btn-whatsapp">📞 Appel</a>}
-            {annonce.whatsapp && <a href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}`} className="btn-whatsapp" style={{ background: "#25D366" }}>💬 WhatsApp</a>}
-            {user && !isOwner && annonce.seller_id && (
+            {annonce.phone && (
+              <a href={`tel:${annonce.phone}`} className="btn-whatsapp" onClick={requireAuth}>📞 Appel</a>
+            )}
+            {annonce.whatsapp && (
+              <a href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}`} className="btn-whatsapp" style={{ background: "#25D366" }} onClick={requireAuth}>💬 WhatsApp</a>
+            )}
+            {!isOwner && annonce.seller_id && (
               <>
-                <Link to="/chat" search={{ to: annonce.seller_id }} className="btn-whatsapp" style={{ background: "#2563eb" }}>
-                  ✉️ Message
-                </Link>
-                <button className="btn-whatsapp" onClick={() => toggleFav.mutate()} style={{ background: isFav ? "#dc2626" : "#64748b" }}>
-                  {isFav ? "❤️ Fav" : "🤍 Fav"}
-                </button>
+                {user ? (
+                  <Link to="/chat" search={{ to: annonce.seller_id }} className="btn-whatsapp" style={{ background: "#2563eb" }}>
+                    ✉️ Message
+                  </Link>
+                ) : (
+                  <a href="#" className="btn-whatsapp" style={{ background: "#2563eb" }} onClick={requireAuth}>✉️ Message</a>
+                )}
+                {user ? (
+                  <button className="btn-whatsapp" onClick={() => toggleFav.mutate()} style={{ background: isFav ? "#dc2626" : "#64748b" }}>
+                    {isFav ? "❤️ Fav" : "🤍 Fav"}
+                  </button>
+                ) : (
+                  <button className="btn-whatsapp" onClick={(e) => requireAuth(e)} style={{ background: "#64748b" }}>🤍 Fav</button>
+                )}
               </>
             )}
             {isOwner && (
