@@ -4,6 +4,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { PasswordInput } from "@/components/PasswordInput";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadAvatar } from "@/lib/annonces";
+import { PhoneInput } from "@/components/PhoneInput";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/signup")({ component: SignupPage });
@@ -155,8 +156,14 @@ function SignupPage() {
           />
         </label>
         <input className="search-input" type="email" placeholder="Email *" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
-        <input className="search-input" type="tel" placeholder="Téléphone *" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} required />
-        <input className="search-input" type="tel" placeholder="Numéro WhatsApp (optionnel)" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ fontSize: "0.9em", color: "#475569" }}>Téléphone *</span>
+          <PhoneInput value={form.tel} onChange={(v) => setForm({ ...form, tel: v })} placeholder="Numéro" required />
+        </label>
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ fontSize: "0.9em", color: "#475569" }}>Numéro WhatsApp (optionnel)</span>
+          <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="Numéro WhatsApp" />
+        </label>
         <PasswordInput
           placeholder="Mot de passe (min 6 caractères) *"
           value={form.password}

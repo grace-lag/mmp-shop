@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Comments } from "@/components/Comments";
 import { AnnonceStats } from "@/components/AnnonceStats";
+import { SellerRating } from "@/components/SellerRating";
 import { formatPrice, getAnnonce, incrementViews } from "@/lib/annonces";
 import { deleteAnnonceServerFn } from "@/lib/annonces.functions";
 import { useAuth } from "@/lib/auth/AuthProvider";
@@ -19,8 +20,19 @@ export const Route = createFileRoute("/annonce/$id")({
 function AnnonceDetail() {
   const { id } = Route.useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const deleteAnnonce = useServerFn(deleteAnnonceServerFn);
+
+  const requireAuth = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      toast.info("Connecte-toi d'abord pour utiliser cette action.");
+      navigate({ to: "/login" });
+      return true;
+    }
+    return false;
+  };
 
   const { data: annonce, isLoading } = useQuery({ queryKey: ["annonce", id], queryFn: () => getAnnonce(id) });
 
@@ -120,11 +132,16 @@ function AnnonceDetail() {
         </span>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 600 }}>{sellerLabel}</div>
+          {annonce.seller_id && (
+            <div style={{ marginTop: 2 }}>
+              <SellerRating sellerId={annonce.seller_id} />
+            </div>
+          )}
           <Link
             to="/vendeur/$id"
             params={{ id: annonce.seller_id ?? "" }}
             className="btn-whatsapp"
-            style={{ background: "#15803d", display: "inline-block", marginTop: 4, padding: "6px 14px", fontSize: "0.85rem", textDecoration: "none" }}
+            style={{ background: "#15803d", display: "inline-block", marginTop: 6, padding: "6px 14px", fontSize: "0.85rem", textDecoration: "none" }}
           >
             🏪 Accéder à la boutique
           </Link>
@@ -174,16 +191,28 @@ function AnnonceDetail() {
 
           <p style={{ marginTop: 16 }}>{annonce.description}</p>
           <div className="annonce-actions">
-            {annonce.phone && <a href={`tel:${annonce.phone}`} className="btn-whatsapp">📞 Appel</a>}
-            {annonce.whatsapp && <a href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}`} className="btn-whatsapp" style={{ background: "#25D366" }}>💬 WhatsApp</a>}
-            {user && !isOwner && annonce.seller_id && (
+            {annonce.phone && (
+              <a href={`tel:${annonce.phone}`} className="btn-whatsapp" onClick={requireAuth}>📞 Appel</a>
+            )}
+            {annonce.whatsapp && (
+              <a href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}`} className="btn-whatsapp" style={{ background: "#25D366" }} onClick={requireAuth}>💬 WhatsApp</a>
+            )}
+            {!isOwner && annonce.seller_id && (
               <>
-                <Link to="/chat" search={{ to: annonce.seller_id }} className="btn-whatsapp" style={{ background: "#2563eb" }}>
-                  ✉️ Message
-                </Link>
-                <button className="btn-whatsapp" onClick={() => toggleFav.mutate()} style={{ background: isFav ? "#dc2626" : "#64748b" }}>
-                  {isFav ? "❤️ Fav" : "🤍 Fav"}
-                </button>
+                {user ? (
+                  <Link to="/chat" search={{ to: annonce.seller_id }} className="btn-whatsapp" style={{ background: "#2563eb" }}>
+                    ✉️ Message
+                  </Link>
+                ) : (
+                  <a href="#" className="btn-whatsapp" style={{ background: "#2563eb" }} onClick={requireAuth}>✉️ Message</a>
+                )}
+                {user ? (
+                  <button className="btn-whatsapp" onClick={() => toggleFav.mutate()} style={{ background: isFav ? "#dc2626" : "#64748b" }}>
+                    {isFav ? "❤️ Fav" : "🤍 Fav"}
+                  </button>
+                ) : (
+                  <button className="btn-whatsapp" onClick={(e) => requireAuth(e)} style={{ background: "#64748b" }}>🤍 Fav</button>
+                )}
               </>
             )}
             {isOwner && (

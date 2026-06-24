@@ -17,21 +17,30 @@ export type Database = {
       annonce_comments: {
         Row: {
           annonce_id: string
-          content: string
+          attachment_name: string | null
+          attachment_type: string | null
+          attachment_url: string | null
+          content: string | null
           created_at: string
           id: string
           user_id: string
         }
         Insert: {
           annonce_id: string
-          content: string
+          attachment_name?: string | null
+          attachment_type?: string | null
+          attachment_url?: string | null
+          content?: string | null
           created_at?: string
           id?: string
           user_id: string
         }
         Update: {
           annonce_id?: string
-          content?: string
+          attachment_name?: string | null
+          attachment_type?: string | null
+          attachment_url?: string | null
+          content?: string | null
           created_at?: string
           id?: string
           user_id?: string
@@ -196,7 +205,10 @@ export type Database = {
       messages: {
         Row: {
           annonce_id: string | null
-          content: string
+          attachment_name: string | null
+          attachment_type: string | null
+          attachment_url: string | null
+          content: string | null
           created_at: string
           deleted_at: string | null
           edited_at: string | null
@@ -207,7 +219,10 @@ export type Database = {
         }
         Insert: {
           annonce_id?: string | null
-          content: string
+          attachment_name?: string | null
+          attachment_type?: string | null
+          attachment_url?: string | null
+          content?: string | null
           created_at?: string
           deleted_at?: string | null
           edited_at?: string | null
@@ -218,7 +233,10 @@ export type Database = {
         }
         Update: {
           annonce_id?: string | null
-          content?: string
+          attachment_name?: string | null
+          attachment_type?: string | null
+          attachment_url?: string | null
+          content?: string | null
           created_at?: string
           deleted_at?: string | null
           edited_at?: string | null
@@ -308,6 +326,54 @@ export type Database = {
           tel?: string | null
           updated_at?: string
           whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      seller_followers: {
+        Row: {
+          created_at: string
+          follower_id: string
+          id: string
+          seller_id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          id?: string
+          seller_id: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          id?: string
+          seller_id?: string
+        }
+        Relationships: []
+      }
+      seller_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          rater_id: string
+          rating: number
+          seller_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rater_id: string
+          rating: number
+          seller_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rater_id?: string
+          rating?: number
+          seller_id?: string
+          updated_at?: string
         }
         Relationships: []
       }
