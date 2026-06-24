@@ -102,14 +102,14 @@ export type Comment = {
   author?: { prenom: string | null; nom: string | null; avatar_url: string | null } | null;
 };
 
-export async function listComments(annonceId: string): Promise<Comment[]> {
+export async function listComments(annonceId: string): Promise<any[]> {
   const { data, error } = await supabase
     .from("annonce_comments")
-    .select("id,annonce_id,user_id,content,created_at")
+    .select("id,annonce_id,user_id,content,attachment_url,attachment_type,attachment_name,created_at")
     .eq("annonce_id", annonceId)
     .order("created_at", { ascending: false });
   if (error) throw error;
-  const rows = (data ?? []) as Comment[];
+  const rows = (data ?? []) as any[];
   const ids = Array.from(new Set(rows.map((r) => r.user_id)));
   if (ids.length === 0) return rows;
   const { data: profs } = await supabase
@@ -120,12 +120,16 @@ export async function listComments(annonceId: string): Promise<Comment[]> {
   return rows.map((r) => ({ ...r, author: map.get(r.user_id) ?? null }));
 }
 
-export async function addComment(annonceId: string, content: string) {
+export async function addComment(
+  annonceId: string,
+  payload: string | { content: string | null; attachment_url?: string; attachment_type?: string; attachment_name?: string }
+) {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) throw new Error("Connecte-toi pour commenter");
-  const { error } = await supabase
-    .from("annonce_comments")
-    .insert({ annonce_id: annonceId, user_id: u.user.id, content });
+  const row = typeof payload === "string"
+    ? { annonce_id: annonceId, user_id: u.user.id, content: payload }
+    : { annonce_id: annonceId, user_id: u.user.id, ...payload };
+  const { error } = await supabase.from("annonce_comments").insert(row);
   if (error) throw error;
 }
 
