@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Comments } from "@/components/Comments";
 import { AnnonceStats } from "@/components/AnnonceStats";
+import { SellerRating } from "@/components/SellerRating";
 import { formatPrice, getAnnonce, incrementViews } from "@/lib/annonces";
 import { deleteAnnonceServerFn } from "@/lib/annonces.functions";
 import { useAuth } from "@/lib/auth/AuthProvider";
@@ -19,8 +20,19 @@ export const Route = createFileRoute("/annonce/$id")({
 function AnnonceDetail() {
   const { id } = Route.useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const deleteAnnonce = useServerFn(deleteAnnonceServerFn);
+
+  const requireAuth = (e: React.MouseEvent) => {
+    if (!user) {
+      e.preventDefault();
+      toast.info("Connecte-toi d'abord pour utiliser cette action.");
+      navigate({ to: "/login" });
+      return true;
+    }
+    return false;
+  };
 
   const { data: annonce, isLoading } = useQuery({ queryKey: ["annonce", id], queryFn: () => getAnnonce(id) });
 
