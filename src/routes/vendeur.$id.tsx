@@ -4,6 +4,8 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { formatPrice } from "@/lib/annonces";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { SellerRating } from "@/components/SellerRating";
+import { FollowButton, useFollowersCount } from "@/components/FollowButton";
 
 export const Route = createFileRoute("/vendeur/$id")({ component: VendeurPage });
 
@@ -24,6 +26,7 @@ function VendeurPage() {
       return data ?? [];
     },
   });
+  const { data: followers } = useFollowersCount(id);
 
   const name = profile ? `${profile.prenom ?? ""} ${profile.nom ?? ""}`.trim() || "Vendeur" : "Vendeur";
 
@@ -41,13 +44,21 @@ function VendeurPage() {
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <h1 style={{ margin: 0 }}>{name}</h1>
-          <p style={{ margin: "4px 0 0", color: "#64748b" }}>{annonces?.length ?? 0} annonce(s)</p>
+          <div style={{ marginTop: 4 }}>
+            <SellerRating sellerId={id} />
+          </div>
+          <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "0.9em" }}>
+            {annonces?.length ?? 0} annonce(s) · {followers ?? 0} abonné(s)
+          </p>
         </div>
-        {user && user.id !== id && (
-          <Link to="/chat" search={{ to: id }} className="btn-whatsapp" style={{ background: "#2563eb" }}>
-            💬 Message privé
-          </Link>
-        )}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <FollowButton sellerId={id} />
+          {user && user.id !== id && (
+            <Link to="/chat" search={{ to: id }} className="btn-whatsapp" style={{ background: "#2563eb" }}>
+              💬 Message privé
+            </Link>
+          )}
+        </div>
       </div>
       <div className="product-grid" style={{ marginTop: 16 }}>
         {(annonces ?? []).map((a: any) => (
@@ -61,4 +72,3 @@ function VendeurPage() {
     </SiteLayout>
   );
 }
-
