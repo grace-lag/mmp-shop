@@ -1,13 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Smile, Pencil, Trash2, Check, X } from "lucide-react";
+import { Smile, Paperclip, Pencil, Trash2, Check, X } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { EmojiPicker } from "@/components/EmojiPicker";
+import { Attachment } from "@/components/Attachment";
+import { uploadChatFile } from "@/lib/uploads";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const EMOJIS = ["😀","😂","😍","😎","🥰","😢","😡","👍","🙏","🔥","❤️","💯","🎉","✅","💬","👋","🤝","💸","📦","🚀"];
 const EDIT_WINDOW_MS = 15 * 60 * 1000;
 
 export const Route = createFileRoute("/chat")({
@@ -22,14 +24,15 @@ function ChatPage() {
   const qc = useQueryClient();
   const [text, setText] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const [now, setNow] = useState(Date.now());
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
 
-  // Tick to update edit/delete window display
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(t);
@@ -66,13 +69,11 @@ function ChatPage() {
     },
   });
 
-  // Auto-scroll on new messages
   useEffect(() => {
     const el = scrollRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages?.length]);
 
-  // Mark partner's messages as read
   useEffect(() => {
     if (!user || !validTo) return;
     (async () => {
@@ -99,48 +100,53 @@ function ChatPage() {
     return () => { supabase.removeChannel(channel); };
   }, [user, qc]);
 
+  const sendMessage = async (payload: { content: string | null; attachment_url?: string; attachment_type?: string; attachment_name?: string }) => {
+    if (!validTo) return;
+    const tempId = `temp-${Date.now()}-${Math.random()}`;
+    const optimistic = {
+      id: tempId, sender_id: user!.id, receiver_id: validTo,
+      content: payload.content, attachment_url: payload.attachment_url ?? null,
+      attachment_type: payload.attachment_type ?? null, attachment_name: payload.attachment_name ?? null,
+      created_at: new Date().toISOString(), read_at: null, edited_at: null, deleted_at: null, _optimistic: true,
+    };
+    qc.setQueryData(messagesKey, (prev: any[] = []) => [...prev, optimistic]);
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({ sender_id: user!.id, receiver_id: validTo, ...payload })
+      .select().single();
+    if (error) {
+      qc.setQueryData(messagesKey, (prev: any[] = []) => prev.filter((m) => m.id !== tempId));
+      toast.error(error.message);
+      return;
+    }
+    qc.setQueryData(messagesKey, (prev: any[] = []) => prev.map((m) => (m.id === tempId ? data : m)));
+  };
+
   const send = async (e: React.FormEvent) => {
     e.preventDefault();
     const content = text.trim();
     if (!content || !validTo) return;
     setText("");
     setShowEmoji(false);
+    await sendMessage({ content });
+  };
 
-    // Optimistic insert so message appears immediately
-    const tempId = `temp-${Date.now()}-${Math.random()}`;
-    const optimistic = {
-      id: tempId,
-      sender_id: user!.id,
-      receiver_id: validTo,
-      content,
-      created_at: new Date().toISOString(),
-      read_at: null,
-      edited_at: null,
-      deleted_at: null,
-      _optimistic: true,
-    };
-    qc.setQueryData(messagesKey, (prev: any[] = []) => [...prev, optimistic]);
-
-    const { data, error } = await supabase
-      .from("messages")
-      .insert({ sender_id: user!.id, receiver_id: validTo, content })
-      .select()
-      .single();
-
-    if (error) {
-      qc.setQueryData(messagesKey, (prev: any[] = []) => prev.filter((m) => m.id !== tempId));
-      toast.error(error.message);
-      setText(content);
-      return;
+  const onPickFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    e.target.value = "";
+    if (!f || !user) return;
+    setUploading(true);
+    try {
+      const att = await uploadChatFile(f, user.id, "chat");
+      await sendMessage({ content: null, attachment_url: att.url, attachment_type: att.type, attachment_name: att.name });
+    } catch (err: any) {
+      toast.error(err.message ?? "Upload échoué");
+    } finally {
+      setUploading(false);
     }
-    qc.setQueryData(messagesKey, (prev: any[] = []) => prev.map((m) => (m.id === tempId ? data : m)));
   };
 
-  const startEdit = (m: any) => {
-    setEditingId(m.id);
-    setEditingText(m.content);
-  };
-
+  const startEdit = (m: any) => { setEditingId(m.id); setEditingText(m.content ?? ""); };
   const saveEdit = async () => {
     if (!editingId) return;
     const newContent = editingText.trim();
@@ -150,11 +156,9 @@ function ChatPage() {
       .update({ content: newContent, edited_at: new Date().toISOString() })
       .eq("id", editingId);
     if (error) return toast.error(error.message);
-    setEditingId(null);
-    setEditingText("");
+    setEditingId(null); setEditingText("");
     qc.invalidateQueries({ queryKey: messagesKey });
   };
-
   const deleteMsg = async (id: string) => {
     if (!confirm("Supprimer ce message ?")) return;
     const { error } = await supabase.from("messages").delete().eq("id", id);
@@ -192,36 +196,32 @@ function ChatPage() {
           const mine = m.sender_id === user.id;
           const read = !!m.read_at;
           const createdMs = new Date(m.created_at).getTime();
-          const canEdit = mine && !m._optimistic && (now - createdMs) < EDIT_WINDOW_MS;
+          const canEdit = mine && !m._optimistic && (now - createdMs) < EDIT_WINDOW_MS && !!m.content;
           const isEditing = editingId === m.id;
           return (
             <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", marginBottom: 10 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6, maxWidth: "85%" }}>
-                {mine && canEdit && !isEditing && (
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 6, maxWidth: "85%" }}>
+                {mine && !isEditing && (
                   <div style={{ display: "flex", gap: 4 }}>
-                    <button onClick={() => startEdit(m)} aria-label="Modifier" style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
-                      <Pencil size={14} />
-                    </button>
-                    <button onClick={() => deleteMsg(m.id)} aria-label="Supprimer" style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", padding: 4 }}>
-                      <Trash2 size={14} />
-                    </button>
+                    {canEdit && (
+                      <button onClick={() => startEdit(m)} aria-label="Modifier" style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
+                        <Pencil size={14} />
+                      </button>
+                    )}
+                    {!m._optimistic && (now - createdMs) < EDIT_WINDOW_MS && (
+                      <button onClick={() => deleteMsg(m.id)} aria-label="Supprimer" style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", padding: 4 }}>
+                        <Trash2 size={14} />
+                      </button>
+                    )}
                   </div>
                 )}
                 {isEditing ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    <textarea
-                      value={editingText}
-                      onChange={(e) => setEditingText(e.target.value)}
-                      rows={2}
-                      style={{ padding: "8px 12px", borderRadius: 14, border: "1px solid #cbd5e1", minWidth: 220, fontFamily: "inherit", fontSize: 15 }}
-                    />
+                    <textarea value={editingText} onChange={(e) => setEditingText(e.target.value)} rows={2}
+                      style={{ padding: "8px 12px", borderRadius: 14, border: "1px solid #cbd5e1", minWidth: 220, fontFamily: "inherit", fontSize: 15 }} />
                     <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
-                      <button onClick={() => { setEditingId(null); setEditingText(""); }} style={{ background: "#e2e8f0", border: "none", borderRadius: 8, padding: "4px 8px", cursor: "pointer" }}>
-                        <X size={14} />
-                      </button>
-                      <button onClick={saveEdit} style={{ background: "#16a34a", color: "white", border: "none", borderRadius: 8, padding: "4px 8px", cursor: "pointer" }}>
-                        <Check size={14} />
-                      </button>
+                      <button onClick={() => { setEditingId(null); setEditingText(""); }} style={{ background: "#e2e8f0", border: "none", borderRadius: 8, padding: "4px 8px", cursor: "pointer" }}><X size={14} /></button>
+                      <button onClick={saveEdit} style={{ background: "#16a34a", color: "white", border: "none", borderRadius: 8, padding: "4px 8px", cursor: "pointer" }}><Check size={14} /></button>
                     </div>
                   </div>
                 ) : (
@@ -231,12 +231,9 @@ function ChatPage() {
                     border: mine ? "none" : "1px solid #e5e7eb", wordBreak: "break-word",
                     opacity: m._optimistic ? 0.7 : 1,
                   }}>
-                    {m.content}
-                    {m.edited_at && (
-                      <span style={{ marginLeft: 6, fontSize: "0.72em", opacity: 0.75, fontStyle: "italic" }}>
-                        (modifié)
-                      </span>
-                    )}
+                    {m.content && <div>{m.content}</div>}
+                    {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} />}
+                    {m.edited_at && <span style={{ marginLeft: 6, fontSize: "0.72em", opacity: 0.75, fontStyle: "italic" }}>(modifié)</span>}
                     {mine && !m._optimistic && (
                       <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#16a34a" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
                         {read ? "✓✓" : "✓"}
@@ -252,16 +249,17 @@ function ChatPage() {
       </div>
 
       {showEmoji && (
-        <div style={{ marginTop: 8, padding: 10, background: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: 12, display: "flex", flexWrap: "wrap", gap: 6 }}>
-          {EMOJIS.map((e) => (
-            <button key={e} type="button" onClick={() => { setText((t) => t + e); }} style={{ background: "none", border: "none", fontSize: 22, cursor: "pointer", padding: 4 }}>
-              {e}
-            </button>
-          ))}
+        <div style={{ marginTop: 8 }}>
+          <EmojiPicker onPick={(e) => setText((t) => t + e)} onClose={() => setShowEmoji(false)} />
         </div>
       )}
 
       <form onSubmit={send} style={{ display: "flex", gap: 8, alignItems: "flex-end", marginTop: 12 }}>
+        <input ref={fileRef} type="file" accept="image/*,video/*,*/*" onChange={onPickFile} style={{ display: "none" }} />
+        <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-label="Joindre un fichier"
+          style={{ background: "#f0f2f5", border: "1px solid #e2e8f0", borderRadius: 20, padding: 10, cursor: "pointer", color: "#64748b" }}>
+          <Paperclip size={20} />
+        </button>
         <button type="button" onClick={() => setShowEmoji((v) => !v)} aria-label="Émojis"
           style={{ background: "#f0f2f5", border: "1px solid #e2e8f0", borderRadius: 20, padding: 10, cursor: "pointer", color: "#64748b" }}>
           <Smile size={20} />
@@ -270,7 +268,7 @@ function ChatPage() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(e as any); } }}
-          placeholder="Écrire un message..."
+          placeholder={uploading ? "Envoi du fichier..." : "Écrire un message..."}
           rows={1}
           style={{
             flex: 1, padding: "10px 14px", borderRadius: 20,
