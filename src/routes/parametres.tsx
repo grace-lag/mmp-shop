@@ -5,6 +5,7 @@ import { PasswordInput } from "@/components/PasswordInput";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadAvatar } from "@/lib/annonces";
+import { PhoneInput } from "@/components/PhoneInput";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/parametres")({ component: ParametresPage });
@@ -171,8 +172,14 @@ function ParametresPage() {
           <span style={{ fontSize: "0.9em", color: "#475569" }}>Date de naissance</span>
           <input className="search-input" type="date" value={form.date_naissance} max={new Date().toISOString().split("T")[0]} onChange={(e) => setForm({ ...form, date_naissance: e.target.value })} />
         </label>
-        <input className="search-input" placeholder="Téléphone" value={form.tel} onChange={(e) => setForm({ ...form, tel: e.target.value })} required />
-        <input className="search-input" placeholder="Numéro WhatsApp (optionnel)" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ fontSize: "0.9em", color: "#475569" }}>Téléphone *</span>
+          <PhoneInput value={form.tel} onChange={(v) => setForm({ ...form, tel: v })} required />
+        </label>
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ fontSize: "0.9em", color: "#475569" }}>Numéro WhatsApp (optionnel)</span>
+          <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} />
+        </label>
 
         <button className="btn-whatsapp" disabled={saving}>{saving ? "..." : "Enregistrer le profil"}</button>
       </form>
