@@ -1,10 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, type ReactNode } from "react";
-import { MessageCircle, Tag, ArrowUp, RefreshCw, MousePointerClick, Star, UserPlus } from "lucide-react";
+import { MessageCircle, Tag, ArrowUp, RefreshCw, MousePointerClick, Star, UserPlus, Pencil, Trash2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
+import { deleteAnnonceServerFn } from "@/lib/annonces.functions";
+import { formatPrice } from "@/lib/annonces";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/dashboard")({ component: DashboardPage });
 
