@@ -179,7 +179,7 @@ function SocialChatPage() {
               return (
                 <Link key={c.id} to="/social-chat" search={{ to: c.id } as any}
                   style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", textDecoration: "none", color: "inherit", background: active ? "#fff7ed" : "transparent", borderTop: "1px solid #f8fafc" }}>
-                  <Avatar url={c.profile?.avatar_url} name={name} size={40} />
+                  <Avatar url={c.profile?.avatar_url ?? undefined} name={name} size={40} />
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 600 }}>{name}</div>
                     <div style={{ color: "#64748b", fontSize: "0.82rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.lastText}</div>
@@ -194,7 +194,7 @@ function SocialChatPage() {
         {validTo ? (
           <div style={{ background: "#fff", borderRadius: 12, border: "1px solid #e5e7eb", display: "flex", flexDirection: "column", minHeight: 420 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", borderBottom: "1px solid #f1f5f9", background: "#fff7ed", borderTopLeftRadius: 12, borderTopRightRadius: 12 }}>
-              <Avatar url={partner?.avatar_url} name={[partner?.prenom, partner?.nom].filter(Boolean).join(" ") || "..."} size={36} />
+              <Avatar url={partner?.avatar_url ?? undefined} name={[partner?.prenom, partner?.nom].filter(Boolean).join(" ") || "..."} size={36} />
               <div>
                 <div style={{ fontWeight: 700 }}>{[partner?.prenom, partner?.nom].filter(Boolean).join(" ") || "Utilisateur"}</div>
                 <Link to="/u/$id" params={{ id: validTo }} style={{ fontSize: "0.78rem", color: "#ea580c" }}>Voir le profil</Link>

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SocialChatRouteImport } from './routes/social-chat'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RechercheUtilisateurRouteImport } from './routes/recherche-utilisateur'
@@ -44,6 +45,11 @@ import { Route as CategoriesHabillementRouteImport } from './routes/categories.h
 import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
 import { Route as AbonnesIdRouteImport } from './routes/abonnes.$id'
 
+const SocialChatRoute = SocialChatRouteImport.update({
+  id: '/social-chat',
+  path: '/social-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -242,6 +248,7 @@ export interface FileRoutesByFullPath {
   '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
@@ -277,6 +284,7 @@ export interface FileRoutesByTo {
   '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
@@ -314,6 +322,7 @@ export interface FileRoutesById {
   '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
@@ -352,6 +361,7 @@ export interface FileRouteTypes {
     | '/recherche-utilisateur'
     | '/reset-password'
     | '/signup'
+    | '/social-chat'
     | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
@@ -387,6 +397,7 @@ export interface FileRouteTypes {
     | '/recherche-utilisateur'
     | '/reset-password'
     | '/signup'
+    | '/social-chat'
     | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
@@ -423,6 +434,7 @@ export interface FileRouteTypes {
     | '/recherche-utilisateur'
     | '/reset-password'
     | '/signup'
+    | '/social-chat'
     | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
@@ -460,6 +472,7 @@ export interface RootRouteChildren {
   RechercheUtilisateurRoute: typeof RechercheUtilisateurRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  SocialChatRoute: typeof SocialChatRoute
   AbonnesIdRoute: typeof AbonnesIdRoute
   AnnonceIdRoute: typeof AnnonceIdRoute
   EvaluationsIdRoute: typeof EvaluationsIdRoute
@@ -470,6 +483,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/social-chat': {
+      id: '/social-chat'
+      path: '/social-chat'
+      fullPath: '/social-chat'
+      preLoaderRoute: typeof SocialChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -752,6 +772,7 @@ const rootRouteChildren: RootRouteChildren = {
   RechercheUtilisateurRoute: RechercheUtilisateurRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  SocialChatRoute: SocialChatRoute,
   AbonnesIdRoute: AbonnesIdRoute,
   AnnonceIdRoute: AnnonceIdRoute,
   EvaluationsIdRoute: EvaluationsIdRoute,
