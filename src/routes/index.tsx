@@ -1,11 +1,21 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { CITIES, formatPrice, listAnnonces } from "@/lib/annonces";
 import { AnnonceStats } from "@/components/AnnonceStats";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import heroBg from "@/assets/mamarketplace-eshop-hero.jpg";
+import ad1 from "@/assets/ad-1.jpg";
+import ad2 from "@/assets/ad-2.jpg";
+import ad3 from "@/assets/ad-3.jpg";
+
+const ADS = [
+  { src: ad1, caption: "Achetez tout, partout au Congo" },
+  { src: ad2, caption: "Vendre devient simple sur MaMarketplace E-Shop" },
+  { src: ad3, caption: "Livraison rapide à Brazzaville et au-delà" },
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({
