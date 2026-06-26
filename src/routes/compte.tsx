@@ -12,7 +12,7 @@ export const Route = createFileRoute("/compte")({ component: ComptePage });
 function ComptePage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<{ nom?: string; prenom?: string; avatar_url?: string } | null>(null);
+  const [profile, setProfile] = useState<{ nom?: string; prenom?: string; avatar_url?: string; created_at?: string } | null>(null);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
 
