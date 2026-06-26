@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { ImageIcon, Plus, X } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { PhoneInput } from "@/components/PhoneInput";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { CATEGORIES, CITIES, SUBCATEGORIES, createAnnonce, uploadAnnonceImage } from "@/lib/annonces";
 import { supabase } from "@/integrations/supabase/client";
