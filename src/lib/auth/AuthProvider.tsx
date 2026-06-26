@@ -55,8 +55,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(data.session);
       setLoading(false);
       void syncProfile(data.session);
+      if (data.session) void (supabase as any).rpc("touch_last_seen");
     });
-    return () => sub.subscription.unsubscribe();
+    const heartbeat = setInterval(() => {
+      void (supabase as any).rpc("touch_last_seen");
+    }, 60_000);
+    return () => { sub.subscription.unsubscribe(); clearInterval(heartbeat); };
   }, []);
 
 
