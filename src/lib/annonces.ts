@@ -217,6 +217,16 @@ export async function createAnnonce(input: Omit<Annonce, "id" | "created_at" | "
   return data as Annonce;
 }
 
+export async function updateAnnonce(id: string, patch: Partial<Annonce> & { images?: string[] }) {
+  const { error } = await supabase.from("annonces").update(patch as any).eq("id", id);
+  if (error) throw error;
+}
+
+export async function deleteAnnonce(id: string) {
+  const { error } = await supabase.from("annonces").delete().eq("id", id);
+  if (error) throw error;
+}
+
 export async function uploadAvatar(file: File, userId: string): Promise<string> {
   const ext = assertImageFile(file);
   const path = `${userId}/${crypto.randomUUID()}.${ext}`;

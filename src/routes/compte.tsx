@@ -12,13 +12,13 @@ export const Route = createFileRoute("/compte")({ component: ComptePage });
 function ComptePage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<{ nom?: string; prenom?: string; avatar_url?: string } | null>(null);
+  const [profile, setProfile] = useState<{ nom?: string; prenom?: string; avatar_url?: string; created_at?: string } | null>(null);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
 
   useEffect(() => {
     if (!user) return;
-    (supabase as any).from("profiles").select("nom,prenom,tel,date_naissance,avatar_url").eq("id", user.id).maybeSingle()
+    (supabase as any).from("profiles").select("nom,prenom,tel,date_naissance,avatar_url,created_at").eq("id", user.id).maybeSingle()
       .then(({ data }: any) => {
         setProfile(data ?? null);
         if (!data?.nom || !data?.prenom || !data?.tel || !data?.date_naissance || !data?.avatar_url) {
@@ -125,6 +125,24 @@ function ComptePage() {
       <div style={{ marginTop: 18 }}>
         <Link to="/recherche-utilisateur" className="btn-whatsapp" style={{ display: "block", textAlign: "center", background: "#ea580c" }}>🔎 Rechercher une personne</Link>
       </div>
+
+      {/* Durée de présence */}
+      <div style={{ marginTop: 18, textAlign: "center", color: "#475569", fontSize: "0.9rem" }}>
+        🗓️ {formatTenure(profile?.created_at)} sur MaMarketplace E-shop
+      </div>
     </SiteLayout>
   );
+}
+
+function formatTenure(iso?: string) {
+  if (!iso) return "Nouveau";
+  const ms = Date.now() - new Date(iso).getTime();
+  const days = Math.floor(ms / 86400000);
+  if (days < 1) return "Inscrit aujourd'hui";
+  if (days < 30) return `Depuis ${days} jour${days > 1 ? "s" : ""}`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `Depuis ${months} mois`;
+  const years = Math.floor(months / 12);
+  const remM = months % 12;
+  return remM > 0 ? `Depuis ${years} an${years > 1 ? "s" : ""} et ${remM} mois` : `Depuis ${years} an${years > 1 ? "s" : ""}`;
 }

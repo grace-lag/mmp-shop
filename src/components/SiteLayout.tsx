@@ -3,12 +3,14 @@ import type { ReactNode } from "react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { supabase } from "@/integrations/supabase/client";
 import logoUrl from "@/assets/logo-marketplace.jpeg";
 
 export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { children: ReactNode; activeNav?: string; hideHeader?: boolean; hideFooter?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const isAdmin = useIsAdmin();
   const path = useRouterState({ select: (s) => s.location.pathname });
   const isActive = (key: string, p?: string) => activeNav === key || (p && path.startsWith(p));
 
@@ -25,7 +27,6 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
     },
   });
 
-  // Count of distinct conversations (senders) with at least one unread message
   const { data: unreadCount = 0 } = useQuery({
     queryKey: ["unread-messages", user?.id],
     enabled: !!user,
@@ -42,7 +43,27 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
     },
   });
 
-
+  const menuItems = [
+    { to: "/", icon: "🏠", title: "Accueil", sub: "Page d'accueil" },
+    { to: "/annonces", icon: "📦", title: "Plus d'annonces", sub: "Voir toutes les annonces" },
+    { to: "/categories", icon: "🏷️", title: "Catégories", sub: "Parcourir par catégorie" },
+    { to: "/recherche-utilisateur", icon: "🔎", title: "Rechercher une personne", sub: "Chatter avec quelqu'un" },
+    { to: "/poster", icon: "➕", title: "Poster une annonce", sub: "Vendre un produit" },
+    ...(user
+      ? [
+          { to: "/compte", icon: "👤", title: "Mon compte", sub: "Profil & tableau de bord" },
+          { to: "/dashboard", icon: "📊", title: "Tableau de bord", sub: "Mes annonces" },
+          { to: "/historique", icon: "📋", title: "Historique", sub: "Visites & conversations" },
+          { to: "/notifications", icon: "🔔", title: "Notifications", sub: "Boutiques suivies" },
+          { to: "/parametres", icon: "⚙️", title: "Paramètres", sub: "Modifier mon profil" },
+        ]
+      : [
+          { to: "/login", icon: "🔑", title: "Se connecter", sub: "Accéder à votre compte" },
+          { to: "/signup", icon: "✨", title: "Créer un compte", sub: "Rejoindre MaMarketplace" },
+        ]),
+    ...(isAdmin ? [{ to: "/admin", icon: "🛡️", title: "Espace admin", sub: "Gestion de la plateforme" }] : []),
+    { to: "/conditions", icon: "📜", title: "Conditions", sub: "Mentions et règles" },
+  ];
 
   return (
     <>
@@ -84,28 +105,16 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
         {menuOpen && (
           <>
             <div className="menu-overlay active" onClick={() => setMenuOpen(false)} />
-            <section className="home-options open" style={{ position: "fixed" }}>
-              <Link to="/annonces" className="option-card" onClick={() => setMenuOpen(false)}>
-                <span>📦</span>
-                <div>
-                  <h3>Plus d'annonces</h3>
-                  <p>Voir toutes les annonces publiées</p>
-                </div>
-              </Link>
-              <Link to="/parametres" className="option-card" onClick={() => setMenuOpen(false)}>
-                <span>⚙️</span>
-                <div>
-                  <h3>Paramètres</h3>
-                  <p>Gérer vos préférences et profil</p>
-                </div>
-              </Link>
-              <Link to="/options" className="option-card" onClick={() => setMenuOpen(false)}>
-                <span>✨</span>
-                <div>
-                  <h3>Autres options</h3>
-                  <p>Découvrir plus de fonctionnalités</p>
-                </div>
-              </Link>
+            <section className="home-options open" style={{ position: "fixed", overflowY: "auto" }}>
+              {menuItems.map((m) => (
+                <Link key={m.to} to={m.to} className="option-card" onClick={() => setMenuOpen(false)}>
+                  <span>{m.icon}</span>
+                  <div>
+                    <h3>{m.title}</h3>
+                    <p>{m.sub}</p>
+                  </div>
+                </Link>
+              ))}
               {user && (
                 <button
                   className="option-card"
@@ -158,13 +167,14 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
         <div className="footer-content">
           <div className="footer-section">
             <h3>🏪 À propos</h3>
-            <p>MaMarketplace est une plateforme de vente et d'achat en ligne au Congo.</p>
+            <p>MaMarketplace E-Shop est une plateforme de vente et d'achat en ligne au Congo.</p>
           </div>
           <div className="footer-section">
             <h3>📞 Contact</h3>
             <ul>
-              <li><a href="tel:+242068286934">📱 +242 06 8286934</a></li>
-              <li><a href="mailto:support@mamarketplace.cg">✉️ support@mamarketplace.cg</a></li>
+              <li><a href="tel:+242064223575">📱 +242 06 422 35 75</a></li>
+              <li><a href="mailto:liyeyegrace@gmail.com">✉️ liyeyegrace@gmail.com</a></li>
+              <li><a href="mailto:jhonynguimbi500@gmail.com">✉️ jhonynguimbi500@gmail.com</a></li>
               <li><Link to="/chat">💬 Chat en ligne</Link></li>
             </ul>
           </div>
@@ -174,7 +184,9 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
               <li><Link to="/">Accueil</Link></li>
               <li><Link to="/categories">Catégories</Link></li>
               <li><Link to="/poster">Poster une annonce</Link></li>
+              <li><Link to="/recherche-utilisateur">Rechercher une personne</Link></li>
               <li><Link to={user ? "/compte" : "/login"}>Mon compte</Link></li>
+              {isAdmin && <li><Link to="/admin">🛡️ Espace administrateur</Link></li>}
             </ul>
           </div>
           <div className="footer-section">
@@ -187,7 +199,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 MaMarketplace. Tous droits réservés. | Créé avec ❤️ au Congo</p>
+          <p>&copy; 2026 MaMarketplace E-Shop. Tous droits réservés. | Créé avec ❤️ au Congo</p>
         </div>
       </footer>
       )}

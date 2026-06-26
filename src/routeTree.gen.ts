@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SocialChatRouteImport } from './routes/social-chat'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RechercheUtilisateurRouteImport } from './routes/recherche-utilisateur'
@@ -39,11 +40,17 @@ import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as VendeurIdRouteImport } from './routes/vendeur.$id'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as TopLikesIdRouteImport } from './routes/top-likes.$id'
+import { Route as ModifierAnnonceIdRouteImport } from './routes/modifier-annonce.$id'
 import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
 import { Route as CategoriesHabillementRouteImport } from './routes/categories.habillement'
 import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
 import { Route as AbonnesIdRouteImport } from './routes/abonnes.$id'
 
+const SocialChatRoute = SocialChatRouteImport.update({
+  id: '/social-chat',
+  path: '/social-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
@@ -194,6 +201,11 @@ const TopLikesIdRoute = TopLikesIdRouteImport.update({
   path: '/top-likes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModifierAnnonceIdRoute = ModifierAnnonceIdRouteImport.update({
+  id: '/modifier-annonce/$id',
+  path: '/modifier-annonce/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EvaluationsIdRoute = EvaluationsIdRouteImport.update({
   id: '/evaluations/$id',
   path: '/evaluations/$id',
@@ -242,10 +254,12 @@ export interface FileRoutesByFullPath {
   '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
+  '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -277,10 +291,12 @@ export interface FileRoutesByTo {
   '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
+  '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -314,10 +330,12 @@ export interface FileRoutesById {
   '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
+  '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -352,10 +370,12 @@ export interface FileRouteTypes {
     | '/recherche-utilisateur'
     | '/reset-password'
     | '/signup'
+    | '/social-chat'
     | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
     | '/evaluations/$id'
+    | '/modifier-annonce/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -387,10 +407,12 @@ export interface FileRouteTypes {
     | '/recherche-utilisateur'
     | '/reset-password'
     | '/signup'
+    | '/social-chat'
     | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
     | '/evaluations/$id'
+    | '/modifier-annonce/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -423,10 +445,12 @@ export interface FileRouteTypes {
     | '/recherche-utilisateur'
     | '/reset-password'
     | '/signup'
+    | '/social-chat'
     | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
     | '/evaluations/$id'
+    | '/modifier-annonce/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -460,9 +484,11 @@ export interface RootRouteChildren {
   RechercheUtilisateurRoute: typeof RechercheUtilisateurRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  SocialChatRoute: typeof SocialChatRoute
   AbonnesIdRoute: typeof AbonnesIdRoute
   AnnonceIdRoute: typeof AnnonceIdRoute
   EvaluationsIdRoute: typeof EvaluationsIdRoute
+  ModifierAnnonceIdRoute: typeof ModifierAnnonceIdRoute
   TopLikesIdRoute: typeof TopLikesIdRoute
   UIdRoute: typeof UIdRoute
   VendeurIdRoute: typeof VendeurIdRoute
@@ -470,6 +496,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/social-chat': {
+      id: '/social-chat'
+      path: '/social-chat'
+      fullPath: '/social-chat'
+      preLoaderRoute: typeof SocialChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signup': {
       id: '/signup'
       path: '/signup'
@@ -680,6 +713,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TopLikesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modifier-annonce/$id': {
+      id: '/modifier-annonce/$id'
+      path: '/modifier-annonce/$id'
+      fullPath: '/modifier-annonce/$id'
+      preLoaderRoute: typeof ModifierAnnonceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/evaluations/$id': {
       id: '/evaluations/$id'
       path: '/evaluations/$id'
@@ -752,9 +792,11 @@ const rootRouteChildren: RootRouteChildren = {
   RechercheUtilisateurRoute: RechercheUtilisateurRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  SocialChatRoute: SocialChatRoute,
   AbonnesIdRoute: AbonnesIdRoute,
   AnnonceIdRoute: AnnonceIdRoute,
   EvaluationsIdRoute: EvaluationsIdRoute,
+  ModifierAnnonceIdRoute: ModifierAnnonceIdRoute,
   TopLikesIdRoute: TopLikesIdRoute,
   UIdRoute: UIdRoute,
   VendeurIdRoute: VendeurIdRoute,
