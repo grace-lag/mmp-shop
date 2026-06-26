@@ -40,6 +40,7 @@ import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as VendeurIdRouteImport } from './routes/vendeur.$id'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as TopLikesIdRouteImport } from './routes/top-likes.$id'
+import { Route as ModifierAnnonceIdRouteImport } from './routes/modifier-annonce.$id'
 import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
 import { Route as CategoriesHabillementRouteImport } from './routes/categories.habillement'
 import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
@@ -200,6 +201,11 @@ const TopLikesIdRoute = TopLikesIdRouteImport.update({
   path: '/top-likes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModifierAnnonceIdRoute = ModifierAnnonceIdRouteImport.update({
+  id: '/modifier-annonce/$id',
+  path: '/modifier-annonce/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EvaluationsIdRoute = EvaluationsIdRouteImport.update({
   id: '/evaluations/$id',
   path: '/evaluations/$id',
@@ -253,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
+  '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -289,6 +296,7 @@ export interface FileRoutesByTo {
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
+  '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -327,6 +335,7 @@ export interface FileRoutesById {
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
+  '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -366,6 +375,7 @@ export interface FileRouteTypes {
     | '/annonce/$id'
     | '/categories/habillement'
     | '/evaluations/$id'
+    | '/modifier-annonce/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -402,6 +412,7 @@ export interface FileRouteTypes {
     | '/annonce/$id'
     | '/categories/habillement'
     | '/evaluations/$id'
+    | '/modifier-annonce/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -439,6 +450,7 @@ export interface FileRouteTypes {
     | '/annonce/$id'
     | '/categories/habillement'
     | '/evaluations/$id'
+    | '/modifier-annonce/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -476,6 +488,7 @@ export interface RootRouteChildren {
   AbonnesIdRoute: typeof AbonnesIdRoute
   AnnonceIdRoute: typeof AnnonceIdRoute
   EvaluationsIdRoute: typeof EvaluationsIdRoute
+  ModifierAnnonceIdRoute: typeof ModifierAnnonceIdRoute
   TopLikesIdRoute: typeof TopLikesIdRoute
   UIdRoute: typeof UIdRoute
   VendeurIdRoute: typeof VendeurIdRoute
@@ -700,6 +713,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TopLikesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modifier-annonce/$id': {
+      id: '/modifier-annonce/$id'
+      path: '/modifier-annonce/$id'
+      fullPath: '/modifier-annonce/$id'
+      preLoaderRoute: typeof ModifierAnnonceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/evaluations/$id': {
       id: '/evaluations/$id'
       path: '/evaluations/$id'
@@ -776,6 +796,7 @@ const rootRouteChildren: RootRouteChildren = {
   AbonnesIdRoute: AbonnesIdRoute,
   AnnonceIdRoute: AnnonceIdRoute,
   EvaluationsIdRoute: EvaluationsIdRoute,
+  ModifierAnnonceIdRoute: ModifierAnnonceIdRoute,
   TopLikesIdRoute: TopLikesIdRoute,
   UIdRoute: UIdRoute,
   VendeurIdRoute: VendeurIdRoute,
