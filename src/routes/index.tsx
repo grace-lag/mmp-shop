@@ -114,7 +114,7 @@ function Index() {
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
-          <button type="submit" className="search-btn">Rechercher 🔍</button>
+          <button type="submit" className="search-btn search-icon-only" aria-label="Rechercher"><span className="search-label">Rechercher </span>🔍</button>
         </form>
 
       <section>
