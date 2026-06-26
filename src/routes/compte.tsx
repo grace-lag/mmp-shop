@@ -145,6 +145,4 @@ function formatTenure(iso?: string) {
   const years = Math.floor(months / 12);
   const remM = months % 12;
   return remM > 0 ? `Depuis ${years} an${years > 1 ? "s" : ""} et ${remM} mois` : `Depuis ${years} an${years > 1 ? "s" : ""}`;
-    </SiteLayout>
-  );
 }
