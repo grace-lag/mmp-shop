@@ -50,9 +50,24 @@ function StatCard({
 function DashboardPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
+  const qc = useQueryClient();
+  const deleteFn = useServerFn(deleteAnnonceServerFn);
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/login" });
   }, [user, loading, navigate]);
+
+  const { data: myAds } = useQuery({
+    queryKey: ["my-ads-list", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("annonces")
+        .select("id,title,price,image_url,created_at,views")
+        .eq("seller_id", user!.id)
+        .order("created_at", { ascending: false });
+      return data ?? [];
+    },
+  });
 
   const { data: stats } = useQuery({
     queryKey: ["dashboard-stats", user?.id],
