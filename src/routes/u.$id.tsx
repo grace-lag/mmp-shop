@@ -116,3 +116,13 @@ function UserProfilePage() {
     </SiteLayout>
   );
 }
+
+function tenureLabel(days: number) {
+  if (days < 1) return "Inscrit aujourd'hui";
+  if (days < 30) return `Depuis ${days} jour${days > 1 ? "s" : ""}`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `Depuis ${months} mois`;
+  const years = Math.floor(months / 12);
+  const remM = months % 12;
+  return remM > 0 ? `Depuis ${years} an${years > 1 ? "s" : ""} et ${remM} mois` : `Depuis ${years} an${years > 1 ? "s" : ""}`;
+}
