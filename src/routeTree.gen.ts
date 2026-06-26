@@ -11,10 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RechercheUtilisateurRouteImport } from './routes/recherche-utilisateur'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PosterRouteImport } from './routes/poster'
+import { Route as ParametresSiteRouteImport } from './routes/parametres-site'
 import { Route as ParametresRouteImport } from './routes/parametres'
 import { Route as OptionsRouteImport } from './routes/options'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as MessagesNonLusRouteImport } from './routes/messages-non-lus'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoriqueRouteImport } from './routes/historique'
@@ -25,13 +29,20 @@ import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as ChatRouteImport } from './routes/chat'
 import { Route as CategoriesRouteImport } from './routes/categories'
 import { Route as BoutiqueRouteImport } from './routes/boutique'
+import { Route as ApercuRouteImport } from './routes/apercu'
+import { Route as AnnoncesExpireesRouteImport } from './routes/annonces-expirees'
+import { Route as AnnoncesActivesRouteImport } from './routes/annonces-actives'
 import { Route as AnnoncesRouteImport } from './routes/annonces'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as VendeurIdRouteImport } from './routes/vendeur.$id'
+import { Route as UIdRouteImport } from './routes/u.$id'
+import { Route as TopLikesIdRouteImport } from './routes/top-likes.$id'
+import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
 import { Route as CategoriesHabillementRouteImport } from './routes/categories.habillement'
 import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
+import { Route as AbonnesIdRouteImport } from './routes/abonnes.$id'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -41,6 +52,11 @@ const SignupRoute = SignupRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RechercheUtilisateurRoute = RechercheUtilisateurRouteImport.update({
+  id: '/recherche-utilisateur',
+  path: '/recherche-utilisateur',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -53,6 +69,11 @@ const PosterRoute = PosterRouteImport.update({
   path: '/poster',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ParametresSiteRoute = ParametresSiteRouteImport.update({
+  id: '/parametres-site',
+  path: '/parametres-site',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ParametresRoute = ParametresRouteImport.update({
   id: '/parametres',
   path: '/parametres',
@@ -61,6 +82,16 @@ const ParametresRoute = ParametresRouteImport.update({
 const OptionsRoute = OptionsRouteImport.update({
   id: '/options',
   path: '/options',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesNonLusRoute = MessagesNonLusRouteImport.update({
+  id: '/messages-non-lus',
+  path: '/messages-non-lus',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -113,6 +144,21 @@ const BoutiqueRoute = BoutiqueRouteImport.update({
   path: '/boutique',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApercuRoute = ApercuRouteImport.update({
+  id: '/apercu',
+  path: '/apercu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnoncesExpireesRoute = AnnoncesExpireesRouteImport.update({
+  id: '/annonces-expirees',
+  path: '/annonces-expirees',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnoncesActivesRoute = AnnoncesActivesRouteImport.update({
+  id: '/annonces-actives',
+  path: '/annonces-actives',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AnnoncesRoute = AnnoncesRouteImport.update({
   id: '/annonces',
   path: '/annonces',
@@ -138,6 +184,21 @@ const VendeurIdRoute = VendeurIdRouteImport.update({
   path: '/vendeur/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UIdRoute = UIdRouteImport.update({
+  id: '/u/$id',
+  path: '/u/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TopLikesIdRoute = TopLikesIdRouteImport.update({
+  id: '/top-likes/$id',
+  path: '/top-likes/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvaluationsIdRoute = EvaluationsIdRouteImport.update({
+  id: '/evaluations/$id',
+  path: '/evaluations/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoriesHabillementRoute = CategoriesHabillementRouteImport.update({
   id: '/habillement',
   path: '/habillement',
@@ -148,11 +209,19 @@ const AnnonceIdRoute = AnnonceIdRouteImport.update({
   path: '/annonce/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AbonnesIdRoute = AbonnesIdRouteImport.update({
+  id: '/abonnes/$id',
+  path: '/abonnes/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/annonces': typeof AnnoncesRoute
+  '/annonces-actives': typeof AnnoncesActivesRoute
+  '/annonces-expirees': typeof AnnoncesExpireesRoute
+  '/apercu': typeof ApercuRoute
   '/boutique': typeof BoutiqueRoute
   '/categories': typeof CategoriesRouteWithChildren
   '/chat': typeof ChatRoute
@@ -163,14 +232,22 @@ export interface FileRoutesByFullPath {
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/messages-non-lus': typeof MessagesNonLusRoute
+  '/notifications': typeof NotificationsRoute
   '/options': typeof OptionsRoute
   '/parametres': typeof ParametresRoute
+  '/parametres-site': typeof ParametresSiteRoute
   '/poster': typeof PosterRoute
   '/privacy': typeof PrivacyRoute
+  '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
+  '/evaluations/$id': typeof EvaluationsIdRoute
+  '/top-likes/$id': typeof TopLikesIdRoute
+  '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
   '/categories/': typeof CategoriesIndexRoute
 }
@@ -178,6 +255,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/annonces': typeof AnnoncesRoute
+  '/annonces-actives': typeof AnnoncesActivesRoute
+  '/annonces-expirees': typeof AnnoncesExpireesRoute
+  '/apercu': typeof ApercuRoute
   '/boutique': typeof BoutiqueRoute
   '/chat': typeof ChatRoute
   '/complete-profile': typeof CompleteProfileRoute
@@ -187,14 +267,22 @@ export interface FileRoutesByTo {
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/messages-non-lus': typeof MessagesNonLusRoute
+  '/notifications': typeof NotificationsRoute
   '/options': typeof OptionsRoute
   '/parametres': typeof ParametresRoute
+  '/parametres-site': typeof ParametresSiteRoute
   '/poster': typeof PosterRoute
   '/privacy': typeof PrivacyRoute
+  '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
+  '/evaluations/$id': typeof EvaluationsIdRoute
+  '/top-likes/$id': typeof TopLikesIdRoute
+  '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
   '/categories': typeof CategoriesIndexRoute
 }
@@ -203,6 +291,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/annonces': typeof AnnoncesRoute
+  '/annonces-actives': typeof AnnoncesActivesRoute
+  '/annonces-expirees': typeof AnnoncesExpireesRoute
+  '/apercu': typeof ApercuRoute
   '/boutique': typeof BoutiqueRoute
   '/categories': typeof CategoriesRouteWithChildren
   '/chat': typeof ChatRoute
@@ -213,14 +304,22 @@ export interface FileRoutesById {
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/messages-non-lus': typeof MessagesNonLusRoute
+  '/notifications': typeof NotificationsRoute
   '/options': typeof OptionsRoute
   '/parametres': typeof ParametresRoute
+  '/parametres-site': typeof ParametresSiteRoute
   '/poster': typeof PosterRoute
   '/privacy': typeof PrivacyRoute
+  '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
   '/signup': typeof SignupRoute
+  '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
+  '/evaluations/$id': typeof EvaluationsIdRoute
+  '/top-likes/$id': typeof TopLikesIdRoute
+  '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
   '/categories/': typeof CategoriesIndexRoute
 }
@@ -230,6 +329,9 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/annonces'
+    | '/annonces-actives'
+    | '/annonces-expirees'
+    | '/apercu'
     | '/boutique'
     | '/categories'
     | '/chat'
@@ -240,14 +342,22 @@ export interface FileRouteTypes {
     | '/historique'
     | '/login'
     | '/mentions-legales'
+    | '/messages-non-lus'
+    | '/notifications'
     | '/options'
     | '/parametres'
+    | '/parametres-site'
     | '/poster'
     | '/privacy'
+    | '/recherche-utilisateur'
     | '/reset-password'
     | '/signup'
+    | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
+    | '/evaluations/$id'
+    | '/top-likes/$id'
+    | '/u/$id'
     | '/vendeur/$id'
     | '/categories/'
   fileRoutesByTo: FileRoutesByTo
@@ -255,6 +365,9 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/annonces'
+    | '/annonces-actives'
+    | '/annonces-expirees'
+    | '/apercu'
     | '/boutique'
     | '/chat'
     | '/complete-profile'
@@ -264,14 +377,22 @@ export interface FileRouteTypes {
     | '/historique'
     | '/login'
     | '/mentions-legales'
+    | '/messages-non-lus'
+    | '/notifications'
     | '/options'
     | '/parametres'
+    | '/parametres-site'
     | '/poster'
     | '/privacy'
+    | '/recherche-utilisateur'
     | '/reset-password'
     | '/signup'
+    | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
+    | '/evaluations/$id'
+    | '/top-likes/$id'
+    | '/u/$id'
     | '/vendeur/$id'
     | '/categories'
   id:
@@ -279,6 +400,9 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/annonces'
+    | '/annonces-actives'
+    | '/annonces-expirees'
+    | '/apercu'
     | '/boutique'
     | '/categories'
     | '/chat'
@@ -289,14 +413,22 @@ export interface FileRouteTypes {
     | '/historique'
     | '/login'
     | '/mentions-legales'
+    | '/messages-non-lus'
+    | '/notifications'
     | '/options'
     | '/parametres'
+    | '/parametres-site'
     | '/poster'
     | '/privacy'
+    | '/recherche-utilisateur'
     | '/reset-password'
     | '/signup'
+    | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
+    | '/evaluations/$id'
+    | '/top-likes/$id'
+    | '/u/$id'
     | '/vendeur/$id'
     | '/categories/'
   fileRoutesById: FileRoutesById
@@ -305,6 +437,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AnnoncesRoute: typeof AnnoncesRoute
+  AnnoncesActivesRoute: typeof AnnoncesActivesRoute
+  AnnoncesExpireesRoute: typeof AnnoncesExpireesRoute
+  ApercuRoute: typeof ApercuRoute
   BoutiqueRoute: typeof BoutiqueRoute
   CategoriesRoute: typeof CategoriesRouteWithChildren
   ChatRoute: typeof ChatRoute
@@ -315,13 +450,21 @@ export interface RootRouteChildren {
   HistoriqueRoute: typeof HistoriqueRoute
   LoginRoute: typeof LoginRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  MessagesNonLusRoute: typeof MessagesNonLusRoute
+  NotificationsRoute: typeof NotificationsRoute
   OptionsRoute: typeof OptionsRoute
   ParametresRoute: typeof ParametresRoute
+  ParametresSiteRoute: typeof ParametresSiteRoute
   PosterRoute: typeof PosterRoute
   PrivacyRoute: typeof PrivacyRoute
+  RechercheUtilisateurRoute: typeof RechercheUtilisateurRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   SignupRoute: typeof SignupRoute
+  AbonnesIdRoute: typeof AbonnesIdRoute
   AnnonceIdRoute: typeof AnnonceIdRoute
+  EvaluationsIdRoute: typeof EvaluationsIdRoute
+  TopLikesIdRoute: typeof TopLikesIdRoute
+  UIdRoute: typeof UIdRoute
   VendeurIdRoute: typeof VendeurIdRoute
 }
 
@@ -341,6 +484,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recherche-utilisateur': {
+      id: '/recherche-utilisateur'
+      path: '/recherche-utilisateur'
+      fullPath: '/recherche-utilisateur'
+      preLoaderRoute: typeof RechercheUtilisateurRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -355,6 +505,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PosterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/parametres-site': {
+      id: '/parametres-site'
+      path: '/parametres-site'
+      fullPath: '/parametres-site'
+      preLoaderRoute: typeof ParametresSiteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/parametres': {
       id: '/parametres'
       path: '/parametres'
@@ -367,6 +524,20 @@ declare module '@tanstack/react-router' {
       path: '/options'
       fullPath: '/options'
       preLoaderRoute: typeof OptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages-non-lus': {
+      id: '/messages-non-lus'
+      path: '/messages-non-lus'
+      fullPath: '/messages-non-lus'
+      preLoaderRoute: typeof MessagesNonLusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentions-legales': {
@@ -439,6 +610,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BoutiqueRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/apercu': {
+      id: '/apercu'
+      path: '/apercu'
+      fullPath: '/apercu'
+      preLoaderRoute: typeof ApercuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/annonces-expirees': {
+      id: '/annonces-expirees'
+      path: '/annonces-expirees'
+      fullPath: '/annonces-expirees'
+      preLoaderRoute: typeof AnnoncesExpireesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/annonces-actives': {
+      id: '/annonces-actives'
+      path: '/annonces-actives'
+      fullPath: '/annonces-actives'
+      preLoaderRoute: typeof AnnoncesActivesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/annonces': {
       id: '/annonces'
       path: '/annonces'
@@ -474,6 +666,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VendeurIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/u/$id': {
+      id: '/u/$id'
+      path: '/u/$id'
+      fullPath: '/u/$id'
+      preLoaderRoute: typeof UIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/top-likes/$id': {
+      id: '/top-likes/$id'
+      path: '/top-likes/$id'
+      fullPath: '/top-likes/$id'
+      preLoaderRoute: typeof TopLikesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evaluations/$id': {
+      id: '/evaluations/$id'
+      path: '/evaluations/$id'
+      fullPath: '/evaluations/$id'
+      preLoaderRoute: typeof EvaluationsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/categories/habillement': {
       id: '/categories/habillement'
       path: '/habillement'
@@ -486,6 +699,13 @@ declare module '@tanstack/react-router' {
       path: '/annonce/$id'
       fullPath: '/annonce/$id'
       preLoaderRoute: typeof AnnonceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/abonnes/$id': {
+      id: '/abonnes/$id'
+      path: '/abonnes/$id'
+      fullPath: '/abonnes/$id'
+      preLoaderRoute: typeof AbonnesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -509,6 +729,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AnnoncesRoute: AnnoncesRoute,
+  AnnoncesActivesRoute: AnnoncesActivesRoute,
+  AnnoncesExpireesRoute: AnnoncesExpireesRoute,
+  ApercuRoute: ApercuRoute,
   BoutiqueRoute: BoutiqueRoute,
   CategoriesRoute: CategoriesRouteWithChildren,
   ChatRoute: ChatRoute,
@@ -519,25 +742,23 @@ const rootRouteChildren: RootRouteChildren = {
   HistoriqueRoute: HistoriqueRoute,
   LoginRoute: LoginRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  MessagesNonLusRoute: MessagesNonLusRoute,
+  NotificationsRoute: NotificationsRoute,
   OptionsRoute: OptionsRoute,
   ParametresRoute: ParametresRoute,
+  ParametresSiteRoute: ParametresSiteRoute,
   PosterRoute: PosterRoute,
   PrivacyRoute: PrivacyRoute,
+  RechercheUtilisateurRoute: RechercheUtilisateurRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   SignupRoute: SignupRoute,
+  AbonnesIdRoute: AbonnesIdRoute,
   AnnonceIdRoute: AnnonceIdRoute,
+  EvaluationsIdRoute: EvaluationsIdRoute,
+  TopLikesIdRoute: TopLikesIdRoute,
+  UIdRoute: UIdRoute,
   VendeurIdRoute: VendeurIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

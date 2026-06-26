@@ -122,6 +122,7 @@ export type Database = {
           city: string | null
           created_at: string
           description: string | null
+          expires_at: string
           id: string
           image_url: string | null
           images: string[]
@@ -140,6 +141,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           description?: string | null
+          expires_at?: string
           id?: string
           image_url?: string | null
           images?: string[]
@@ -158,6 +160,7 @@ export type Database = {
           city?: string | null
           created_at?: string
           description?: string | null
+          expires_at?: string
           id?: string
           image_url?: string | null
           images?: string[]
@@ -295,6 +298,7 @@ export type Database = {
           email: string | null
           genre: string | null
           id: string
+          last_seen_at: string | null
           nom: string | null
           prenom: string | null
           tel: string | null
@@ -308,6 +312,7 @@ export type Database = {
           email?: string | null
           genre?: string | null
           id: string
+          last_seen_at?: string | null
           nom?: string | null
           prenom?: string | null
           tel?: string | null
@@ -321,6 +326,7 @@ export type Database = {
           email?: string | null
           genre?: string | null
           id?: string
+          last_seen_at?: string | null
           nom?: string | null
           prenom?: string | null
           tel?: string | null
@@ -411,6 +417,8 @@ export type Database = {
         Args: { _id: string; _session_id?: string }
         Returns: undefined
       }
+      renew_annonce: { Args: { _id: string }; Returns: undefined }
+      touch_last_seen: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "user"

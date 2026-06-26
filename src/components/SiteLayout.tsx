@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import logoUrl from "@/assets/logo-marketplace.jpeg";
 
-export function SiteLayout({ children, activeNav }: { children: ReactNode; activeNav?: string }) {
+export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { children: ReactNode; activeNav?: string; hideHeader?: boolean; hideFooter?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
   const path = useRouterState({ select: (s) => s.location.pathname });
@@ -46,8 +46,9 @@ export function SiteLayout({ children, activeNav }: { children: ReactNode; activ
 
   return (
     <>
-      <div className="delivery-promo">Acheter congolais, vendre congolais, grandir congolais</div>
-      <div className="page">
+      {!hideHeader && <div className="delivery-promo">Acheter congolais, vendre congolais, grandir congolais</div>}
+      <div className="page" style={hideHeader ? { paddingTop: 0 } : undefined}>
+        {!hideHeader && (
         <section className="top-bar">
           <button
             className="options-icon"
@@ -78,6 +79,7 @@ export function SiteLayout({ children, activeNav }: { children: ReactNode; activ
           </Link>
 
         </section>
+        )}
 
         {menuOpen && (
           <>
@@ -151,6 +153,7 @@ export function SiteLayout({ children, activeNav }: { children: ReactNode; activ
         </Link>
       </nav>
 
+      {!hideFooter && (
       <footer>
         <div className="footer-content">
           <div className="footer-section">
@@ -187,6 +190,7 @@ export function SiteLayout({ children, activeNav }: { children: ReactNode; activ
           <p>&copy; 2026 MaMarketplace. Tous droits réservés. | Créé avec ❤️ au Congo</p>
         </div>
       </footer>
+      )}
     </>
   );
 }

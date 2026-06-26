@@ -59,16 +59,36 @@ export function formatPrice(p: number) {
 
 const PUBLIC_COLS = "id,title,description,price,city,category,subcategory,seller_id,seller_name,image_url,images,views,likes_count,created_at";
 
-export async function listAnnonces(opts?: { search?: string; city?: string; category?: string; subcategory?: string; limit?: number }) {
-  let q = supabase.from("annonces").select(PUBLIC_COLS).order("created_at", { ascending: false });
+export async function listAnnonces(opts?: { search?: string; city?: string; category?: string; subcategory?: string; limit?: number; excludeUserId?: string | null; includeExpired?: boolean }) {
+  let q = supabase.from("annonces").select(PUBLIC_COLS + ",expires_at,seller_id").order("created_at", { ascending: false });
   if (opts?.search) q = q.ilike("title", `%${opts.search}%`);
   if (opts?.city && opts.city !== "Tout Congo") q = q.eq("city", opts.city);
   if (opts?.category) q = q.eq("category", opts.category);
   if (opts?.subcategory) q = q.eq("subcategory", opts.subcategory);
+  if (opts?.excludeUserId) q = q.neq("seller_id", opts.excludeUserId);
+  if (!opts?.includeExpired) q = q.gt("expires_at", new Date().toISOString());
   if (opts?.limit) q = q.limit(opts.limit);
   const { data, error } = await q;
   if (error) throw error;
-  return (data ?? []) as Annonce[];
+  return (data ?? []) as unknown as Annonce[];
+}
+
+export async function renewAnnonce(id: string) {
+  const { error } = await supabase.rpc("renew_annonce", { _id: id });
+  if (error) throw error;
+}
+
+export async function listMyAnnonces(userId: string, opts?: { expired?: boolean }) {
+  let q = supabase
+    .from("annonces")
+    .select(PUBLIC_COLS + ",expires_at,seller_id")
+    .eq("seller_id", userId)
+    .order("created_at", { ascending: false });
+  if (opts?.expired === true) q = q.lte("expires_at", new Date().toISOString());
+  if (opts?.expired === false) q = q.gt("expires_at", new Date().toISOString());
+  const { data, error } = await q;
+  if (error) throw error;
+  return (data ?? []) as unknown as (Annonce & { expires_at: string })[];
 }
 
 export async function getAnnonce(id: string) {

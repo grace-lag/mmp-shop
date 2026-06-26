@@ -2,11 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { formatPrice, listAnnonces } from "@/lib/annonces";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 export const Route = createFileRoute("/boutique")({ component: BoutiquePage });
 
 function BoutiquePage() {
-  const { data } = useQuery({ queryKey: ["annonces", "all"], queryFn: () => listAnnonces() });
+  const { user } = useAuth();
+  const { data } = useQuery({ queryKey: ["annonces", "all", user?.id ?? "anon"], queryFn: () => listAnnonces({ excludeUserId: user?.id ?? null }) });
   return (
     <SiteLayout>
       <section className="store-banner">
