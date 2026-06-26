@@ -18,7 +18,7 @@ function ComptePage() {
 
   useEffect(() => {
     if (!user) return;
-    (supabase as any).from("profiles").select("nom,prenom,tel,date_naissance,avatar_url").eq("id", user.id).maybeSingle()
+    (supabase as any).from("profiles").select("nom,prenom,tel,date_naissance,avatar_url,created_at").eq("id", user.id).maybeSingle()
       .then(({ data }: any) => {
         setProfile(data ?? null);
         if (!data?.nom || !data?.prenom || !data?.tel || !data?.date_naissance || !data?.avatar_url) {
