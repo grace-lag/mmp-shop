@@ -30,6 +30,7 @@ export const Route = createFileRoute("/")({
 function Index() {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("Brazzaville");
+  const [adIndex, setAdIndex] = useState(0);
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: annonces } = useQuery({
@@ -37,8 +38,52 @@ function Index() {
     queryFn: () => listAnnonces({ limit: 9, excludeUserId: user?.id ?? null }),
   });
 
+  useEffect(() => {
+    const t = setInterval(() => setAdIndex((i) => (i + 1) % ADS.length), 3000);
+    return () => clearInterval(t);
+  }, []);
+
   return (
     <SiteLayout activeNav="accueil">
+      {/* Bouton rechercher une personne pour chatter */}
+      <Link
+        to="/recherche-utilisateur"
+        style={{
+          display: "flex", alignItems: "center", gap: 10, background: "#fff",
+          border: "1px solid #fed7aa", borderRadius: 999, padding: "10px 16px",
+          textDecoration: "none", color: "#0f172a", margin: "12px 0",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+        }}
+      >
+        <Search size={18} color="#ea580c" />
+        <span style={{ fontWeight: 600 }}>Rechercher une personne pour chatter</span>
+      </Link>
+
+      {/* Carrousel publicitaire */}
+      <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", aspectRatio: "5/2", background: "#0f172a", marginBottom: 12 }}>
+        {ADS.map((ad, i) => (
+          <img
+            key={ad.src}
+            src={ad.src}
+            alt={ad.caption}
+            loading="lazy"
+            style={{
+              position: "absolute", inset: 0, width: "100%", height: "100%",
+              objectFit: "cover", opacity: i === adIndex ? 1 : 0,
+              transition: "opacity 700ms ease-in-out",
+            }}
+          />
+        ))}
+        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "10px 14px", background: "linear-gradient(to top, rgba(0,0,0,0.65), transparent)", color: "#fff", fontWeight: 600, fontSize: "0.9rem" }}>
+          {ADS[adIndex].caption}
+        </div>
+        <div style={{ position: "absolute", bottom: 6, right: 10, display: "flex", gap: 4 }}>
+          {ADS.map((_, i) => (
+            <span key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: i === adIndex ? "#fff" : "rgba(255,255,255,0.4)" }} />
+          ))}
+        </div>
+      </div>
+
       <section
         className="hero-search"
         style={{
