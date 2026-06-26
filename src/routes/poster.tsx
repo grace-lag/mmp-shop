@@ -109,8 +109,8 @@ function PosterPage() {
             {subs.map((s) => <option key={s}>{s}</option>)}
           </select>
         )}
-        <input className="search-input" placeholder="Téléphone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-        <input className="search-input" placeholder="WhatsApp" value={form.whatsapp} onChange={(e) => setForm({ ...form, whatsapp: e.target.value })} />
+        <PhoneInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="Téléphone" />
+        <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="WhatsApp" />
 
         <div>
           <label style={{ fontWeight: 600, display: "block", marginBottom: 8 }}>
