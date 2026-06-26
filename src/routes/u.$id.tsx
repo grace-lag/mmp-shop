@@ -82,7 +82,7 @@ function UserProfilePage() {
       </div>
 
       <div style={{ color: "#64748b", fontSize: "0.85rem", marginTop: 10 }}>
-        🗓️ Sur la plateforme depuis {days} jour{days > 1 ? "s" : ""}<br />
+        🗓️ {tenureLabel(days)} sur MaMarketplace E-shop<br />
         {lastSeenLabel(profile?.last_seen_at)}
       </div>
 
