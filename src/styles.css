@@ -139,8 +139,20 @@
   }
 
   body {
-    background-color: #fde4c4;
+    background-color: #d4d4d4;
     color: var(--color-foreground);
+  }
+
+  /* Brand block in orange top-bar: stack & center "E-Shop" under "MaMarketplace" */
+  .top-bar .brand-logo { gap: 10px; }
+  .top-bar .brand-logo > div { text-align: center; line-height: 1.05; }
+  .top-bar .brand-logo .brand-name { display: block; }
+  .top-bar .brand-logo .brand-name:last-child { font-size: 0.78em; opacity: 0.95; }
+
+  /* Search bar compact on portrait phones */
+  @media (max-width: 520px) {
+    .search-icon-only { width: 44px !important; min-width: 44px; padding: 0 !important; }
+    .search-icon-only .search-label { display: none; }
   }
 }
 
