@@ -139,7 +139,7 @@
   }
 
   body {
-    background-color: var(--color-background);
+    background-color: #fde4c4;
     color: var(--color-foreground);
   }
 }

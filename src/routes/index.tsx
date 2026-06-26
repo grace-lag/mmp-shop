@@ -4,6 +4,7 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { CITIES, formatPrice, listAnnonces } from "@/lib/annonces";
 import { AnnonceStats } from "@/components/AnnonceStats";
+import { useAuth } from "@/lib/auth/AuthProvider";
 import heroBg from "@/assets/mamarketplace-eshop-hero.jpg";
 
 export const Route = createFileRoute("/")({
@@ -20,9 +21,10 @@ function Index() {
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("Brazzaville");
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: annonces } = useQuery({
-    queryKey: ["annonces", "tendance"],
-    queryFn: () => listAnnonces({ limit: 9 }),
+    queryKey: ["annonces", "tendance", user?.id ?? "anon"],
+    queryFn: () => listAnnonces({ limit: 9, excludeUserId: user?.id ?? null }),
   });
 
   return (
