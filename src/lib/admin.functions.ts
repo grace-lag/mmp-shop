@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { deleteUserAccountData } from "@/lib/auth.functions";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -74,6 +73,7 @@ export const adminDeleteAnnonce = createServerFn({ method: "POST" })
     }
     if (!roleRow) throw new Error("Forbidden");
     if (data.userId === userId) throw new Error("Impossible de supprimer votre propre compte depuis l'administration.");
+    const { deleteUserAccountData } = await import("@/lib/account-delete.server");
     await deleteUserAccountData(data.userId);
     return { ok: true };
   });
