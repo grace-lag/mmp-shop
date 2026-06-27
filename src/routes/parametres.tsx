@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { PasswordInput } from "@/components/PasswordInput";
@@ -6,6 +7,7 @@ import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadAvatar } from "@/lib/annonces";
 import { PhoneInput } from "@/components/PhoneInput";
+import { deleteOwnAccount } from "@/lib/auth.functions";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/parametres")({ component: ParametresPage });
@@ -24,6 +26,8 @@ function ParametresPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
+  const deleteAccount = useServerFn(deleteOwnAccount);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
   useEffect(() => {
@@ -136,6 +140,24 @@ function ParametresPage() {
 
   const currentAvatar = preview ?? form.avatar_url;
 
+  const removeAccount = async () => {
+    const ok = confirm("Supprimer définitivement votre compte, votre profil, vos annonces et vos messages ? Cette action est irréversible.");
+    if (!ok) return;
+    const typed = prompt("Pour confirmer, écrivez SUPPRIMER");
+    if (typed !== "SUPPRIMER") return toast.info("Suppression annulée.");
+    setDeletingAccount(true);
+    try {
+      await deleteAccount();
+      await supabase.auth.signOut();
+      toast.success("Compte supprimé");
+      navigate({ to: "/" });
+    } catch (err: any) {
+      toast.error(err?.message ?? "Échec de suppression du compte");
+    } finally {
+      setDeletingAccount(false);
+    }
+  };
+
   return (
     <SiteLayout>
       <h1 style={{ marginTop: 16 }}>Paramètres</h1>
@@ -198,6 +220,14 @@ function ParametresPage() {
         <PasswordInput placeholder="Confirmer le nouveau mot de passe" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} minLength={6} required />
         <button className="btn-whatsapp" disabled={savingPassword}>{savingPassword ? "..." : "Changer le mot de passe"}</button>
       </form>
+
+      <section style={{ display: "grid", gap: 10, maxWidth: 500, marginTop: 34, marginBottom: 24, padding: 14, background: "#fff", border: "1px solid #fecaca", borderRadius: 12 }}>
+        <h2 style={{ margin: 0, color: "#991b1b" }}>Supprimer le compte</h2>
+        <p style={{ margin: 0, color: "#64748b" }}>Cette action supprime définitivement votre profil, vos annonces et vos données liées.</p>
+        <button type="button" onClick={removeAccount} disabled={deletingAccount} style={{ background: "#dc2626", color: "#fff", border: 0, borderRadius: 8, padding: "12px 14px", fontWeight: 700, cursor: "pointer" }}>
+          {deletingAccount ? "Suppression..." : "Supprimer mon compte"}
+        </button>
+      </section>
     </SiteLayout>
   );
 }

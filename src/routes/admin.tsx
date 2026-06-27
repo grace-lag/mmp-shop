@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -33,8 +33,8 @@ function AdminPage() {
   });
 
   const del = useMutation({
-    mutationFn: (id: string) => deleteFn({ data: { id } }),
-    onSuccess: () => { toast.success("Supprimée"); qc.invalidateQueries({ queryKey: ["admin-annonces"] }); },
+    mutationFn: (userId: string) => deleteFn({ data: { userId } }),
+    onSuccess: () => { toast.success("Compte supprimé"); qc.invalidateQueries({ queryKey: ["admin-annonces"] }); },
     onError: (e: any) => toast.error(e.message),
   });
 
@@ -42,62 +42,38 @@ function AdminPage() {
   if (isLoading) return <SiteLayout><p>Chargement...</p></SiteLayout>;
   if (error) return <SiteLayout><h1>Accès refusé</h1><p>Cette page est réservée aux administrateurs.</p></SiteLayout>;
 
-  const annonces = data?.annonces ?? [];
+  const sellers = data?.annonces ?? [];
 
   return (
     <SiteLayout>
       <h1 style={{ marginTop: 16 }}>Administration</h1>
-      <h2>Annonces ({annonces.length})</h2>
-      <div style={{ overflowX: "auto", border: "1px solid #e5e7eb", borderRadius: 8 }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.88rem", background: "white" }}>
-          <thead style={{ background: "#f8fafc" }}>
-            <tr style={{ textAlign: "left" }}>
-              <th style={{ padding: 10 }}>Vendeur</th>
-              <th style={{ padding: 10 }}>Annonce</th>
-              <th style={{ padding: 10 }}>Prix</th>
-              <th style={{ padding: 10 }}>Ville</th>
-              <th style={{ padding: 10 }}>Publiée le</th>
-              <th style={{ padding: 10 }}>Compte créé le</th>
-              <th style={{ padding: 10 }}></th>
-            </tr>
-          </thead>
-          <tbody>
-            {annonces.map((a: any) => {
-              const s = a.seller;
-              const name = s ? [s.prenom, s.nom].filter(Boolean).join(" ").trim() || s.email || "—" : "—";
-              return (
-                <tr key={a.id} style={{ borderTop: "1px solid #e5e7eb", verticalAlign: "middle" }}>
-                  <td style={{ padding: 10 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b", fontSize: "0.85rem" }}>
-                        {s?.avatar_url
-                          ? <img src={s.avatar_url} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                          : (name[0]?.toUpperCase() ?? "?")}
-                      </div>
-                      <div style={{ minWidth: 0 }}>
-                        <div style={{ fontWeight: 600 }}>{name}</div>
-                        {s?.email && <div style={{ fontSize: "0.75rem", color: "#64748b" }}>{s.email}</div>}
-                      </div>
-                    </div>
-                  </td>
-                  <td style={{ padding: 10 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      {a.image_url && <img src={a.image_url} alt={a.title} style={{ width: 36, height: 36, borderRadius: 6, objectFit: "cover", flexShrink: 0 }} />}
-                      <span>{a.title}</span>
-                    </div>
-                  </td>
-                  <td style={{ padding: 10 }}>{a.price}</td>
-                  <td style={{ padding: 10 }}>{a.city ?? "—"}</td>
-                  <td style={{ padding: 10, whiteSpace: "nowrap" }}>{fmtDate(a.created_at)}</td>
-                  <td style={{ padding: 10, whiteSpace: "nowrap" }}>{fmtDate(s?.created_at)}</td>
-                  <td style={{ padding: 10 }}>
-                    <button onClick={() => { if (confirm("Supprimer ?")) del.mutate(a.id); }} style={{ color: "#dc2626", background: "none", border: 0, cursor: "pointer" }}>Supprimer</button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+      <h2>Vendeurs ayant publié ({sellers.length})</h2>
+      <div style={{ display: "grid", gap: 10 }}>
+        {sellers.map((row: any) => {
+          const s = row.seller;
+          const name = s ? [s.prenom, s.nom].filter(Boolean).join(" ").trim() || s.email || "Utilisateur" : "Utilisateur";
+          return (
+            <div key={row.seller_id} style={{ display: "flex", alignItems: "center", gap: 12, background: "white", border: "1px solid #e5e7eb", borderRadius: 12, padding: 12 }}>
+              <Link to="/vendeur/$id" params={{ id: row.seller_id }} style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0, color: "inherit", textDecoration: "none" }}>
+                <div style={{ width: 52, height: 52, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b" }}>
+                  {s?.avatar_url ? <img src={s.avatar_url} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (name[0]?.toUpperCase() ?? "?")}
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ fontWeight: 700, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{name}</div>
+                  <div style={{ color: "#64748b", fontSize: "0.82rem" }}>{row.annonces_count} annonce(s) · Dernière publication {fmtDate(row.last_annonce_at)}</div>
+                </div>
+              </Link>
+              <button
+                onClick={() => { if (confirm(`Supprimer définitivement le compte de ${name} et toutes ses données ?`)) del.mutate(row.seller_id); }}
+                disabled={del.isPending}
+                style={{ color: "#fff", background: "#dc2626", border: 0, borderRadius: 8, cursor: "pointer", padding: "9px 12px", fontWeight: 700 }}
+              >
+                Supprimer
+              </button>
+            </div>
+          );
+        })}
+        {sellers.length === 0 && <p style={{ color: "#64748b" }}>Aucun vendeur avec annonce.</p>}
       </div>
     </SiteLayout>
   );

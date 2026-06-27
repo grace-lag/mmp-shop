@@ -33,7 +33,23 @@ export const deleteAnnonceServerFn = createServerFn({ method: "POST" })
     }
     if (!allowed) throw new Error("Forbidden");
 
-    const { error } = await supabase.from("annonces").delete().eq("id", data.id);
-    if (error) throw new Error(error.message);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await deleteAnnonceCascade(data.id, supabaseAdmin);
     return { ok: true };
   });
+
+export async function deleteAnnonceCascade(id: string, adminClient: any) {
+  const cleanups = [
+    adminClient.from("annonce_comments").delete().eq("annonce_id", id),
+    adminClient.from("annonce_likes").delete().eq("annonce_id", id),
+    adminClient.from("annonce_views").delete().eq("annonce_id", id),
+    adminClient.from("favorites").delete().eq("annonce_id", id),
+    adminClient.from("orders").delete().eq("annonce_id", id),
+    adminClient.from("messages").update({ annonce_id: null }).eq("annonce_id", id),
+  ];
+  for (const result of await Promise.all(cleanups)) {
+    if (result.error) throw new Error(result.error.message);
+  }
+  const { error } = await adminClient.from("annonces").delete().eq("id", id);
+  if (error) throw new Error(error.message);
+}

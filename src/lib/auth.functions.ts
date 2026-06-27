@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 // Server-side phone+password sign-in. The caller never receives the email
 // address associated with a phone number — the lookup and the password
@@ -51,4 +52,12 @@ export const signInWithPhone = createServerFn({ method: "POST" })
       access_token: signed.session.access_token,
       refresh_token: signed.session.refresh_token,
     };
+  });
+
+export const deleteOwnAccount = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { deleteUserAccountData } = await import("@/lib/account-delete.server");
+    await deleteUserAccountData(context.userId);
+    return { ok: true };
   });
