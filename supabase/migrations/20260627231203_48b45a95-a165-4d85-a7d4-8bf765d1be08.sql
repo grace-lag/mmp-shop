@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.delete_annonce_cascade(uuid);
