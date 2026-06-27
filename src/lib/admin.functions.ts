@@ -1,5 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { deleteUserAccountData } from "@/lib/auth.functions";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export const getAdminAnnonces = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
@@ -19,7 +22,7 @@ export const getAdminAnnonces = createServerFn({ method: "GET" })
 
     const { data: annonces, error } = await supabase
       .from("annonces")
-      .select("id,title,price,city,seller_id,created_at,image_url")
+      .select("id,seller_id,created_at")
       .order("created_at", { ascending: false });
     if (error) {
       console.error("[admin] list annonces error:", error);
@@ -38,19 +41,23 @@ export const getAdminAnnonces = createServerFn({ method: "GET" })
     const profileMap: Record<string, any> = {};
     for (const p of profiles) profileMap[p.id] = p;
 
-    const enriched = (annonces ?? []).map((a: any) => ({
-      ...a,
-      seller: a.seller_id ? profileMap[a.seller_id] ?? null : null,
-    }));
+    const enriched = sellerIds.map((sellerId) => {
+      const sellerAds = (annonces ?? []).filter((a: any) => a.seller_id === sellerId);
+      return {
+        seller_id: sellerId,
+        seller: profileMap[sellerId] ?? null,
+        annonces_count: sellerAds.length,
+        last_annonce_at: sellerAds[0]?.created_at ?? null,
+      };
+    });
 
     return { isAdmin: true, annonces: enriched };
   });
 
 export const adminDeleteAnnonce = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { id: string }) => {
-    const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!input?.id || !UUID_RE.test(input.id)) throw new Error("Invalid id");
+  .inputValidator((input: { userId: string }) => {
+    if (!input?.userId || !UUID_RE.test(input.userId)) throw new Error("Invalid id");
     return input;
   })
   .handler(async ({ data, context }) => {
@@ -66,10 +73,7 @@ export const adminDeleteAnnonce = createServerFn({ method: "POST" })
       throw new Error("Internal error");
     }
     if (!roleRow) throw new Error("Forbidden");
-    const { error } = await supabase.from("annonces").delete().eq("id", data.id);
-    if (error) {
-      console.error("[admin] delete annonce error:", error);
-      throw new Error("Internal error");
-    }
+    if (data.userId === userId) throw new Error("Impossible de supprimer votre propre compte depuis l'administration.");
+    await deleteUserAccountData(data.userId);
     return { ok: true };
   });
