@@ -44,15 +44,11 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
   });
 
   const menuItems = [
-    { to: "/", icon: "🏠", title: "Accueil", sub: "Page d'accueil" },
-    { to: "/annonces", icon: "📦", title: "Plus d'annonces", sub: "Voir toutes les annonces" },
-    { to: "/categories", icon: "🏷️", title: "Catégories", sub: "Parcourir par catégorie" },
-    { to: "/recherche-utilisateur", icon: "🔎", title: "Rechercher une personne", sub: "Chatter avec quelqu'un" },
-    { to: "/poster", icon: "➕", title: "Poster une annonce", sub: "Vendre un produit" },
+    { to: "/offres-emploi", icon: "💼", title: "Offre d'emploi", sub: "Trouver ou proposer un emploi" },
+    { to: "/social-chat", icon: "🗨️", title: "MaMarketplace Tchat", sub: "Discuter avec la communauté" },
     ...(user
       ? [
           { to: "/compte", icon: "👤", title: "Mon compte", sub: "Profil & tableau de bord" },
-          { to: "/dashboard", icon: "📊", title: "Tableau de bord", sub: "Mes annonces" },
           { to: "/historique", icon: "📋", title: "Historique", sub: "Visites & conversations" },
           { to: "/notifications", icon: "🔔", title: "Notifications", sub: "Boutiques suivies" },
           { to: "/parametres", icon: "⚙️", title: "Paramètres", sub: "Modifier mon profil" },
@@ -62,6 +58,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
           { to: "/signup", icon: "✨", title: "Créer un compte", sub: "Rejoindre MaMarketplace" },
         ]),
     ...(isAdmin ? [{ to: "/admin", icon: "🛡️", title: "Espace admin", sub: "Gestion de la plateforme" }] : []),
+    { to: "/aide", icon: "❓", title: "Aide", sub: "Conseils & assistance" },
     { to: "/conditions", icon: "📜", title: "Conditions", sub: "Mentions et règles" },
   ];
 
@@ -143,9 +140,9 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
           <span className="nav-icon">🏠</span>
           <span className="nav-label">Accueil</span>
         </Link>
-        <Link to="/categories" className={`nav-item ${isActive("categories", "/categories") ? "active" : ""}`}>
-          <span className="nav-icon">🏷️</span>
-          <span className="nav-label">Catégories</span>
+        <Link to="/shorts" className={`nav-item ${isActive("shorts", "/shorts") ? "active" : ""}`}>
+          <span className="nav-icon">🎬</span>
+          <span className="nav-label">Shorts</span>
         </Link>
         <Link to="/poster" className={`nav-item ${isActive("poster", "/poster") ? "active" : ""}`}>
           <span className="nav-icon">➕</span>
