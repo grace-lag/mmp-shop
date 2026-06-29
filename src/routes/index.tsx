@@ -128,42 +128,20 @@ function Index() {
         </div>
       </div>
 
-      <section
-        className="hero-search"
-        style={{
-          backgroundImage: `linear-gradient(rgba(15,23,42,0.08), rgba(15,23,42,0.22)), url(${heroBg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
-          color: "white",
-        }}
-      >
-        <h1 className="sr-only">MaMarketplace E-Shop</h1>
-      </section>
-      <form
-        className="search-container hero-search-form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          navigate({ to: "/annonces", search: { q: search, city } as any });
-        }}
-      >
-        <input
-          type="text"
-          placeholder="Que recherchez-vous ?"
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select className="city-select" value={city} onChange={(e) => setCity(e.target.value)}>
-          {CITIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
-        <button type="submit" className="search-btn search-icon-only" aria-label="Rechercher">
-          <span className="search-label">🔍 </span>
-        </button>
-      </form>
+      {/* Catégories horizontales */}
+      <div className="cat-scroll">
+        {CATEGORIES.filter((c) => c !== "Emplois").map((c) => (
+          <Link
+            key={c}
+            to="/annonces"
+            search={{ q: "", city: "", category: c } as any}
+            className="cat-pill"
+          >
+            <span className="cat-emoji">{CATEGORY_ICONS[c] ?? "🏷️"}</span>
+            <span>{c}</span>
+          </Link>
+        ))}
+      </div>
 
       <section>
         <div className="section-header">
