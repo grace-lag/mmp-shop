@@ -116,8 +116,10 @@ function AnnonceDetail() {
     el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
   };
 
+  const sellerOnline = isOnline((seller as any)?.last_seen_at);
+
   return (
-    <SiteLayout>
+    <SiteLayout hideFooter>
       {/* Seller header at the very top */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, marginBottom: 12 }}>
         <span
@@ -126,13 +128,15 @@ function AnnonceDetail() {
             width: 48, height: 48, borderRadius: "50%", overflow: "hidden",
             border: "1px solid #e2e8f0", background: "#f1f5f9",
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: "#94a3b8",
-            cursor: seller?.avatar_url ? "zoom-in" : "default", flexShrink: 0,
+            cursor: seller?.avatar_url ? "zoom-in" : "default", flexShrink: 0, position: "relative",
           }}
         >
           {seller?.avatar_url ? (
             <img src={seller.avatar_url} alt={sellerLabel} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : "👤"}
+          <span style={{ position: "absolute", bottom: 0, right: 0, width: 12, height: 12, borderRadius: "50%", background: sellerOnline ? "#16a34a" : "#9ca3af", border: "2px solid #fff" }} />
         </span>
+
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 600 }}>{sellerLabel}</div>
           {annonce.seller_id && (
