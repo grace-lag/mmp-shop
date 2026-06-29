@@ -178,7 +178,7 @@ function ChatPage() {
 
   const deleteConversation = async () => {
     if (!confirm("Supprimer toute cette conversation ?")) return;
-    const { error } = await (supabase as any).rpc("delete_conversation", { p_partner: validTo });
+    const { error } = await (supabase as any).rpc("delete_conversation", { _other_user: validTo });
     if (error) return toast.error(error.message);
     toast.success("Conversation supprimée");
     qc.invalidateQueries({ queryKey: ["my-messages"] });
@@ -186,12 +186,42 @@ function ChatPage() {
   };
 
   const archiveConversation = async () => {
-    const { error } = await (supabase as any).rpc("archive_conversation", { p_partner: validTo });
+    const { error } = await (supabase as any).rpc("archive_conversation", { _other_user: validTo });
     if (error) return toast.error(error.message);
     toast.success("Conversation archivée");
     qc.invalidateQueries({ queryKey: ["my-messages"] });
     navigate({ to: "/historique" });
   };
+
+  // Theme customization
+  const [theme, setTheme] = useState<string>(() => {
+    if (typeof window === "undefined") return "default";
+    return localStorage.getItem(`chat-theme-${validTo}`) || "default";
+  });
+  const [showPerso, setShowPerso] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") localStorage.setItem(`chat-theme-${validTo}`, theme);
+  }, [theme, validTo]);
+  const themes: Record<string, { bg: string; mine: string; other: string }> = {
+    default: { bg: "#fafafa", mine: "#e67e22", other: "white" },
+    blue: { bg: "#eff6ff", mine: "#2563eb", other: "white" },
+    green: { bg: "#f0fdf4", mine: "#15803d", other: "white" },
+    dark: { bg: "#1f2937", mine: "#ea580c", other: "#374151" },
+    rose: { bg: "#fff1f2", mine: "#e11d48", other: "white" },
+  };
+  const T = themes[theme] ?? themes.default;
+  const darkTheme = theme === "dark";
+
+  // Close menus on outside click / escape
+  useEffect(() => {
+    if (!openMenuId && !headerMenuOpen && !showPerso) return;
+    const close = () => { setOpenMenuId(null); setHeaderMenuOpen(false); setShowPerso(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    document.addEventListener("click", close);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("click", close); document.removeEventListener("keydown", onKey); };
+  }, [openMenuId, headerMenuOpen, showPerso]);
+
 
   if (!user) return null;
 
