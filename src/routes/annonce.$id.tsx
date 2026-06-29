@@ -10,7 +10,9 @@ import { formatPrice, getAnnonce, incrementViews } from "@/lib/annonces";
 import { deleteAnnonceServerFn } from "@/lib/annonces.functions";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
+import { isOnline } from "@/lib/presence";
 import { toast } from "sonner";
+
 
 
 export const Route = createFileRoute("/annonce/$id")({

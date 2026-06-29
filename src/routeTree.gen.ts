@@ -45,6 +45,7 @@ import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as TopLikesIdRouteImport } from './routes/top-likes.$id'
 import { Route as ModifierAnnonceIdRouteImport } from './routes/modifier-annonce.$id'
 import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
+import { Route as ContactIdRouteImport } from './routes/contact.$id'
 import { Route as CategoriesHabillementRouteImport } from './routes/categories.habillement'
 import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
 import { Route as AbonnesIdRouteImport } from './routes/abonnes.$id'
@@ -229,6 +230,11 @@ const EvaluationsIdRoute = EvaluationsIdRouteImport.update({
   path: '/evaluations/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactIdRoute = ContactIdRouteImport.update({
+  id: '/contact/$id',
+  path: '/contact/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoriesHabillementRoute = CategoriesHabillementRouteImport.update({
   id: '/habillement',
   path: '/habillement',
@@ -279,6 +285,7 @@ export interface FileRoutesByFullPath {
   '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
+  '/contact/$id': typeof ContactIdRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
@@ -319,6 +326,7 @@ export interface FileRoutesByTo {
   '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
+  '/contact/$id': typeof ContactIdRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
@@ -361,6 +369,7 @@ export interface FileRoutesById {
   '/abonnes/$id': typeof AbonnesIdRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
+  '/contact/$id': typeof ContactIdRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
@@ -404,6 +413,7 @@ export interface FileRouteTypes {
     | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
+    | '/contact/$id'
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
     | '/top-likes/$id'
@@ -444,6 +454,7 @@ export interface FileRouteTypes {
     | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
+    | '/contact/$id'
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
     | '/top-likes/$id'
@@ -485,6 +496,7 @@ export interface FileRouteTypes {
     | '/abonnes/$id'
     | '/annonce/$id'
     | '/categories/habillement'
+    | '/contact/$id'
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
     | '/top-likes/$id'
@@ -526,6 +538,7 @@ export interface RootRouteChildren {
   SocialChatRoute: typeof SocialChatRoute
   AbonnesIdRoute: typeof AbonnesIdRoute
   AnnonceIdRoute: typeof AnnonceIdRoute
+  ContactIdRoute: typeof ContactIdRoute
   EvaluationsIdRoute: typeof EvaluationsIdRoute
   ModifierAnnonceIdRoute: typeof ModifierAnnonceIdRoute
   TopLikesIdRoute: typeof TopLikesIdRoute
@@ -787,6 +800,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EvaluationsIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact/$id': {
+      id: '/contact/$id'
+      path: '/contact/$id'
+      fullPath: '/contact/$id'
+      preLoaderRoute: typeof ContactIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/categories/habillement': {
       id: '/categories/habillement'
       path: '/habillement'
@@ -858,6 +878,7 @@ const rootRouteChildren: RootRouteChildren = {
   SocialChatRoute: SocialChatRoute,
   AbonnesIdRoute: AbonnesIdRoute,
   AnnonceIdRoute: AnnonceIdRoute,
+  ContactIdRoute: ContactIdRoute,
   EvaluationsIdRoute: EvaluationsIdRoute,
   ModifierAnnonceIdRoute: ModifierAnnonceIdRoute,
   TopLikesIdRoute: TopLikesIdRoute,
