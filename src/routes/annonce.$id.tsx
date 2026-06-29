@@ -50,12 +50,13 @@ function AnnonceDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("id,prenom,nom,avatar_url")
+        .select("id,prenom,nom,avatar_url,last_seen_at")
         .eq("id", annonce!.seller_id!)
         .maybeSingle();
       return data;
     },
   });
+
 
   // Favorites
 
