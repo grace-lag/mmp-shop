@@ -49,9 +49,16 @@ function Index() {
       <Link
         to="/recherche-utilisateur"
         style={{
-          display: "flex", alignItems: "center", gap: 10, background: "#fff",
-          border: "1px solid #fed7aa", borderRadius: 999, padding: "10px 16px",
-          textDecoration: "none", color: "#0f172a", margin: "12px 0",
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+          background: "#fff",
+          border: "1px solid #fed7aa",
+          borderRadius: 999,
+          padding: "10px 16px",
+          textDecoration: "none",
+          color: "#0f172a",
+          margin: "12px 0",
           boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
         }}
       >
@@ -60,7 +67,16 @@ function Index() {
       </Link>
 
       {/* Carrousel publicitaire */}
-      <div style={{ position: "relative", borderRadius: 14, overflow: "hidden", aspectRatio: "5/2", background: "#0f172a", marginBottom: 12 }}>
+      <div
+        style={{
+          position: "relative",
+          borderRadius: 14,
+          overflow: "hidden",
+          aspectRatio: "5/2",
+          background: "#0f172a",
+          marginBottom: 12,
+        }}
+      >
         {ADS.map((ad, i) => (
           <img
             key={ad.src}
@@ -68,18 +84,42 @@ function Index() {
             alt={ad.caption}
             loading="lazy"
             style={{
-              position: "absolute", inset: 0, width: "100%", height: "100%",
-              objectFit: "cover", opacity: i === adIndex ? 1 : 0,
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              opacity: i === adIndex ? 1 : 0,
               transition: "opacity 700ms ease-in-out",
             }}
           />
         ))}
-        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "10px 14px", background: "linear-gradient(to top, rgba(0,0,0,0.65), transparent)", color: "#fff", fontWeight: 600, fontSize: "0.9rem" }}>
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            padding: "10px 14px",
+            background: "linear-gradient(to top, rgba(0,0,0,0.65), transparent)",
+            color: "#fff",
+            fontWeight: 600,
+            fontSize: "0.9rem",
+          }}
+        >
           {ADS[adIndex].caption}
         </div>
         <div style={{ position: "absolute", bottom: 6, right: 10, display: "flex", gap: 4 }}>
           {ADS.map((_, i) => (
-            <span key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: i === adIndex ? "#fff" : "rgba(255,255,255,0.4)" }} />
+            <span
+              key={i}
+              style={{
+                width: 6,
+                height: 6,
+                borderRadius: "50%",
+                background: i === adIndex ? "#fff" : "rgba(255,255,255,0.4)",
+              }}
+            />
           ))}
         </div>
       </div>
@@ -95,32 +135,38 @@ function Index() {
       >
         <h1 className="sr-only">MaMarketplace E-Shop</h1>
       </section>
-        <form
-          className="search-container hero-search-form"
-          onSubmit={(e) => {
-            e.preventDefault();
-            navigate({ to: "/annonces", search: { q: search, city } as any });
-          }}
-        >
-          <input
-            type="text"
-            placeholder="Que recherchez-vous ?"
-            className="search-input"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <select className="city-select" value={city} onChange={(e) => setCity(e.target.value)}>
-            {CITIES.map((c) => (
-              <option key={c} value={c}>{c}</option>
-            ))}
-          </select>
-          <button type="submit" className="search-btn search-icon-only" aria-label="Rechercher"><span className="search-label">Rechercher </span>🔍</button>
-        </form>
+      <form
+        className="search-container hero-search-form"
+        onSubmit={(e) => {
+          e.preventDefault();
+          navigate({ to: "/annonces", search: { q: search, city } as any });
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Que recherchez-vous ?"
+          className="search-input"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select className="city-select" value={city} onChange={(e) => setCity(e.target.value)}>
+          {CITIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+        <button type="submit" className="search-btn search-icon-only" aria-label="Rechercher">
+          <span className="search-label">🔍 </span>🔍
+        </button>
+      </form>
 
       <section>
         <div className="section-header">
           <h2>Annonces tendance</h2>
-          <Link to="/annonces" className="view-all">Voir tout →</Link>
+          <Link to="/annonces" className="view-all">
+            Voir tout →
+          </Link>
         </div>
         <div className="product-grid">
           {(annonces ?? []).map((a) => (
@@ -130,20 +176,45 @@ function Index() {
                 {a.image_url ? (
                   <img src={a.image_url} alt={a.title} />
                 ) : (
-                  <div style={{ height: 160, background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8 }}>📷</div>
+                  <div
+                    style={{
+                      height: 160,
+                      background: "#f1f5f9",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: 8,
+                    }}
+                  >
+                    📷
+                  </div>
                 )}
               </Link>
               <h3>{a.title}</h3>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
-                <p className="price" style={{ margin: 0 }}>{formatPrice(a.price)}</p>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 8,
+                  flexWrap: "wrap",
+                }}
+              >
+                <p className="price" style={{ margin: 0 }}>
+                  {formatPrice(a.price)}
+                </p>
                 <AnnonceStats annonceId={a.id} views={a.views ?? 0} likes={a.likes_count ?? 0} />
               </div>
 
-              <Link to="/annonce/$id" params={{ id: a.id }} className="btn-whatsapp">Voir l'annonce</Link>
+              <Link to="/annonce/$id" params={{ id: a.id }} className="btn-whatsapp">
+                Voir l'annonce
+              </Link>
             </div>
           ))}
           {annonces && annonces.length === 0 && (
-            <p style={{ color: "#64748b" }}>Aucune annonce pour le moment. <Link to="/poster">Soyez le premier à en publier !</Link></p>
+            <p style={{ color: "#64748b" }}>
+              Aucune annonce pour le moment. <Link to="/poster">Soyez le premier à en publier !</Link>
+            </p>
           )}
         </div>
       </section>
