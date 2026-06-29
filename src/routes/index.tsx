@@ -1,17 +1,18 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
-import { CITIES, formatPrice, listAnnonces } from "@/lib/annonces";
+import { CITIES, CATEGORIES, CATEGORY_ICONS, formatPrice, listAnnonces } from "@/lib/annonces";
+import { shortAge } from "@/lib/time";
 import { AnnonceStats } from "@/components/AnnonceStats";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import heroBg from "@/assets/mamarketplace-eshop-hero.jpg";
 import ad1 from "@/assets/ad-1.jpg";
 import ad2 from "@/assets/ad-2.jpg";
 import ad3 from "@/assets/ad-3.jpg";
+import heroPlatform from "@/assets/mamarketplace-eshop-hero.jpg";
 
 const ADS = [
+  { src: heroPlatform, caption: "MaMarketplace E-Shop : la plateforme N°1 au Congo" },
   { src: ad1, caption: "Achetez tout, partout au Congo" },
   { src: ad2, caption: "Vendre devient simple sur MaMarketplace E-Shop" },
   { src: ad3, caption: "Livraison rapide à Brazzaville et au-delà" },
@@ -45,26 +46,29 @@ function Index() {
 
   return (
     <SiteLayout activeNav="accueil">
-      {/* Bouton rechercher une personne pour chatter */}
-      <Link
-        to="/recherche-utilisateur"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          background: "#fff",
-          border: "1px solid #fed7aa",
-          borderRadius: 999,
-          padding: "10px 16px",
-          textDecoration: "none",
-          color: "#0f172a",
-          margin: "12px 0",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+      {/* Barre de recherche collée sous le bandeau orange */}
+      <form
+        className="search-container"
+        style={{ margin: "0 -16px 12px", borderRadius: 0 }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          navigate({ to: "/annonces", search: { q: search, city } as any });
         }}
       >
-        <Search size={18} color="#ea580c" />
-        <span style={{ fontWeight: 600 }}>Rechercher une personne pour chatter</span>
-      </Link>
+        <input
+          type="text"
+          placeholder="Rechercher une boutique sur ma marketplace"
+          className="search-input"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select className="city-select" value={city} onChange={(e) => setCity(e.target.value)}>
+          {CITIES.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+        <button type="submit" className="search-btn search-icon-only" aria-label="Rechercher">🔍</button>
+      </form>
 
       {/* Carrousel publicitaire */}
       <div
@@ -124,42 +128,20 @@ function Index() {
         </div>
       </div>
 
-      <section
-        className="hero-search"
-        style={{
-          backgroundImage: `linear-gradient(rgba(15,23,42,0.08), rgba(15,23,42,0.22)), url(${heroBg})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center top",
-          color: "white",
-        }}
-      >
-        <h1 className="sr-only">MaMarketplace E-Shop</h1>
-      </section>
-      <form
-        className="search-container hero-search-form"
-        onSubmit={(e) => {
-          e.preventDefault();
-          navigate({ to: "/annonces", search: { q: search, city } as any });
-        }}
-      >
-        <input
-          type="text"
-          placeholder="Que recherchez-vous ?"
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select className="city-select" value={city} onChange={(e) => setCity(e.target.value)}>
-          {CITIES.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
-        <button type="submit" className="search-btn search-icon-only" aria-label="Rechercher">
-          <span className="search-label">🔍 </span>
-        </button>
-      </form>
+      {/* Catégories horizontales */}
+      <div className="cat-scroll">
+        {CATEGORIES.filter((c) => c !== "Emplois").map((c) => (
+          <Link
+            key={c}
+            to="/annonces"
+            search={{ q: "", city: "", category: c } as any}
+            className="cat-pill"
+          >
+            <span className="cat-emoji">{CATEGORY_ICONS[c] ?? "🏷️"}</span>
+            <span>{c}</span>
+          </Link>
+        ))}
+      </div>
 
       <section>
         <div className="section-header">
@@ -171,6 +153,7 @@ function Index() {
         <div className="product-grid">
           {(annonces ?? []).map((a) => (
             <div className="product-card" key={a.id}>
+              <span className="age-badge">{shortAge((a as any).created_at)}</span>
               {a.city && <div className="badge-city">{a.city}</div>}
               <Link to="/annonce/$id" params={{ id: a.id }} className="product-link">
                 {a.image_url ? (

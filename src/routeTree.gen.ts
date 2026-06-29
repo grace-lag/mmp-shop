@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SocialChatRouteImport } from './routes/social-chat'
 import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ShortsRouteImport } from './routes/shorts'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RechercheUtilisateurRouteImport } from './routes/recherche-utilisateur'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -18,6 +19,7 @@ import { Route as PosterRouteImport } from './routes/poster'
 import { Route as ParametresSiteRouteImport } from './routes/parametres-site'
 import { Route as ParametresRouteImport } from './routes/parametres'
 import { Route as OptionsRouteImport } from './routes/options'
+import { Route as OffresEmploiRouteImport } from './routes/offres-emploi'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesNonLusRouteImport } from './routes/messages-non-lus'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
@@ -34,6 +36,7 @@ import { Route as ApercuRouteImport } from './routes/apercu'
 import { Route as AnnoncesExpireesRouteImport } from './routes/annonces-expirees'
 import { Route as AnnoncesActivesRouteImport } from './routes/annonces-actives'
 import { Route as AnnoncesRouteImport } from './routes/annonces'
+import { Route as AideRouteImport } from './routes/aide'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
@@ -54,6 +57,11 @@ const SocialChatRoute = SocialChatRouteImport.update({
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShortsRoute = ShortsRouteImport.update({
+  id: '/shorts',
+  path: '/shorts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -89,6 +97,11 @@ const ParametresRoute = ParametresRouteImport.update({
 const OptionsRoute = OptionsRouteImport.update({
   id: '/options',
   path: '/options',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OffresEmploiRoute = OffresEmploiRouteImport.update({
+  id: '/offres-emploi',
+  path: '/offres-emploi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -171,6 +184,11 @@ const AnnoncesRoute = AnnoncesRouteImport.update({
   path: '/annonces',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AideRoute = AideRouteImport.update({
+  id: '/aide',
+  path: '/aide',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -230,6 +248,7 @@ const AbonnesIdRoute = AbonnesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/aide': typeof AideRoute
   '/annonces': typeof AnnoncesRoute
   '/annonces-actives': typeof AnnoncesActivesRoute
   '/annonces-expirees': typeof AnnoncesExpireesRoute
@@ -246,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/messages-non-lus': typeof MessagesNonLusRoute
   '/notifications': typeof NotificationsRoute
+  '/offres-emploi': typeof OffresEmploiRoute
   '/options': typeof OptionsRoute
   '/parametres': typeof ParametresRoute
   '/parametres-site': typeof ParametresSiteRoute
@@ -253,6 +273,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/shorts': typeof ShortsRoute
   '/signup': typeof SignupRoute
   '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
@@ -268,6 +289,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/aide': typeof AideRoute
   '/annonces': typeof AnnoncesRoute
   '/annonces-actives': typeof AnnoncesActivesRoute
   '/annonces-expirees': typeof AnnoncesExpireesRoute
@@ -283,6 +305,7 @@ export interface FileRoutesByTo {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/messages-non-lus': typeof MessagesNonLusRoute
   '/notifications': typeof NotificationsRoute
+  '/offres-emploi': typeof OffresEmploiRoute
   '/options': typeof OptionsRoute
   '/parametres': typeof ParametresRoute
   '/parametres-site': typeof ParametresSiteRoute
@@ -290,6 +313,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/shorts': typeof ShortsRoute
   '/signup': typeof SignupRoute
   '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
@@ -306,6 +330,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/aide': typeof AideRoute
   '/annonces': typeof AnnoncesRoute
   '/annonces-actives': typeof AnnoncesActivesRoute
   '/annonces-expirees': typeof AnnoncesExpireesRoute
@@ -322,6 +347,7 @@ export interface FileRoutesById {
   '/mentions-legales': typeof MentionsLegalesRoute
   '/messages-non-lus': typeof MessagesNonLusRoute
   '/notifications': typeof NotificationsRoute
+  '/offres-emploi': typeof OffresEmploiRoute
   '/options': typeof OptionsRoute
   '/parametres': typeof ParametresRoute
   '/parametres-site': typeof ParametresSiteRoute
@@ -329,6 +355,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/recherche-utilisateur': typeof RechercheUtilisateurRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/shorts': typeof ShortsRoute
   '/signup': typeof SignupRoute
   '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
@@ -346,6 +373,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/aide'
     | '/annonces'
     | '/annonces-actives'
     | '/annonces-expirees'
@@ -362,6 +390,7 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/messages-non-lus'
     | '/notifications'
+    | '/offres-emploi'
     | '/options'
     | '/parametres'
     | '/parametres-site'
@@ -369,6 +398,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/recherche-utilisateur'
     | '/reset-password'
+    | '/shorts'
     | '/signup'
     | '/social-chat'
     | '/abonnes/$id'
@@ -384,6 +414,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/aide'
     | '/annonces'
     | '/annonces-actives'
     | '/annonces-expirees'
@@ -399,6 +430,7 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/messages-non-lus'
     | '/notifications'
+    | '/offres-emploi'
     | '/options'
     | '/parametres'
     | '/parametres-site'
@@ -406,6 +438,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/recherche-utilisateur'
     | '/reset-password'
+    | '/shorts'
     | '/signup'
     | '/social-chat'
     | '/abonnes/$id'
@@ -421,6 +454,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/aide'
     | '/annonces'
     | '/annonces-actives'
     | '/annonces-expirees'
@@ -437,6 +471,7 @@ export interface FileRouteTypes {
     | '/mentions-legales'
     | '/messages-non-lus'
     | '/notifications'
+    | '/offres-emploi'
     | '/options'
     | '/parametres'
     | '/parametres-site'
@@ -444,6 +479,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/recherche-utilisateur'
     | '/reset-password'
+    | '/shorts'
     | '/signup'
     | '/social-chat'
     | '/abonnes/$id'
@@ -460,6 +496,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  AideRoute: typeof AideRoute
   AnnoncesRoute: typeof AnnoncesRoute
   AnnoncesActivesRoute: typeof AnnoncesActivesRoute
   AnnoncesExpireesRoute: typeof AnnoncesExpireesRoute
@@ -476,6 +513,7 @@ export interface RootRouteChildren {
   MentionsLegalesRoute: typeof MentionsLegalesRoute
   MessagesNonLusRoute: typeof MessagesNonLusRoute
   NotificationsRoute: typeof NotificationsRoute
+  OffresEmploiRoute: typeof OffresEmploiRoute
   OptionsRoute: typeof OptionsRoute
   ParametresRoute: typeof ParametresRoute
   ParametresSiteRoute: typeof ParametresSiteRoute
@@ -483,6 +521,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RechercheUtilisateurRoute: typeof RechercheUtilisateurRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ShortsRoute: typeof ShortsRoute
   SignupRoute: typeof SignupRoute
   SocialChatRoute: typeof SocialChatRoute
   AbonnesIdRoute: typeof AbonnesIdRoute
@@ -508,6 +547,13 @@ declare module '@tanstack/react-router' {
       path: '/signup'
       fullPath: '/signup'
       preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shorts': {
+      id: '/shorts'
+      path: '/shorts'
+      fullPath: '/shorts'
+      preLoaderRoute: typeof ShortsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/reset-password': {
@@ -557,6 +603,13 @@ declare module '@tanstack/react-router' {
       path: '/options'
       fullPath: '/options'
       preLoaderRoute: typeof OptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offres-emploi': {
+      id: '/offres-emploi'
+      path: '/offres-emploi'
+      fullPath: '/offres-emploi'
+      preLoaderRoute: typeof OffresEmploiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/notifications': {
@@ -671,6 +724,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnnoncesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/aide': {
+      id: '/aide'
+      path: '/aide'
+      fullPath: '/aide'
+      preLoaderRoute: typeof AideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -768,6 +828,7 @@ const CategoriesRouteWithChildren = CategoriesRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  AideRoute: AideRoute,
   AnnoncesRoute: AnnoncesRoute,
   AnnoncesActivesRoute: AnnoncesActivesRoute,
   AnnoncesExpireesRoute: AnnoncesExpireesRoute,
@@ -784,6 +845,7 @@ const rootRouteChildren: RootRouteChildren = {
   MentionsLegalesRoute: MentionsLegalesRoute,
   MessagesNonLusRoute: MessagesNonLusRoute,
   NotificationsRoute: NotificationsRoute,
+  OffresEmploiRoute: OffresEmploiRoute,
   OptionsRoute: OptionsRoute,
   ParametresRoute: ParametresRoute,
   ParametresSiteRoute: ParametresSiteRoute,
@@ -791,6 +853,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RechercheUtilisateurRoute: RechercheUtilisateurRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ShortsRoute: ShortsRoute,
   SignupRoute: SignupRoute,
   SocialChatRoute: SocialChatRoute,
   AbonnesIdRoute: AbonnesIdRoute,

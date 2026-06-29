@@ -53,6 +53,27 @@ export const getAdminAnnonces = createServerFn({ method: "GET" })
     return { isAdmin: true, annonces: enriched };
   });
 
+export const getAdminUsers = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabase, userId } = context;
+    const { data: roleRow } = await supabase
+      .from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+    if (!roleRow) throw new Error("Forbidden");
+    const { data: profiles, error } = await supabase
+      .from("profiles")
+      .select("id,prenom,nom,email,avatar_url,tel,created_at")
+      .order("created_at", { ascending: false });
+    if (error) throw new Error("Internal error");
+    const ids = (profiles ?? []).map((p: any) => p.id);
+    let counts: Record<string, number> = {};
+    if (ids.length) {
+      const { data: ads } = await supabase.from("annonces").select("seller_id").in("seller_id", ids);
+      for (const a of (ads ?? []) as any[]) counts[a.seller_id] = (counts[a.seller_id] ?? 0) + 1;
+    }
+    return { users: (profiles ?? []).map((p: any) => ({ ...p, annonces_count: counts[p.id] ?? 0 })) };
+  });
+
 export const adminDeleteAnnonce = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { userId: string }) => {

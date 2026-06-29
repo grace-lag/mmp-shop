@@ -5,11 +5,13 @@ export const Route = createFileRoute("/categories/")({ component: CategoriesList
 
 function CategoriesListPage() {
   const navigate = useNavigate();
+  // Emploi est retiré ici et accessible via le menu hamburger "Offre d'emploi"
+  const cats = CATEGORIES.filter((c) => c !== "Emplois");
   return (
     <>
       <h1 style={{ marginTop: 16 }}>Catégories</h1>
       <div className="product-grid" style={{ marginTop: 16 }}>
-        {CATEGORIES.map((c) => {
+        {cats.map((c) => {
           const isHabillement = c === "Habillement";
           const onClick = () => {
             if (isHabillement) navigate({ to: "/categories/habillement" });

@@ -73,46 +73,44 @@ function DashboardPage() {
       </Link>
 
       <h2 style={{ marginTop: 28, marginBottom: 12 }}>Mes annonces</h2>
-      <div style={{ display: "grid", gap: 10 }}>
-        {(myAds ?? []).map((a: any) => (
-          <div key={a.id} style={{ display: "flex", gap: 12, background: "#fff", borderRadius: 12, padding: 10, border: "1px solid #e5e7eb", alignItems: "center" }}>
-            <Link to="/annonce/$id" params={{ id: a.id }} style={{ flexShrink: 0 }}>
-              <div style={{ width: 64, height: 64, borderRadius: 10, overflow: "hidden", background: "#f1f5f9" }}>
-                {a.image_url && <img src={a.image_url} alt={a.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
-              </div>
-            </Link>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <Link to="/annonce/$id" params={{ id: a.id }} style={{ color: "inherit", textDecoration: "none" }}>
-                <div style={{ fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</div>
+      <div className="product-grid">
+        {(myAds ?? []).map((a: any) => {
+          const expired = a.expires_at && new Date(a.expires_at) <= new Date();
+          return (
+            <div key={a.id} className="product-card" style={{ position: "relative" }}>
+              <span className="age-badge" style={{ background: expired ? "#dc2626" : "rgba(15,23,42,0.78)" }}>{expired ? "Expirée" : "Active"}</span>
+              <Link to="/annonce/$id" params={{ id: a.id }} className="product-link">
+                {a.image_url ? <img src={a.image_url} alt={a.title} /> : (
+                  <div style={{ height: 160, background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8 }}>📷</div>
+                )}
               </Link>
-              <div style={{ color: "#ea580c", fontWeight: 700 }}>{formatPrice(a.price)}</div>
-              <div style={{ color: "#64748b", fontSize: "0.78rem" }}>
-                {new Date(a.created_at).toLocaleDateString("fr-FR")} · {a.views ?? 0} vues · {a.expires_at && new Date(a.expires_at) <= new Date() ? "Expirée" : "Active"}
+              <h3>{a.title}</h3>
+              <p className="price">{formatPrice(a.price)}</p>
+              <div style={{ color: "#64748b", fontSize: "0.78rem", marginBottom: 6 }}>{a.views ?? 0} vues</div>
+              <div style={{ display: "flex", gap: 6 }}>
+                <Link to="/modifier-annonce/$id" params={{ id: a.id }} style={{ flex: 1, background: "#2563eb", color: "#fff", borderRadius: 8, padding: "8px 4px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, textDecoration: "none", fontSize: "0.82rem" }}>
+                  <Pencil size={14} /> Modifier
+                </Link>
+                <button
+                  aria-label="Supprimer"
+                  onClick={async () => {
+                    if (!confirm(`Supprimer l'annonce « ${a.title} » ?`)) return;
+                    try {
+                      await deleteFn({ data: { id: a.id } });
+                      toast.success("Annonce supprimée");
+                      qc.invalidateQueries({ queryKey: ["my-ads-list"] });
+                    } catch (e: any) {
+                      toast.error(e?.message ?? "Échec de suppression");
+                    }
+                  }}
+                  style={{ background: "#dc2626", color: "#fff", borderRadius: 8, padding: "8px 10px", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+                >
+                  <Trash2 size={14} />
+                </button>
               </div>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <Link to="/modifier-annonce/$id" params={{ id: a.id }} aria-label="Modifier" style={{ background: "#2563eb", color: "#fff", borderRadius: 8, padding: 8, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
-                <Pencil size={16} />
-              </Link>
-              <button
-                aria-label="Supprimer"
-                onClick={async () => {
-                  if (!confirm(`Supprimer l'annonce « ${a.title} » ?`)) return;
-                  try {
-                    await deleteFn({ data: { id: a.id } });
-                    toast.success("Annonce supprimée");
-                    qc.invalidateQueries({ queryKey: ["my-ads-list"] });
-                  } catch (e: any) {
-                    toast.error(e?.message ?? "Échec de suppression");
-                  }
-                }}
-                style={{ background: "#dc2626", color: "#fff", borderRadius: 8, padding: 8, border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
         {myAds && myAds.length === 0 && <p style={{ color: "#64748b" }}>Vous n'avez pas encore d'annonce.</p>}
       </div>
     </SiteLayout>

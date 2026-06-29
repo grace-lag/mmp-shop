@@ -139,9 +139,27 @@
   }
 
   body {
-    background-color: #d4d4d4;
+    background-color: #b8b8b8;
     color: var(--color-foreground);
   }
+
+  /* Compact orange bar */
+  .top-bar { padding: 6px 12px !important; min-height: 52px !important; }
+  .top-bar .brand-image { width: 38px !important; height: 38px !important; }
+  .top-bar .brand-name { font-size: 0.95rem; }
+
+  /* Horizontal scrolling categories */
+  .cat-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 8px 4px 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .cat-scroll::-webkit-scrollbar { display: none; }
+  .cat-scroll .cat-pill { scroll-snap-align: start; flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 4px; background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; padding: 10px 14px; min-width: 90px; cursor: pointer; text-decoration: none; color: #0f172a; font-size: 0.78rem; }
+  .cat-scroll .cat-pill .cat-emoji { font-size: 28px; }
+
+  /* Age badge on product cards */
+  .age-badge { position: absolute; top: 8px; right: 8px; background: rgba(15,23,42,0.78); color: #fff; font-size: 0.66rem; font-weight: 700; padding: 3px 7px; border-radius: 999px; z-index: 2; }
+  .product-card { position: relative; }
+
+  /* Online status dot */
+  .online-dot { display: inline-block; width: 10px; height: 10px; background: #22c55e; border: 2px solid #fff; border-radius: 50%; }
 
   /* Brand block in orange top-bar: stack & center "E-Shop" under "MaMarketplace" */
   .top-bar .brand-logo { gap: 10px; }
