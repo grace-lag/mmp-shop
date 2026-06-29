@@ -220,6 +220,93 @@ input.search-input {
   z-index: 2;
 }
 
+/* Home page : shop search bar collée sous le bandeau orange */
+.shop-search-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin: 0 -16px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.shop-search-bar input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  color: #1f2937;
+  background: transparent;
+}
+.shop-search-bar input::placeholder { color: #94a3b8; }
+.shop-search-bar button {
+  border: 0;
+  background: #e67e22;
+  color: #fff;
+  padding: 0 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Home page : product search bar compacte */
+.product-search-bar {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  margin: 12px 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 4px;
+}
+.product-search-bar input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  padding: 8px 10px;
+  font-size: 0.92rem;
+  color: #1f2937;
+  background: transparent;
+}
+.product-search-bar input::placeholder { color: #94a3b8; }
+.product-search-bar select {
+  border: 0;
+  outline: 0;
+  background: #f8fafc;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 0.88rem;
+  color: #1f2937;
+  max-width: 130px;
+}
+.product-search-bar button {
+  border: 0;
+  background: #e67e22;
+  color: #fff;
+  padding: 0 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Catégories texte uniquement (plus pro) */
+.cat-scroll.text-only .cat-pill {
+  min-width: 0;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 999px;
+  background: #fff;
+  color: #1f2937;
+}
+.cat-scroll.text-only .cat-pill .cat-emoji { display: none; }
+
 
 /* Force 5 equal columns so all tabs always show on every screen, including narrow portrait phones */
 .bottom-nav {
