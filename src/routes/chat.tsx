@@ -193,6 +193,8 @@ function ChatPage() {
     navigate({ to: "/historique" });
   };
 
+  if (!user) return null;
+
   const partnerName = [partner?.prenom, partner?.nom].filter(Boolean).join(" ").trim() || "Utilisateur";
 
   if (!validTo) {
@@ -206,14 +208,32 @@ function ChatPage() {
 
   return (
     <SiteLayout activeNav="historique">
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb", position: "relative" }}>
         <Link to="/historique" style={{ textDecoration: "none", color: "#e67e22", fontSize: "1.4rem" }}>←</Link>
         <div style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b" }}>
           {partner?.avatar_url
             ? <img src={partner.avatar_url} alt={partnerName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             : (partnerName[0]?.toUpperCase() ?? "U")}
         </div>
-        <strong>{partnerName}</strong>
+        <strong style={{ flex: 1 }}>{partnerName}</strong>
+        <button
+          type="button"
+          onClick={() => setHeaderMenuOpen((v) => !v)}
+          aria-label="Options"
+          style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 6 }}
+        >
+          <MoreVertical size={20} />
+        </button>
+        {headerMenuOpen && (
+          <div style={{ position: "absolute", top: 48, right: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 200 }}>
+            <button onClick={() => { setHeaderMenuOpen(false); archiveConversation(); }} style={menuItem}>
+              <Archive size={15} /> Archiver la conversation
+            </button>
+            <button onClick={() => { setHeaderMenuOpen(false); deleteConversation(); }} style={{ ...menuItem, color: "#dc2626" }}>
+              <Trash2 size={15} /> Supprimer la conversation
+            </button>
+          </div>
+        )}
       </div>
 
       <div ref={scrollRef} style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, height: 400, overflowY: "auto", marginTop: 12, background: "#fafafa" }}>
