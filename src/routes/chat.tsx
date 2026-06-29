@@ -246,19 +246,30 @@ function ChatPage() {
           return (
             <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", marginBottom: 10 }}>
               <div style={{ display: "flex", alignItems: "flex-start", gap: 6, maxWidth: "85%" }}>
-                {mine && !isEditing && (
-                  <div style={{ display: "flex", gap: 4 }}>
-                    {canEdit && (
-                      <button onClick={() => startEdit(m)} aria-label="Modifier" style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
-                        <Pencil size={14} />
-                      </button>
-                    )}
-                    {!m._optimistic && (now - createdMs) < EDIT_WINDOW_MS && (
-                      <button onClick={() => deleteMsg(m.id)} aria-label="Supprimer" style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", padding: 4 }}>
-                        <Trash2 size={14} />
-                      </button>
+                {mine && !isEditing && !m._optimistic && (
+                  <div style={{ position: "relative" }}>
+                    <button onClick={() => setOpenMenuId(openMenuId === m.id ? null : m.id)} aria-label="Options" style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
+                      <MoreVertical size={16} />
+                    </button>
+                    {openMenuId === m.id && (
+                      <div style={{ position: "absolute", top: 24, right: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 10, minWidth: 170 }}>
+                        {m.content && (
+                          <button onClick={() => copyMsg(m)} style={menuItem}><Copy size={14} /> Copier</button>
+                        )}
+                        {canEdit && (
+                          <button onClick={() => { startEdit(m); setOpenMenuId(null); }} style={menuItem}><Pencil size={14} /> Modifier</button>
+                        )}
+                        {(now - createdMs) < EDIT_WINDOW_MS && (
+                          <button onClick={() => { setOpenMenuId(null); deleteMsg(m.id); }} style={{ ...menuItem, color: "#dc2626" }}><Trash2 size={14} /> Supprimer</button>
+                        )}
+                      </div>
                     )}
                   </div>
+                )}
+                {!mine && !isEditing && m.content && (
+                  <button onClick={() => copyMsg(m)} aria-label="Copier" style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", padding: 4, order: 2 }}>
+                    <Copy size={14} />
+                  </button>
                 )}
                 {isEditing ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
