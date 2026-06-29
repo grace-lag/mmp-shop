@@ -334,3 +334,8 @@ function ChatPage() {
     </SiteLayout>
   );
 }
+
+const menuItem: React.CSSProperties = {
+  display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "10px 14px",
+  background: "none", border: "none", textAlign: "left", cursor: "pointer", fontSize: 14, color: "#0f172a",
+};
