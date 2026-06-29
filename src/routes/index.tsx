@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { Search } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
-import { CITIES, CATEGORIES, CATEGORY_ICONS, formatPrice, listAnnonces } from "@/lib/annonces";
+import { CITIES, CATEGORIES, formatPrice, listAnnonces } from "@/lib/annonces";
 import { shortAge } from "@/lib/time";
 import { AnnonceStats } from "@/components/AnnonceStats";
 import { useAuth } from "@/lib/auth/AuthProvider";
@@ -29,7 +30,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const [search, setSearch] = useState("");
+  const [shopSearch, setShopSearch] = useState("");
+  const [productSearch, setProductSearch] = useState("");
   const [city, setCity] = useState("Brazzaville");
   const [adIndex, setAdIndex] = useState(0);
   const navigate = useNavigate();
@@ -46,28 +48,23 @@ function Index() {
 
   return (
     <SiteLayout activeNav="accueil">
-      {/* Barre de recherche collée sous le bandeau orange */}
+      {/* Barre 1 : recherche de boutique, collée sous le bandeau orange */}
       <form
-        className="search-container"
-        style={{ margin: "0 -16px 12px", borderRadius: 0 }}
+        className="shop-search-bar"
         onSubmit={(e) => {
           e.preventDefault();
-          navigate({ to: "/annonces", search: { q: search, city } as any });
+          navigate({ to: "/recherche-utilisateur", search: { q: shopSearch } as any });
         }}
       >
         <input
           type="text"
           placeholder="Rechercher une boutique sur ma marketplace"
-          className="search-input"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={shopSearch}
+          onChange={(e) => setShopSearch(e.target.value)}
         />
-        <select className="city-select" value={city} onChange={(e) => setCity(e.target.value)}>
-          {CITIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
-        <button type="submit" className="search-btn search-icon-only" aria-label="Rechercher">🔍</button>
+        <button type="submit" aria-label="Rechercher une boutique">
+          <Search size={18} />
+        </button>
       </form>
 
       {/* Carrousel publicitaire */}
@@ -78,7 +75,7 @@ function Index() {
           overflow: "hidden",
           aspectRatio: "5/2",
           background: "#0f172a",
-          marginBottom: 12,
+          margin: "12px 0",
         }}
       >
         {ADS.map((ad, i) => (
@@ -128,8 +125,8 @@ function Index() {
         </div>
       </div>
 
-      {/* Catégories horizontales */}
-      <div className="cat-scroll">
+      {/* Catégories horizontales texte uniquement */}
+      <div className="cat-scroll text-only">
         {CATEGORIES.filter((c) => c !== "Emplois").map((c) => (
           <Link
             key={c}
@@ -137,13 +134,36 @@ function Index() {
             search={{ q: "", city: "", category: c } as any}
             className="cat-pill"
           >
-            <span className="cat-emoji">{CATEGORY_ICONS[c] ?? "🏷️"}</span>
-            <span>{c}</span>
+            {c}
           </Link>
         ))}
       </div>
 
-      <section>
+      {/* Barre 2 : recherche produit + ville */}
+      <form
+        className="product-search-bar"
+        onSubmit={(e) => {
+          e.preventDefault();
+          navigate({ to: "/annonces", search: { q: productSearch, city } as any });
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Que recherchez-vous ?"
+          value={productSearch}
+          onChange={(e) => setProductSearch(e.target.value)}
+        />
+        <select value={city} onChange={(e) => setCity(e.target.value)}>
+          {CITIES.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+        <button type="submit" aria-label="Rechercher">
+          <Search size={18} />
+        </button>
+      </form>
+
+      <section style={{ marginTop: 16 }}>
         <div className="section-header">
           <h2>Annonces tendance</h2>
           <Link to="/annonces" className="view-all">
