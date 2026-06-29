@@ -10,7 +10,9 @@ import { formatPrice, getAnnonce, incrementViews } from "@/lib/annonces";
 import { deleteAnnonceServerFn } from "@/lib/annonces.functions";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
+import { isOnline } from "@/lib/presence";
 import { toast } from "sonner";
+
 
 
 export const Route = createFileRoute("/annonce/$id")({
@@ -48,12 +50,13 @@ function AnnonceDetail() {
     queryFn: async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("id,prenom,nom,avatar_url")
+        .select("id,prenom,nom,avatar_url,last_seen_at")
         .eq("id", annonce!.seller_id!)
         .maybeSingle();
       return data;
     },
   });
+
 
   // Favorites
 
@@ -113,8 +116,10 @@ function AnnonceDetail() {
     el.scrollTo({ left: i * el.clientWidth, behavior: "smooth" });
   };
 
+  const sellerOnline = isOnline((seller as any)?.last_seen_at);
+
   return (
-    <SiteLayout>
+    <SiteLayout hideFooter>
       {/* Seller header at the very top */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, marginBottom: 12 }}>
         <span
@@ -123,13 +128,15 @@ function AnnonceDetail() {
             width: 48, height: 48, borderRadius: "50%", overflow: "hidden",
             border: "1px solid #e2e8f0", background: "#f1f5f9",
             display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: "#94a3b8",
-            cursor: seller?.avatar_url ? "zoom-in" : "default", flexShrink: 0,
+            cursor: seller?.avatar_url ? "zoom-in" : "default", flexShrink: 0, position: "relative",
           }}
         >
           {seller?.avatar_url ? (
             <img src={seller.avatar_url} alt={sellerLabel} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : "👤"}
+          <span style={{ position: "absolute", bottom: 0, right: 0, width: 12, height: 12, borderRadius: "50%", background: sellerOnline ? "#16a34a" : "#9ca3af", border: "2px solid #fff" }} />
         </span>
+
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontWeight: 600 }}>{sellerLabel}</div>
           {annonce.seller_id && (
@@ -227,6 +234,19 @@ function AnnonceDetail() {
 
 
       <Comments annonceId={id} />
+
+      <section style={{ marginTop: 24, background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 12, padding: 16 }}>
+        <h3 style={{ marginTop: 0, color: "#9a3412" }}>🛡️ Conseils de sécurité</h3>
+        <ul style={{ margin: 0, paddingLeft: 20, color: "#7c2d12", lineHeight: 1.7, fontSize: "0.92rem" }}>
+          <li>Vérifiez le vendeur : consultez sa boutique, ses évaluations et son ancienneté avant tout paiement.</li>
+          <li>Rencontrez-vous dans un lieu public et fréquenté pour les transactions en personne.</li>
+          <li>Ne versez jamais d'acompte sans avoir vu le produit ou obtenu de garanties solides.</li>
+          <li>Méfiez-vous des prix anormalement bas — c'est souvent une arnaque.</li>
+          <li>Gardez vos échanges sur la plateforme : cela vous protège en cas de litige.</li>
+          <li>Signalez tout compte ou annonce suspecte via la page Aide.</li>
+        </ul>
+      </section>
+
 
       {/* Avatar lightbox */}
       {enlargedAvatar && seller?.avatar_url && (

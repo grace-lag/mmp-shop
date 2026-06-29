@@ -178,7 +178,7 @@ function ChatPage() {
 
   const deleteConversation = async () => {
     if (!confirm("Supprimer toute cette conversation ?")) return;
-    const { error } = await (supabase as any).rpc("delete_conversation", { p_partner: validTo });
+    const { error } = await (supabase as any).rpc("delete_conversation", { _other_user: validTo });
     if (error) return toast.error(error.message);
     toast.success("Conversation supprimée");
     qc.invalidateQueries({ queryKey: ["my-messages"] });
@@ -186,12 +186,42 @@ function ChatPage() {
   };
 
   const archiveConversation = async () => {
-    const { error } = await (supabase as any).rpc("archive_conversation", { p_partner: validTo });
+    const { error } = await (supabase as any).rpc("archive_conversation", { _other_user: validTo });
     if (error) return toast.error(error.message);
     toast.success("Conversation archivée");
     qc.invalidateQueries({ queryKey: ["my-messages"] });
     navigate({ to: "/historique" });
   };
+
+  // Theme customization
+  const [theme, setTheme] = useState<string>(() => {
+    if (typeof window === "undefined") return "default";
+    return localStorage.getItem(`chat-theme-${validTo}`) || "default";
+  });
+  const [showPerso, setShowPerso] = useState(false);
+  useEffect(() => {
+    if (typeof window !== "undefined") localStorage.setItem(`chat-theme-${validTo}`, theme);
+  }, [theme, validTo]);
+  const themes: Record<string, { bg: string; mine: string; other: string }> = {
+    default: { bg: "#fafafa", mine: "#e67e22", other: "white" },
+    blue: { bg: "#eff6ff", mine: "#2563eb", other: "white" },
+    green: { bg: "#f0fdf4", mine: "#15803d", other: "white" },
+    dark: { bg: "#1f2937", mine: "#ea580c", other: "#374151" },
+    rose: { bg: "#fff1f2", mine: "#e11d48", other: "white" },
+  };
+  const T = themes[theme] ?? themes.default;
+  const darkTheme = theme === "dark";
+
+  // Close menus on outside click / escape
+  useEffect(() => {
+    if (!openMenuId && !headerMenuOpen && !showPerso) return;
+    const close = () => { setOpenMenuId(null); setHeaderMenuOpen(false); setShowPerso(false); };
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") close(); };
+    document.addEventListener("click", close);
+    document.addEventListener("keydown", onKey);
+    return () => { document.removeEventListener("click", close); document.removeEventListener("keydown", onKey); };
+  }, [openMenuId, headerMenuOpen, showPerso]);
+
 
   if (!user) return null;
 
@@ -206,9 +236,11 @@ function ChatPage() {
     );
   }
 
+  const stop = (e: React.MouseEvent) => e.stopPropagation();
+
   return (
-    <SiteLayout activeNav="historique">
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb", position: "relative" }}>
+    <SiteLayout activeNav="historique" hideFooter>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb", position: "relative" }} onClick={stop}>
         <Link to="/historique" style={{ textDecoration: "none", color: "#e67e22", fontSize: "1.4rem" }}>←</Link>
         <div style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b" }}>
           {partner?.avatar_url
@@ -218,14 +250,17 @@ function ChatPage() {
         <strong style={{ flex: 1 }}>{partnerName}</strong>
         <button
           type="button"
-          onClick={() => setHeaderMenuOpen((v) => !v)}
+          onClick={(e) => { e.stopPropagation(); setHeaderMenuOpen((v) => !v); setOpenMenuId(null); setShowPerso(false); }}
           aria-label="Options"
           style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 6 }}
         >
           <MoreVertical size={20} />
         </button>
         {headerMenuOpen && (
-          <div style={{ position: "absolute", top: 48, right: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 200 }}>
+          <div onClick={stop} style={{ position: "absolute", top: 48, right: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 220 }}>
+            <button onClick={() => { setHeaderMenuOpen(false); setShowPerso(true); }} style={menuItem}>
+              🎨 Personnalisation
+            </button>
             <button onClick={() => { setHeaderMenuOpen(false); archiveConversation(); }} style={menuItem}>
               <Archive size={15} /> Archiver la conversation
             </button>
@@ -234,9 +269,20 @@ function ChatPage() {
             </button>
           </div>
         )}
+        {showPerso && (
+          <div onClick={stop} style={{ position: "absolute", top: 48, right: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 10, boxShadow: "0 6px 18px rgba(0,0,0,0.15)", zIndex: 25, padding: 12, minWidth: 220 }}>
+            <div style={{ fontWeight: 700, marginBottom: 8 }}>Thème de la conversation</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8 }}>
+              {Object.entries(themes).map(([k, v]) => (
+                <button key={k} onClick={() => { setTheme(k); setShowPerso(false); }} aria-label={k}
+                  style={{ width: 32, height: 32, borderRadius: "50%", border: theme === k ? "3px solid #0f172a" : "1px solid #cbd5e1", background: v.mine, cursor: "pointer" }} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      <div ref={scrollRef} style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, height: 400, overflowY: "auto", marginTop: 12, background: "#fafafa" }}>
+      <div ref={scrollRef} style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, paddingBottom: 88, minHeight: 400, height: "calc(100vh - 260px)", overflowY: "auto", marginTop: 12, background: T.bg }}>
         {(messages ?? []).map((m: any) => {
           const mine = m.sender_id === user.id;
           const read = !!m.read_at;
@@ -244,32 +290,27 @@ function ChatPage() {
           const canEdit = mine && !m._optimistic && (now - createdMs) < EDIT_WINDOW_MS && !!m.content;
           const isEditing = editingId === m.id;
           return (
-            <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", marginBottom: 10 }}>
+            <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", marginBottom: 10 }} onClick={stop}>
               <div style={{ display: "flex", alignItems: "flex-start", gap: 6, maxWidth: "85%" }}>
-                {mine && !isEditing && !m._optimistic && (
-                  <div style={{ position: "relative" }}>
-                    <button onClick={() => setOpenMenuId(openMenuId === m.id ? null : m.id)} aria-label="Options" style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
+                {!isEditing && !m._optimistic && (
+                  <div style={{ position: "relative", order: mine ? 0 : 3 }}>
+                    <button onClick={(e) => { e.stopPropagation(); setOpenMenuId(openMenuId === m.id ? null : m.id); setHeaderMenuOpen(false); }} aria-label="Options" style={{ background: "none", border: "none", cursor: "pointer", color: darkTheme ? "#cbd5e1" : "#64748b", padding: 4 }}>
                       <MoreVertical size={16} />
                     </button>
                     {openMenuId === m.id && (
-                      <div style={{ position: "absolute", top: 24, right: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 10, minWidth: 170 }}>
+                      <div onClick={stop} style={{ position: "absolute", top: 24, [mine ? "right" : "left"]: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 10, minWidth: 170 }}>
                         {m.content && (
                           <button onClick={() => copyMsg(m)} style={menuItem}><Copy size={14} /> Copier</button>
                         )}
                         {canEdit && (
                           <button onClick={() => { startEdit(m); setOpenMenuId(null); }} style={menuItem}><Pencil size={14} /> Modifier</button>
                         )}
-                        {(now - createdMs) < EDIT_WINDOW_MS && (
+                        {mine && (
                           <button onClick={() => { setOpenMenuId(null); deleteMsg(m.id); }} style={{ ...menuItem, color: "#dc2626" }}><Trash2 size={14} /> Supprimer</button>
                         )}
                       </div>
                     )}
                   </div>
-                )}
-                {!mine && !isEditing && m.content && (
-                  <button onClick={() => copyMsg(m)} aria-label="Copier" style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", padding: 4, order: 2 }}>
-                    <Copy size={14} />
-                  </button>
                 )}
                 {isEditing ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -283,15 +324,15 @@ function ChatPage() {
                 ) : (
                   <span style={{
                     display: "inline-block", padding: "8px 12px", borderRadius: 14,
-                    background: mine ? "#e67e22" : "white", color: mine ? "white" : "#333",
-                    border: mine ? "none" : "1px solid #e5e7eb", wordBreak: "break-word",
+                    background: mine ? T.mine : T.other, color: mine || darkTheme ? "white" : "#333",
+                    border: mine ? "none" : (darkTheme ? "1px solid #4b5563" : "1px solid #e5e7eb"), wordBreak: "break-word",
                     opacity: m._optimistic ? 0.7 : 1,
                   }}>
                     {m.content && <div>{m.content}</div>}
                     {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} />}
                     {m.edited_at && <span style={{ marginLeft: 6, fontSize: "0.72em", opacity: 0.75, fontStyle: "italic" }}>(modifié)</span>}
                     {mine && !m._optimistic && (
-                      <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#16a34a" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
+                      <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#bbf7d0" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
                         {read ? "✓✓" : "✓"}
                       </span>
                     )}
@@ -305,12 +346,12 @@ function ChatPage() {
       </div>
 
       {showEmoji && (
-        <div style={{ marginTop: 8 }}>
+        <div onClick={stop} style={{ position: "fixed", left: 0, right: 0, bottom: 124, zIndex: 30, padding: "0 8px" }}>
           <EmojiPicker onPick={(e) => setText((t) => t + e)} onClose={() => setShowEmoji(false)} />
         </div>
       )}
 
-      <form onSubmit={send} style={{ display: "flex", gap: 8, alignItems: "flex-end", marginTop: 12, position: "sticky", bottom: 64, background: "white", padding: "8px 6px", borderTop: "1px solid #e5e7eb", zIndex: 5 }}>
+      <form onSubmit={send} onClick={stop} style={{ display: "flex", gap: 8, alignItems: "flex-end", position: "fixed", left: 0, right: 0, bottom: 60, background: "white", padding: "8px 8px", borderTop: "1px solid #e5e7eb", zIndex: 40 }}>
         <input ref={fileRef} type="file" accept="image/*,video/*,*/*" onChange={onPickFile} style={{ display: "none" }} />
         <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-label="Joindre un fichier"
           style={{ background: "#f0f2f5", border: "1px solid #e2e8f0", borderRadius: 20, padding: 10, cursor: "pointer", color: "#64748b" }}>
@@ -345,6 +386,7 @@ function ChatPage() {
     </SiteLayout>
   );
 }
+
 
 const menuItem: React.CSSProperties = {
   display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "10px 14px",

@@ -4,11 +4,14 @@ import logo from "@/assets/logo-marketplace.jpeg";
 const SHOWN_KEY = "splash_shown_v1";
 
 export function SplashScreen() {
-  const [visible, setVisible] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return !sessionStorage.getItem(SHOWN_KEY);
-  });
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [fading, setFading] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    if (!sessionStorage.getItem(SHOWN_KEY)) setVisible(true);
+  }, []);
 
   useEffect(() => {
     if (!visible) return;
@@ -20,7 +23,7 @@ export function SplashScreen() {
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [visible]);
 
-  if (!visible) return null;
+  if (!mounted || !visible) return null;
 
   return (
     <div

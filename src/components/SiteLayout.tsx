@@ -45,22 +45,18 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
 
   const menuItems = [
     { to: "/offres-emploi", icon: "💼", title: "Offre d'emploi", sub: "Trouver ou proposer un emploi" },
-    { to: "/social-chat", icon: "🗨️", title: "MaMarketplace Tchat", sub: "Discuter avec la communauté" },
     ...(user
       ? [
-          { to: "/compte", icon: "👤", title: "Mon compte", sub: "Profil & tableau de bord" },
           { to: "/historique", icon: "📋", title: "Historique", sub: "Visites & conversations" },
           { to: "/notifications", icon: "🔔", title: "Notifications", sub: "Boutiques suivies" },
-          { to: "/parametres", icon: "⚙️", title: "Paramètres", sub: "Modifier mon profil" },
         ]
       : [
           { to: "/login", icon: "🔑", title: "Se connecter", sub: "Accéder à votre compte" },
           { to: "/signup", icon: "✨", title: "Créer un compte", sub: "Rejoindre MaMarketplace" },
         ]),
-    ...(isAdmin ? [{ to: "/admin", icon: "🛡️", title: "Espace admin", sub: "Gestion de la plateforme" }] : []),
-    { to: "/aide", icon: "❓", title: "Aide", sub: "Conseils & assistance" },
-    { to: "/conditions", icon: "📜", title: "Conditions", sub: "Mentions et règles" },
+    { to: "/aide", icon: "❓", title: "Aide", sub: "Comment utiliser la plateforme" },
   ];
+
 
   return (
     <>
