@@ -157,7 +157,7 @@ function Index() {
           ))}
         </select>
         <button type="submit" className="search-btn search-icon-only" aria-label="Rechercher">
-          <span className="search-label">🔍 </span>🔍
+          <span className="search-label">🔍 </span>
         </button>
       </form>
 
