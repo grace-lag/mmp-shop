@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Smile, Paperclip, Pencil, Trash2, Check, X } from "lucide-react";
+import { Smile, Paperclip, Pencil, Trash2, Check, X, MoreVertical, Copy, Archive } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { Attachment } from "@/components/Attachment";
@@ -28,6 +28,8 @@ function ChatPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const [now, setNow] = useState(Date.now());
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -166,6 +168,31 @@ function ChatPage() {
     qc.setQueryData(messagesKey, (prev: any[] = []) => prev.filter((m) => m.id !== id));
   };
 
+  const copyMsg = async (m: any) => {
+    try {
+      await navigator.clipboard.writeText(m.content ?? m.attachment_url ?? "");
+      toast.success("Copié");
+    } catch { toast.error("Impossible de copier"); }
+    setOpenMenuId(null);
+  };
+
+  const deleteConversation = async () => {
+    if (!confirm("Supprimer toute cette conversation ?")) return;
+    const { error } = await (supabase as any).rpc("delete_conversation", { p_partner: validTo });
+    if (error) return toast.error(error.message);
+    toast.success("Conversation supprimée");
+    qc.invalidateQueries({ queryKey: ["my-messages"] });
+    navigate({ to: "/historique" });
+  };
+
+  const archiveConversation = async () => {
+    const { error } = await (supabase as any).rpc("archive_conversation", { p_partner: validTo });
+    if (error) return toast.error(error.message);
+    toast.success("Conversation archivée");
+    qc.invalidateQueries({ queryKey: ["my-messages"] });
+    navigate({ to: "/historique" });
+  };
+
   if (!user) return null;
 
   const partnerName = [partner?.prenom, partner?.nom].filter(Boolean).join(" ").trim() || "Utilisateur";
@@ -181,14 +208,32 @@ function ChatPage() {
 
   return (
     <SiteLayout activeNav="historique">
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb", position: "relative" }}>
         <Link to="/historique" style={{ textDecoration: "none", color: "#e67e22", fontSize: "1.4rem" }}>←</Link>
         <div style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b" }}>
           {partner?.avatar_url
             ? <img src={partner.avatar_url} alt={partnerName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             : (partnerName[0]?.toUpperCase() ?? "U")}
         </div>
-        <strong>{partnerName}</strong>
+        <strong style={{ flex: 1 }}>{partnerName}</strong>
+        <button
+          type="button"
+          onClick={() => setHeaderMenuOpen((v) => !v)}
+          aria-label="Options"
+          style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 6 }}
+        >
+          <MoreVertical size={20} />
+        </button>
+        {headerMenuOpen && (
+          <div style={{ position: "absolute", top: 48, right: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 20, minWidth: 200 }}>
+            <button onClick={() => { setHeaderMenuOpen(false); archiveConversation(); }} style={menuItem}>
+              <Archive size={15} /> Archiver la conversation
+            </button>
+            <button onClick={() => { setHeaderMenuOpen(false); deleteConversation(); }} style={{ ...menuItem, color: "#dc2626" }}>
+              <Trash2 size={15} /> Supprimer la conversation
+            </button>
+          </div>
+        )}
       </div>
 
       <div ref={scrollRef} style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, height: 400, overflowY: "auto", marginTop: 12, background: "#fafafa" }}>
@@ -201,19 +246,30 @@ function ChatPage() {
           return (
             <div key={m.id} style={{ display: "flex", flexDirection: "column", alignItems: mine ? "flex-end" : "flex-start", marginBottom: 10 }}>
               <div style={{ display: "flex", alignItems: "flex-start", gap: 6, maxWidth: "85%" }}>
-                {mine && !isEditing && (
-                  <div style={{ display: "flex", gap: 4 }}>
-                    {canEdit && (
-                      <button onClick={() => startEdit(m)} aria-label="Modifier" style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
-                        <Pencil size={14} />
-                      </button>
-                    )}
-                    {!m._optimistic && (now - createdMs) < EDIT_WINDOW_MS && (
-                      <button onClick={() => deleteMsg(m.id)} aria-label="Supprimer" style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", padding: 4 }}>
-                        <Trash2 size={14} />
-                      </button>
+                {mine && !isEditing && !m._optimistic && (
+                  <div style={{ position: "relative" }}>
+                    <button onClick={() => setOpenMenuId(openMenuId === m.id ? null : m.id)} aria-label="Options" style={{ background: "none", border: "none", cursor: "pointer", color: "#64748b", padding: 4 }}>
+                      <MoreVertical size={16} />
+                    </button>
+                    {openMenuId === m.id && (
+                      <div style={{ position: "absolute", top: 24, right: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 10, minWidth: 170 }}>
+                        {m.content && (
+                          <button onClick={() => copyMsg(m)} style={menuItem}><Copy size={14} /> Copier</button>
+                        )}
+                        {canEdit && (
+                          <button onClick={() => { startEdit(m); setOpenMenuId(null); }} style={menuItem}><Pencil size={14} /> Modifier</button>
+                        )}
+                        {(now - createdMs) < EDIT_WINDOW_MS && (
+                          <button onClick={() => { setOpenMenuId(null); deleteMsg(m.id); }} style={{ ...menuItem, color: "#dc2626" }}><Trash2 size={14} /> Supprimer</button>
+                        )}
+                      </div>
                     )}
                   </div>
+                )}
+                {!mine && !isEditing && m.content && (
+                  <button onClick={() => copyMsg(m)} aria-label="Copier" style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", padding: 4, order: 2 }}>
+                    <Copy size={14} />
+                  </button>
                 )}
                 {isEditing ? (
                   <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
@@ -254,7 +310,7 @@ function ChatPage() {
         </div>
       )}
 
-      <form onSubmit={send} style={{ display: "flex", gap: 8, alignItems: "flex-end", marginTop: 12 }}>
+      <form onSubmit={send} style={{ display: "flex", gap: 8, alignItems: "flex-end", marginTop: 12, position: "sticky", bottom: 64, background: "white", padding: "8px 6px", borderTop: "1px solid #e5e7eb", zIndex: 5 }}>
         <input ref={fileRef} type="file" accept="image/*,video/*,*/*" onChange={onPickFile} style={{ display: "none" }} />
         <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-label="Joindre un fichier"
           style={{ background: "#f0f2f5", border: "1px solid #e2e8f0", borderRadius: 20, padding: 10, cursor: "pointer", color: "#64748b" }}>
@@ -289,3 +345,8 @@ function ChatPage() {
     </SiteLayout>
   );
 }
+
+const menuItem: React.CSSProperties = {
+  display: "flex", alignItems: "center", gap: 8, width: "100%", padding: "10px 14px",
+  background: "none", border: "none", textAlign: "left", cursor: "pointer", fontSize: 14, color: "#0f172a",
+};
