@@ -154,7 +154,7 @@ export async function addComment(
 }
 
 export async function deleteComment(commentId: string) {
-  const { error } = await supabase.from("annonce_comments").delete().eq("id", commentId);
+  const { error } = await (supabase as any).rpc("delete_comment_safe", { _id: commentId });
   if (error) throw error;
 }
 
