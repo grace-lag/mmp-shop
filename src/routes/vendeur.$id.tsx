@@ -6,6 +6,8 @@ import { formatPrice } from "@/lib/annonces";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { SellerRating } from "@/components/SellerRating";
 import { FollowButton, useFollowersCount } from "@/components/FollowButton";
+import { isOnline } from "@/lib/presence";
+
 
 export const Route = createFileRoute("/vendeur/$id")({ component: VendeurPage });
 
