@@ -15,7 +15,7 @@ function VendeurPage() {
   const { data: profile } = useQuery({
     queryKey: ["profile", id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").eq("id", id).maybeSingle();
+      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url,last_seen_at").eq("id", id).maybeSingle();
       return data;
     },
   });
@@ -29,6 +29,7 @@ function VendeurPage() {
   const { data: followers } = useFollowersCount(id);
 
   const name = profile ? `${profile.prenom ?? ""} ${profile.nom ?? ""}`.trim() || "Vendeur" : "Vendeur";
+  const online = isOnline((profile as any)?.last_seen_at);
 
   return (
     <SiteLayout>
@@ -37,13 +38,20 @@ function VendeurPage() {
           width: 72, height: 72, borderRadius: "50%", overflow: "hidden",
           border: "1px solid #e2e8f0", background: "#f1f5f9",
           display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, color: "#94a3b8",
+          position: "relative",
         }}>
           {profile?.avatar_url ? (
             <img src={profile.avatar_url} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : "👤"}
+          <span style={{ position: "absolute", bottom: 2, right: 2, width: 16, height: 16, borderRadius: "50%", background: online ? "#16a34a" : "#9ca3af", border: "2px solid #fff" }} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ margin: 0 }}>{name}</h1>
+          <h1 style={{ margin: 0, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+            {name}
+            <span style={{ fontSize: "0.75rem", fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: online ? "#dcfce7" : "#e2e8f0", color: online ? "#15803d" : "#475569" }}>
+              {online ? "● En ligne" : "○ Hors ligne"}
+            </span>
+          </h1>
           <div style={{ marginTop: 4 }}>
             <SellerRating sellerId={id} />
           </div>
@@ -51,6 +59,7 @@ function VendeurPage() {
             {annonces?.length ?? 0} annonce(s) · {followers ?? 0} abonné(s)
           </p>
         </div>
+
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           <FollowButton sellerId={id} />
           {user && user.id !== id && (
