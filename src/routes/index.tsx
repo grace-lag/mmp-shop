@@ -153,6 +153,7 @@ function Index() {
         <div className="product-grid">
           {(annonces ?? []).map((a) => (
             <div className="product-card" key={a.id}>
+              <span className="age-badge">{shortAge((a as any).created_at)}</span>
               {a.city && <div className="badge-city">{a.city}</div>}
               <Link to="/annonce/$id" params={{ id: a.id }} className="product-link">
                 {a.image_url ? (
