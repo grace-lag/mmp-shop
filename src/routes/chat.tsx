@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Smile, Paperclip, Pencil, Trash2, Check, X } from "lucide-react";
+import { Smile, Paperclip, Pencil, Trash2, Check, X, MoreVertical, Copy, Archive } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { Attachment } from "@/components/Attachment";
@@ -28,6 +28,8 @@ function ChatPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingText, setEditingText] = useState("");
   const [now, setNow] = useState(Date.now());
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -166,7 +168,30 @@ function ChatPage() {
     qc.setQueryData(messagesKey, (prev: any[] = []) => prev.filter((m) => m.id !== id));
   };
 
-  if (!user) return null;
+  const copyMsg = async (m: any) => {
+    try {
+      await navigator.clipboard.writeText(m.content ?? m.attachment_url ?? "");
+      toast.success("Copié");
+    } catch { toast.error("Impossible de copier"); }
+    setOpenMenuId(null);
+  };
+
+  const deleteConversation = async () => {
+    if (!confirm("Supprimer toute cette conversation ?")) return;
+    const { error } = await (supabase as any).rpc("delete_conversation", { p_partner: validTo });
+    if (error) return toast.error(error.message);
+    toast.success("Conversation supprimée");
+    qc.invalidateQueries({ queryKey: ["my-messages"] });
+    navigate({ to: "/historique" });
+  };
+
+  const archiveConversation = async () => {
+    const { error } = await (supabase as any).rpc("archive_conversation", { p_partner: validTo });
+    if (error) return toast.error(error.message);
+    toast.success("Conversation archivée");
+    qc.invalidateQueries({ queryKey: ["my-messages"] });
+    navigate({ to: "/historique" });
+  };
 
   const partnerName = [partner?.prenom, partner?.nom].filter(Boolean).join(" ").trim() || "Utilisateur";
 
