@@ -126,6 +126,7 @@ export type Database = {
           id: string
           image_url: string | null
           images: string[]
+          is_job_offer: boolean
           likes_count: number
           phone: string | null
           price: number
@@ -145,6 +146,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           images?: string[]
+          is_job_offer?: boolean
           likes_count?: number
           phone?: string | null
           price?: number
@@ -164,6 +166,7 @@ export type Database = {
           id?: string
           image_url?: string | null
           images?: string[]
+          is_job_offer?: boolean
           likes_count?: number
           phone?: string | null
           price?: number
@@ -173,6 +176,18 @@ export type Database = {
           title?: string
           views?: number
           whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      banned_words: {
+        Row: {
+          word: string
+        }
+        Insert: {
+          word: string
+        }
+        Update: {
+          word?: string
         }
         Relationships: []
       }
@@ -208,6 +223,7 @@ export type Database = {
       messages: {
         Row: {
           annonce_id: string | null
+          archived_by: string[] | null
           attachment_name: string | null
           attachment_type: string | null
           attachment_url: string | null
@@ -222,6 +238,7 @@ export type Database = {
         }
         Insert: {
           annonce_id?: string | null
+          archived_by?: string[] | null
           attachment_name?: string | null
           attachment_type?: string | null
           attachment_url?: string | null
@@ -236,6 +253,7 @@ export type Database = {
         }
         Update: {
           annonce_id?: string | null
+          archived_by?: string[] | null
           attachment_name?: string | null
           attachment_type?: string | null
           attachment_url?: string | null
@@ -383,6 +401,50 @@ export type Database = {
         }
         Relationships: []
       }
+      shorts: {
+        Row: {
+          annonce_id: string | null
+          caption: string | null
+          created_at: string
+          id: string
+          likes_count: number
+          thumbnail_url: string | null
+          user_id: string
+          video_url: string
+          views: number
+        }
+        Insert: {
+          annonce_id?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          likes_count?: number
+          thumbnail_url?: string | null
+          user_id: string
+          video_url: string
+          views?: number
+        }
+        Update: {
+          annonce_id?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          likes_count?: number
+          thumbnail_url?: string | null
+          user_id?: string
+          video_url?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shorts_annonce_id_fkey"
+            columns: ["annonce_id"]
+            isOneToOne: false
+            referencedRelation: "annonces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -406,6 +468,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      archive_conversation: {
+        Args: { _other_user: string }
+        Returns: undefined
+      }
+      delete_comment_safe: { Args: { _id: string }; Returns: undefined }
+      delete_conversation: { Args: { _other_user: string }; Returns: undefined }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -418,6 +486,7 @@ export type Database = {
         Returns: undefined
       }
       renew_annonce: { Args: { _id: string }; Returns: undefined }
+      text_contains_banned: { Args: { _text: string }; Returns: boolean }
       touch_last_seen: { Args: never; Returns: undefined }
     }
     Enums: {
