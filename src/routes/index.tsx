@@ -12,6 +12,7 @@ import ad3 from "@/assets/ad-3.jpg";
 import heroPlatform from "@/assets/mamarketplace-eshop-hero.jpg";
 
 const ADS = [
+  { src: heroPlatform, caption: "MaMarketplace E-Shop : la plateforme N°1 au Congo" },
   { src: ad1, caption: "Achetez tout, partout au Congo" },
   { src: ad2, caption: "Vendre devient simple sur MaMarketplace E-Shop" },
   { src: ad3, caption: "Livraison rapide à Brazzaville et au-delà" },
@@ -45,26 +46,29 @@ function Index() {
 
   return (
     <SiteLayout activeNav="accueil">
-      {/* Bouton rechercher une personne pour chatter */}
-      <Link
-        to="/recherche-utilisateur"
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          background: "#fff",
-          border: "1px solid #fed7aa",
-          borderRadius: 999,
-          padding: "10px 16px",
-          textDecoration: "none",
-          color: "#0f172a",
-          margin: "12px 0",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+      {/* Barre de recherche collée sous le bandeau orange */}
+      <form
+        className="search-container"
+        style={{ margin: "0 -16px 12px", borderRadius: 0 }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          navigate({ to: "/annonces", search: { q: search, city } as any });
         }}
       >
-        <Search size={18} color="#ea580c" />
-        <span style={{ fontWeight: 600 }}>Rechercher une personne pour chatter</span>
-      </Link>
+        <input
+          type="text"
+          placeholder="Rechercher une boutique sur ma marketplace"
+          className="search-input"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        <select className="city-select" value={city} onChange={(e) => setCity(e.target.value)}>
+          {CITIES.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+        <button type="submit" className="search-btn search-icon-only" aria-label="Rechercher">🔍</button>
+      </form>
 
       {/* Carrousel publicitaire */}
       <div
