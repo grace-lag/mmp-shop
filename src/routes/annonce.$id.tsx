@@ -235,6 +235,19 @@ function AnnonceDetail() {
 
       <Comments annonceId={id} />
 
+      <section style={{ marginTop: 24, background: "#fff7ed", border: "1px solid #fed7aa", borderRadius: 12, padding: 16 }}>
+        <h3 style={{ marginTop: 0, color: "#9a3412" }}>🛡️ Conseils de sécurité</h3>
+        <ul style={{ margin: 0, paddingLeft: 20, color: "#7c2d12", lineHeight: 1.7, fontSize: "0.92rem" }}>
+          <li>Vérifiez le vendeur : consultez sa boutique, ses évaluations et son ancienneté avant tout paiement.</li>
+          <li>Rencontrez-vous dans un lieu public et fréquenté pour les transactions en personne.</li>
+          <li>Ne versez jamais d'acompte sans avoir vu le produit ou obtenu de garanties solides.</li>
+          <li>Méfiez-vous des prix anormalement bas — c'est souvent une arnaque.</li>
+          <li>Gardez vos échanges sur la plateforme : cela vous protège en cas de litige.</li>
+          <li>Signalez tout compte ou annonce suspecte via la page Aide.</li>
+        </ul>
+      </section>
+
+
       {/* Avatar lightbox */}
       {enlargedAvatar && seller?.avatar_url && (
         <div
