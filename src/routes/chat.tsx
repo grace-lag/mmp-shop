@@ -310,7 +310,7 @@ function ChatPage() {
         </div>
       )}
 
-      <form onSubmit={send} style={{ display: "flex", gap: 8, alignItems: "flex-end", marginTop: 12 }}>
+      <form onSubmit={send} style={{ display: "flex", gap: 8, alignItems: "flex-end", marginTop: 12, position: "sticky", bottom: 64, background: "white", padding: "8px 6px", borderTop: "1px solid #e5e7eb", zIndex: 5 }}>
         <input ref={fileRef} type="file" accept="image/*,video/*,*/*" onChange={onPickFile} style={{ display: "none" }} />
         <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-label="Joindre un fichier"
           style={{ background: "#f0f2f5", border: "1px solid #e2e8f0", borderRadius: 20, padding: 10, cursor: "pointer", color: "#64748b" }}>
