@@ -1,15 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Search } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
-import { CITIES, formatPrice, listAnnonces } from "@/lib/annonces";
+import { CITIES, CATEGORIES, CATEGORY_ICONS, formatPrice, listAnnonces } from "@/lib/annonces";
+import { shortAge } from "@/lib/time";
 import { AnnonceStats } from "@/components/AnnonceStats";
 import { useAuth } from "@/lib/auth/AuthProvider";
-import heroBg from "@/assets/mamarketplace-eshop-hero.jpg";
 import ad1 from "@/assets/ad-1.jpg";
 import ad2 from "@/assets/ad-2.jpg";
 import ad3 from "@/assets/ad-3.jpg";
+import heroPlatform from "@/assets/mamarketplace-eshop-hero.jpg";
 
 const ADS = [
   { src: ad1, caption: "Achetez tout, partout au Congo" },
