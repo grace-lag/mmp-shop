@@ -207,6 +207,8 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
               <li><Link to="/recherche-utilisateur">Rechercher une personne</Link></li>
               <li><Link to={user ? "/compte" : "/login"}>Mon compte</Link></li>
               {isAdmin && <li><Link to="/admin">🛡️ Espace administrateur</Link></li>}
+              {isAdmin && <li><Link to="/admin/banned-words">🚫 Mots interdits</Link></li>}
+
             </ul>
           </div>
           <div className="footer-section">
