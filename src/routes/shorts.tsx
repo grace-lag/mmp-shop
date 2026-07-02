@@ -71,6 +71,7 @@ function ShortsPage() {
         video_url,
         title: title.trim() || null,
         description: description.trim() || null,
+        price: price.trim() ? Number(price) : null,
       });
       if (insErr) throw insErr;
       toast.success("Short publié !");
