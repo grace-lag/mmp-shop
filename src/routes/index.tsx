@@ -55,10 +55,9 @@ function Index() {
 
         onSubmit={(e) => {
           e.preventDefault();
-          navigate({ to: "/recherche-utilisateur", search: { q: shopSearch } as any });
+          const q = shopSearch.trim();
+          navigate({ to: "/annonces", search: { q } as any });
         }}
-      >
-        <input
           type="text"
           placeholder="Rechercher une boutique sur ma marketplace"
           value={shopSearch}
