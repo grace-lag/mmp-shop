@@ -9,8 +9,10 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/shorts")({
   head: () => ({ meta: [{ title: "Shorts — MaMarketplace E-Shop" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({ upload: s.upload ? 1 : undefined }),
   component: ShortsPage,
 });
+
 
 type Short = {
   id: string;
