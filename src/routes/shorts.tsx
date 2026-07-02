@@ -342,6 +342,11 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
       <div style={{ position: "absolute", left: 12, right: 84, bottom: 70, color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)", zIndex: 4 }}>
         {short.title && <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: 4 }}>{short.title}</div>}
         {short.description && <div style={{ fontSize: "0.9rem", opacity: 0.95, lineHeight: 1.35 }}>{short.description}</div>}
+        {short.price != null && (
+          <div style={{ marginTop: 6, display: "inline-block", background: "#16a34a", color: "#fff", padding: "3px 10px", borderRadius: 999, fontWeight: 700, fontSize: "0.85rem" }}>
+            {new Intl.NumberFormat("fr-FR").format(short.price)} FCFA
+          </div>
+        )}
       </div>
 
       <Link
