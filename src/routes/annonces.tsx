@@ -25,8 +25,8 @@ function AnnoncesPage() {
   const { user } = useAuth();
 
   const { data, isLoading } = useQuery({
-    queryKey: ["annonces", { search, city, category, subcategory, uid: user?.id ?? "anon" }],
-    queryFn: () => listAnnonces({ search, city, category, subcategory, excludeUserId: user?.id ?? null }),
+    queryKey: ["annonces", { search, city, category, subcategory }],
+    queryFn: () => listAnnonces({ search, city, category, subcategory }),
   });
 
   return (
