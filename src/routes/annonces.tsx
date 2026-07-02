@@ -4,7 +4,7 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { CATEGORIES, CITIES, formatPrice, listAnnonces } from "@/lib/annonces";
 import { AnnonceStats } from "@/components/AnnonceStats";
-import { useAuth } from "@/lib/auth/AuthProvider";
+
 
 export const Route = createFileRoute("/annonces")({
   validateSearch: (s: Record<string, unknown>) => ({
