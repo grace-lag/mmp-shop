@@ -220,22 +220,24 @@ input.search-input {
   z-index: 2;
 }
 
-/* Home page : shop search bar collée sous le bandeau orange */
+/* Home page : shop search bar collée sous le bandeau orange, même largeur que la barre produit */
 .shop-search-bar {
   display: flex;
   align-items: stretch;
-  gap: 0;
-  margin: 0 -16px;
+  gap: 6px;
+  margin: 0 0 8px 0;
   background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 4px;
 }
 .shop-search-bar input {
   flex: 1;
+  min-width: 0;
   border: 0;
   outline: 0;
-  padding: 12px 14px;
-  font-size: 0.95rem;
+  padding: 8px 10px;
+  font-size: 0.92rem;
   color: #1f2937;
   background: transparent;
 }
@@ -244,7 +246,8 @@ input.search-input {
   border: 0;
   background: #e67e22;
   color: #fff;
-  padding: 0 16px;
+  padding: 0 12px;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -256,7 +259,7 @@ input.search-input {
   display: flex;
   align-items: stretch;
   gap: 6px;
-  margin: 12px 0;
+  margin: 4px 0 8px 0;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
@@ -294,6 +297,10 @@ input.search-input {
   align-items: center;
   justify-content: center;
 }
+
+/* Fond global "peach" comme demandé */
+body, .page { background: #f7e6d0 !important; }
+
 
 /* Catégories texte uniquement (plus pro) */
 .cat-scroll.text-only .cat-pill {
