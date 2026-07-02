@@ -67,7 +67,7 @@ function Index() {
         </button>
       </form>
 
-      {/* Carrousel publicitaire */}
+      {/* Carrousel publicitaire - collé sous la barre de recherche */}
       <div
         style={{
           position: "relative",
@@ -75,9 +75,10 @@ function Index() {
           overflow: "hidden",
           aspectRatio: "5/2",
           background: "#0f172a",
-          margin: "12px 0",
+          margin: "0 0 10px 0",
         }}
       >
+
         {ADS.map((ad, i) => (
           <img
             key={ad.src}
