@@ -22,7 +22,7 @@ function AnnoncesPage() {
   const [city, setCity] = useState(sp.city);
   const [category, setCategory] = useState(sp.category);
   const subcategory = sp.subcategory;
-  const { user } = useAuth();
+  
 
   const { data, isLoading } = useQuery({
     queryKey: ["annonces", { search, city, category, subcategory }],
