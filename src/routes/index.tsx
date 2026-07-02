@@ -58,8 +58,10 @@ function Index() {
           const q = shopSearch.trim();
           navigate({ to: "/annonces", search: { q } as any });
         }}
+      >
+        <input
           type="text"
-          placeholder="Rechercher une boutique sur ma marketplace"
+          placeholder="Rechercher un produit, une boutique..."
           value={shopSearch}
           onChange={(e) => setShopSearch(e.target.value)}
         />
