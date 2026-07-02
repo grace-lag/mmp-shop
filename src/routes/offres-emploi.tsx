@@ -141,14 +141,99 @@ function JobsPage() {
         </div>
       )}
 
-      {lightbox && (
-        <div onClick={() => setLightbox(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)", zIndex: 300, display: "flex", alignItems: "center", justifyContent: "center", cursor: "zoom-out" }}>
-          <img src={lightbox} alt="" style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
-          <button onClick={() => setLightbox(null)} aria-label="Fermer" style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.15)", color: "#fff", border: "none", borderRadius: "50%", width: 40, height: 40, cursor: "pointer" }}><X size={22} /></button>
-        </div>
-      )}
+      {lightbox && <ZoomableLightbox src={lightbox} onClose={() => setLightbox(null)} />}
     </SiteLayout>
   );
 }
+
+function ZoomableLightbox({ src, onClose }: { src: string; onClose: () => void }) {
+  const [scale, setScale] = useState(1);
+  const [tx, setTx] = useState(0);
+  const [ty, setTy] = useState(0);
+  const dragging = useRef<{ x: number; y: number } | null>(null);
+  const pinch = useRef<{ dist: number; scale: number } | null>(null);
+  const lastTap = useRef(0);
+
+  const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
+  const applyScale = (next: number) => {
+    const s = clamp(next, 1, 5);
+    setScale(s);
+    if (s === 1) { setTx(0); setTy(0); }
+  };
+
+  const onWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    applyScale(scale + (e.deltaY < 0 ? 0.2 : -0.2));
+  };
+  const onPointerDown = (e: React.PointerEvent) => {
+    (e.target as Element).setPointerCapture?.(e.pointerId);
+    dragging.current = { x: e.clientX - tx, y: e.clientY - ty };
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging.current || scale === 1) return;
+    setTx(e.clientX - dragging.current.x);
+    setTy(e.clientY - dragging.current.y);
+  };
+  const onPointerUp = () => { dragging.current = null; };
+  const onTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinch.current = { dist: Math.hypot(dx, dy), scale };
+    } else if (e.touches.length === 1) {
+      const now = Date.now();
+      if (now - lastTap.current < 300) applyScale(scale > 1 ? 1 : 2);
+      lastTap.current = now;
+    }
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && pinch.current) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const d = Math.hypot(dx, dy);
+      applyScale(pinch.current.scale * (d / pinch.current.dist));
+    }
+  };
+  const onTouchEnd = (e: React.TouchEvent) => { if (e.touches.length < 2) pinch.current = null; };
+
+  return (
+    <div
+      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onWheel={onWheel}
+      onTouchStart={onTouchStart}
+      onTouchMove={onTouchMove}
+      onTouchEnd={onTouchEnd}
+      style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)", zIndex: 300, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", touchAction: "none" }}
+    >
+      <img
+        src={src}
+        alt=""
+        onDoubleClick={() => applyScale(scale > 1 ? 1 : 2)}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        draggable={false}
+        style={{
+          maxWidth: "100%",
+          maxHeight: "100%",
+          objectFit: "contain",
+          transform: `translate(${tx}px, ${ty}px) scale(${scale})`,
+          transition: dragging.current ? "none" : "transform 0.15s ease",
+          cursor: scale > 1 ? "grab" : "zoom-in",
+          userSelect: "none",
+        }}
+      />
+      <div style={{ position: "absolute", top: 16, right: 16, display: "flex", gap: 8 }}>
+        <button onClick={() => applyScale(scale - 0.5)} aria-label="Dézoomer" style={zoomBtnStyle}>−</button>
+        <button onClick={() => applyScale(scale + 0.5)} aria-label="Zoomer" style={zoomBtnStyle}>＋</button>
+        <button onClick={onClose} aria-label="Fermer" style={zoomBtnStyle}><X size={18} /></button>
+      </div>
+    </div>
+  );
+}
+
+const zoomBtnStyle: React.CSSProperties = { background: "rgba(255,255,255,0.18)", color: "#fff", border: "none", borderRadius: "50%", width: 40, height: 40, cursor: "pointer", fontSize: 20, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" };
+
 
 const inputStyle: React.CSSProperties = { padding: 10, border: "1px solid #cbd5e1", borderRadius: 8, width: "100%", fontSize: "1rem" };
