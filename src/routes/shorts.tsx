@@ -154,6 +154,7 @@ function ShortsPage() {
 }
 
 function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: () => void }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -161,6 +162,7 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [loadVideo, setLoadVideo] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -171,18 +173,35 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
     return () => { cancelled = true; };
   }, [short.user_id]);
 
+  // Lazy load: only mount <source> when the card is near/inside the viewport
   useEffect(() => {
-    const v = ref.current;
-    if (!v) return;
+    const el = wrapRef.current;
+    if (!el) return;
     const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { v.play().catch(() => {}); setPaused(false); }
-      else v.pause();
-    }, { threshold: 0.6 });
-    io.observe(v);
+      if (entry.isIntersecting) setLoadVideo(true);
+    }, { root: el.parentElement, rootMargin: "150% 0px", threshold: 0.01 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Play/pause when card is the visible one
+  useEffect(() => {
+    const el = wrapRef.current;
+    const v = ref.current;
+    if (!el || !v) return;
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.75) {
+        v.play().catch(() => {}); setPaused(false);
+      } else {
+        v.pause();
+      }
+    }, { root: el.parentElement, threshold: [0, 0.25, 0.5, 0.75, 1] });
+    io.observe(el);
     const onTime = () => { if (v.duration) setProgress((v.currentTime / v.duration) * 100); };
     v.addEventListener("timeupdate", onTime);
     return () => { io.disconnect(); v.removeEventListener("timeupdate", onTime); };
-  }, []);
+  }, [loadVideo]);
+
 
   // Like state
   const { data: likeState } = useQuery({
