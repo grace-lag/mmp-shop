@@ -135,6 +135,37 @@ function DashboardPage() {
         })}
         {myAds && myAds.length === 0 && <p style={{ color: "#64748b" }}>Vous n'avez pas encore d'annonce.</p>}
       </div>
+      </>
+      ) : (
+      <>
+      <h2 style={{ marginTop: 8, marginBottom: 12 }}>Mes shorts</h2>
+      <div className="product-grid">
+        {(myShorts ?? []).map((s: any) => (
+          <div key={s.id} className="product-card" style={{ position: "relative" }}>
+            <Link to="/shorts" className="product-link">
+              {s.thumbnail_url ? <img src={s.thumbnail_url} alt={s.title ?? "short"} /> : (
+                <video src={s.video_url} muted style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 8, background: "#000" }} />
+              )}
+            </Link>
+            <h3>{s.title || "Sans titre"}</h3>
+            {s.price != null && <p className="price">{formatPrice(s.price)}</p>}
+            <button
+              onClick={async () => {
+                if (!confirm("Supprimer ce short ?")) return;
+                const { error } = await (supabase as any).from("shorts").delete().eq("id", s.id);
+                if (error) toast.error(error.message);
+                else { toast.success("Short supprimé"); qc.invalidateQueries({ queryKey: ["my-shorts-list"] }); }
+              }}
+              style={{ width: "100%", background: "#dc2626", color: "#fff", borderRadius: 8, padding: "8px", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4 }}
+            >
+              <Trash2 size={14} /> Supprimer
+            </button>
+          </div>
+        ))}
+        {myShorts && myShorts.length === 0 && <p style={{ color: "#64748b" }}>Vous n'avez pas encore publié de short.</p>}
+      </div>
+      </>
+      )}
     </SiteLayout>
   );
 }
