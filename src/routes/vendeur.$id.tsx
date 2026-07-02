@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { formatPrice } from "@/lib/annonces";
@@ -7,15 +7,22 @@ import { useAuth } from "@/lib/auth/AuthProvider";
 import { SellerRating } from "@/components/SellerRating";
 import { FollowButton, useFollowersCount } from "@/components/FollowButton";
 import { isOnline } from "@/lib/presence";
-
+import { useIsAdmin } from "@/hooks/useIsAdmin";
+import { adminDeleteAnnonceById } from "@/lib/admin.functions";
+import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/vendeur/$id")({ component: VendeurPage });
 
 function VendeurPage() {
   const { id } = Route.useParams();
   const { user } = useAuth();
+  const isAdmin = useIsAdmin();
+  const qc = useQueryClient();
+
   const { data: profile } = useQuery({
     queryKey: ["profile", id],
+    refetchInterval: 60_000,
     queryFn: async () => {
       const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url,last_seen_at").eq("id", id).maybeSingle();
       return data;
@@ -32,6 +39,17 @@ function VendeurPage() {
 
   const name = profile ? `${profile.prenom ?? ""} ${profile.nom ?? ""}`.trim() || "Vendeur" : "Vendeur";
   const online = isOnline((profile as any)?.last_seen_at);
+
+  const handleAdminDelete = async (annonceId: string, title: string) => {
+    if (!confirm(`Supprimer définitivement "${title}" ?`)) return;
+    try {
+      await adminDeleteAnnonceById({ data: { annonceId } });
+      toast.success("Annonce supprimée");
+      qc.invalidateQueries({ queryKey: ["seller-annonces", id] });
+    } catch (e: any) {
+      toast.error(e?.message ?? "Échec de la suppression");
+    }
+  };
 
   return (
     <SiteLayout>
@@ -73,11 +91,22 @@ function VendeurPage() {
       </div>
       <div className="product-grid" style={{ marginTop: 16 }}>
         {(annonces ?? []).map((a: any) => (
-          <Link key={a.id} to="/annonce/$id" params={{ id: a.id }} className="product-card" style={{ textDecoration: "none", color: "inherit" }}>
-            {a.image_url ? <img src={a.image_url} alt={a.title} /> : <div style={{ height: 160, background: "#f1f5f9", borderRadius: 8 }} />}
-            <h3>{a.title}</h3>
-            <p className="price">{formatPrice(a.price)}</p>
-          </Link>
+          <div key={a.id} style={{ position: "relative" }}>
+            <Link to="/annonce/$id" params={{ id: a.id }} className="product-card" style={{ textDecoration: "none", color: "inherit", display: "block" }}>
+              {a.image_url ? <img src={a.image_url} alt={a.title} /> : <div style={{ height: 160, background: "#f1f5f9", borderRadius: 8 }} />}
+              <h3>{a.title}</h3>
+              <p className="price">{formatPrice(a.price)}</p>
+            </Link>
+            {isAdmin && (
+              <button
+                onClick={() => handleAdminDelete(a.id, a.title)}
+                title="Supprimer cette annonce (admin)"
+                style={{ position: "absolute", top: 6, right: 6, background: "#dc2626", color: "#fff", border: "none", borderRadius: 8, padding: "6px 8px", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 700, boxShadow: "0 2px 6px rgba(0,0,0,0.25)" }}
+              >
+                <Trash2 size={14} /> Supprimer
+              </button>
+            )}
+          </div>
         ))}
       </div>
     </SiteLayout>

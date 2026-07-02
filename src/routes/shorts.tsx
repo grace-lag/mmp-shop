@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ThumbsUp, Heart, MessageCircle, Phone, Upload, X, Download, Play, Plus, Check } from "lucide-react";
+import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth/AuthProvider";
@@ -9,8 +9,10 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/shorts")({
   head: () => ({ meta: [{ title: "Shorts — MaMarketplace E-Shop" }] }),
+  validateSearch: (s: Record<string, unknown>) => ({ upload: s.upload ? 1 : undefined }),
   component: ShortsPage,
 });
+
 
 type Short = {
   id: string;
@@ -27,6 +29,7 @@ type Short = {
 function ShortsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -35,8 +38,20 @@ function ShortsPage() {
   const [price, setPrice] = useState("");
   const [commentsFor, setCommentsFor] = useState<string | null>(null);
 
+  // Open file picker when the "+" nav button navigates here with ?upload=1
+  useEffect(() => {
+    if (search.upload && user) {
+      fileRef.current?.click();
+      // Clear query so subsequent opens don't loop
+      navigate({ to: "/shorts", search: {} as any, replace: true });
+    } else if (search.upload && !user) {
+      navigate({ to: "/login" });
+    }
+  }, [search.upload, user, navigate]);
+
   const { data: shorts, refetch } = useQuery({
     queryKey: ["shorts-feed"],
+
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("shorts")
@@ -86,24 +101,32 @@ function ShortsPage() {
 
   return (
     <SiteLayout activeNav="shorts" hideHeader hideFooter>
-      <div style={{ display: "flex", flexDirection: "column", gap: 0, marginTop: 0, background: "#000", minHeight: "100vh" }}>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 60,
+          background: "#000",
+          overflowY: "scroll",
+          scrollSnapType: "y mandatory",
+          overscrollBehavior: "contain",
+          WebkitOverflowScrolling: "touch",
+          zIndex: 1,
+        }}
+      >
         {(shorts ?? []).map((s) => (
           <ShortCard key={s.id} short={s} onOpenComments={() => setCommentsFor(s.id)} />
         ))}
         {shorts && shorts.length === 0 && (
-          <p style={{ color: "#fff", textAlign: "center", marginTop: 30, background: "#000", padding: 40 }}>Aucun Short. Soyez le premier !</p>
+          <p style={{ color: "#fff", textAlign: "center", padding: 60 }}>Aucun Short. Soyez le premier !</p>
         )}
       </div>
 
-      <button
-        onClick={() => user ? fileRef.current?.click() : navigate({ to: "/login" })}
-        disabled={uploading}
-        aria-label="Publier"
-        style={{ position: "fixed", right: 16, bottom: 80, zIndex: 100, background: "#ea580c", color: "#fff", border: 0, borderRadius: 999, padding: "12px 18px", display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer", fontWeight: 700, boxShadow: "0 6px 18px rgba(0,0,0,0.3)" }}
-      >
-        <Upload size={18} /> {uploading ? "Envoi..." : "Publier"}
-      </button>
       <input ref={fileRef} type="file" accept="video/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) onPick(f); e.target.value = ""; }} />
+
+
 
       {pendingFile && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
@@ -131,6 +154,7 @@ function ShortsPage() {
 }
 
 function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: () => void }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
   const { user } = useAuth();
   const qc = useQueryClient();
@@ -138,6 +162,7 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
   const [paused, setPaused] = useState(false);
   const [showControls, setShowControls] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [loadVideo, setLoadVideo] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -148,18 +173,35 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
     return () => { cancelled = true; };
   }, [short.user_id]);
 
+  // Lazy load: only mount <source> when the card is near/inside the viewport
   useEffect(() => {
-    const v = ref.current;
-    if (!v) return;
+    const el = wrapRef.current;
+    if (!el) return;
     const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { v.play().catch(() => {}); setPaused(false); }
-      else v.pause();
-    }, { threshold: 0.6 });
-    io.observe(v);
+      if (entry.isIntersecting) setLoadVideo(true);
+    }, { root: el.parentElement, rootMargin: "150% 0px", threshold: 0.01 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Play/pause when card is the visible one
+  useEffect(() => {
+    const el = wrapRef.current;
+    const v = ref.current;
+    if (!el || !v) return;
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.75) {
+        v.play().catch(() => {}); setPaused(false);
+      } else {
+        v.pause();
+      }
+    }, { root: el.parentElement, threshold: [0, 0.25, 0.5, 0.75, 1] });
+    io.observe(el);
     const onTime = () => { if (v.duration) setProgress((v.currentTime / v.duration) * 100); };
     v.addEventListener("timeupdate", onTime);
     return () => { io.disconnect(); v.removeEventListener("timeupdate", onTime); };
-  }, []);
+  }, [loadVideo]);
+
 
   // Like state
   const { data: likeState } = useQuery({
@@ -270,8 +312,18 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
   const isMe = user?.id === short.user_id;
 
   return (
-    <div style={{ position: "relative", background: "#000", overflow: "hidden", height: "calc(100vh - 60px)", scrollSnapAlign: "start" }}>
-      <video ref={ref} src={short.video_url} loop playsInline muted={false} controls={false} preload="metadata" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+    <div ref={wrapRef} style={{ position: "relative", background: "#000", overflow: "hidden", height: "100%", minHeight: "100%", scrollSnapAlign: "start", scrollSnapStop: "always" }}>
+      <video
+        ref={ref}
+        src={loadVideo ? short.video_url : undefined}
+        poster={short.thumbnail_url ?? undefined}
+        loop
+        playsInline
+        controls={false}
+        preload="none"
+        style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
+      />
+
 
       {/* Tap zones: left = -10s, middle = play/pause, right = +10s */}
       <div style={{ position: "absolute", inset: 0, display: "grid", gridTemplateColumns: "1fr 2fr 1fr" }}>
@@ -429,17 +481,13 @@ function ShortComments({ shortId, onClose }: { shortId: string; onClose: () => v
         <div style={{ padding: 12, borderTop: "1px solid #e2e8f0" }}>
           {user ? (
             <form onSubmit={(e) => { e.preventDefault(); add.mutate(); }} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>
-                {user?.user_metadata?.avatar_url
-                  ? <img src={user.user_metadata.avatar_url} alt="moi" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  : "👤"}
-              </div>
               <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Écris un commentaire..."
                      style={{ flex: 1, padding: 10, borderRadius: 20, border: "1px solid #e2e8f0", background: "#f0f2f5", outline: "none" }} />
               <button type="submit" disabled={!text.trim()} style={{ padding: "10px 16px", borderRadius: 20, border: "none", background: text.trim() ? "#2563eb" : "#cbd5e1", color: "#fff", fontWeight: 600, cursor: "pointer" }}>
                 Envoyer
               </button>
             </form>
+
           ) : (
             <p style={{ color: "#64748b", textAlign: "center", margin: 0 }}><Link to="/login" onClick={onClose}>Connectez-vous</Link> pour commenter.</p>
           )}

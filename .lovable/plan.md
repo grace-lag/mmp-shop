@@ -1,56 +1,46 @@
-# Plan d'exécution
+## Changements demandés
 
-Tu as demandé "tout à la fois" — c'est environ 25 changements distincts touchant la base de données, l'auth, le storage, l'UI et la logique métier. Je vais tout faire, mais je dois procéder en 4 phases successives dans **cette même session**, sans m'arrêter entre les phases. Je te ping à la fin avec le résumé global.
+### 1. Page Admin — suppression d'annonces individuelles
+- Ajouter dans la boutique d'un vendeur (`src/routes/vendeur.$id.tsx` ou `boutique.tsx` selon la route utilisée depuis l'admin) un bouton **Supprimer** par annonce, visible uniquement si l'utilisateur courant est admin (via `useIsAdmin`).
+- Nouveau server function `adminDeleteAnnonceById(annonceId)` dans `src/lib/admin.functions.ts` avec vérification du rôle admin puis `DELETE` sur `annonces` (RLS admin ou via `supabaseAdmin`).
 
-## Phase 1 — Fondations base de données (1 migration)
-- Table `shorts` (videos) + bucket `shorts-videos` (privé, max 10 Mo)
-- Table `banned_words` + fonction `contains_banned_word()` + trigger sur `messages` et `annonce_comments`
-- Colonne `is_job_offer` sur `annonces` (formulaire allégé)
-- RPC `delete_conversation(other_user_id)`
-- RPC `delete_comment_safe(id)` (corrige la suppression cassée)
-- Trigger qui force `tel NOT NULL` à la publication d'annonce ou de short
-- Vue admin: liste de tous les profils (pas seulement vendeurs)
+### 2. Liste des 150 mots bannis
+- Requête `SELECT word FROM banned_words` et affichage complet de la liste dans la réponse (pas de changement de code).
 
-## Phase 2 — Page d'accueil + navigation
-- Barre orange plus fine, fond gris foncé (#a8a8a8), menu hamburger en `position: fixed` z-index élevé
-- Menu hamburger nettoyé (suppression Accueil/Catégories/Rechercher/Poster/Tableau de bord, ajout Offres d'emploi)
-- Barre "Rechercher une boutique sur MaMarketplace" collée à la barre orange, pleine largeur, redirige vers `/recherche-boutique`
-- Ligne de catégories horizontale scrollable
-- Carrousel pub pleine largeur incluant le hero, image orange régénérée "MaMarketplace"
-- Barre de recherche compactée (padding réduit, bouton loupe icône seule)
-- Onglet "Catégories" → "Shorts" (icône vidéo) dans la barre du bas
-- Mode invité: annonces visibles sans login, redirection vers `/login` seulement aux actions (like, appel, contact, commenter)
-- Annonces propres visibles mais bouton Like masqué
-- Badge durée compact (1H/1J/1S) sur chaque carte
+### 3. Page Shorts — bouton "+" personnalisé
+- Sur `src/components/SiteLayout.tsx` : détecter la route `/shorts`. Sur cette page, le bouton central "+" de la barre du bas pointe vers un formulaire "Poster un short" (au lieu de `/poster`).
+- Style spécifique (icône vidéo) uniquement sur `/shorts`.
+- Retirer le bouton "Publier" en haut de `src/routes/shorts.tsx` — la publication se fait uniquement via le "+" de la barre.
+- Extraire le formulaire de post d'un short en route dédiée `src/routes/poster-short.tsx` (réutilisation de la logique existante).
 
-## Phase 3 — Shorts, contact, messagerie
-- Composant `VideoFeed` (`/shorts`) avec scroll-snap, lazy load (1 vidéo à la fois via IntersectionObserver), boutons Like/Commenter/Contacter en overlay droite, avatar + nom en bas gauche cliquable vers la boutique
-- Page `/poster-short` avec validation taille 10 Mo et téléphone obligatoire
-- Page `/contacter/$annonceId` avec Appel / WhatsApp (conditionnel) / Message privé
-- WhatsApp optionnel partout (poster.tsx, modifier-annonce, complete-profile, parametres) — masqué dans les contacts si vide
-- Messagerie: composer `position: sticky bottom: 0`, menu 3 points (changer fond/supprimer/copier/transférer/archiver) — implémentation complète des actions
-- Dates sous chaque message
-- 3 points par conversation dans la liste → supprimer conversation
-- Correction suppression commentaires
+### 4. Shorts — lecture différée + swipe TikTok + fond noir
+- `src/routes/shorts.tsx` :
+  - **Lazy load** : ne monter le `<video>` que pour la vidéo visible ± 1 (IntersectionObserver, `preload="none"` pour les autres).
+  - **Swipe court** : remplacer le scroll libre par snap vertical avec seuil bas (~15 % de hauteur ou vitesse) déclenchant `scrollIntoView` sur la vidéo suivante — comportement TikTok.
+  - **Fond noir** intégral autour de la vidéo (container `bg-black`, layout plein écran, retirer le fond pêche).
 
-## Phase 4 — Admin, dashboard, paramètres, divers
-- Admin: liste tous les profils + barre de recherche + clic vers boutique
-- Dashboard: grille de carreaux au lieu d'une liste
-- Paramètres: thème (clair/sombre/auto) réellement appliqué via `ThemeProvider` + classe sur `<html>`, langue FR/EN via contexte i18n basique, bouton Aide vers `/aide`
-- Page `/aide` avec guide d'utilisation
-- Détail annonce: point vert "actif"/"inactif" basé sur `last_seen_at` (<5 min), conseils sécurité en bas
-- Catégorie "Emploi" retirée, route `/offres-emploi` + formulaire allégé (image + tel + description)
-- Splash screen avec logo MaMarketplace E-Shop centré
+### 5. Indicateur en ligne (point vert/gris) fiable
+- Vérifier `src/lib/presence.ts` (seuil 5 min sur `profiles.last_seen_at`).
+- Cause probable : `touch_last_seen()` n'est pas appelée assez souvent. Ajouter un appel régulier (toutes les 60s + au focus) dans `AuthProvider` via `supabase.rpc("touch_last_seen")`.
+- Auditer tous les endroits qui affichent le point (annonces, boutique, chat, admin, shorts) — s'assurer qu'ils lisent `last_seen_at` du profil et utilisent `isOnline()`.
 
-## Détails techniques
-- Compression d'images: hook `compressImage()` (canvas, JPEG 0.8, max 1600px) appliqué à tous les uploads
-- Compression vidéo côté serveur impossible (Worker n'a pas ffmpeg) — j'enforce max 10 Mo côté client uniquement
-- i18n: contexte React simple avec dictionnaire FR/EN, pas de lib externe
-- Thème: classe `dark` sur `<html>`, persisté dans `localStorage`, le CSS existant ajoutera des variantes dark via `prefers-color-scheme` + classe
-- Splash: composant React avec timeout 800ms au premier chargement
-- Filtre d'insultes: liste de ~150 mots FR (variantes communes) stockée en base, vérification via trigger Postgres
+### 6. Notifications de likes
+- Les triggers `notify_annonce_like` et `notify_short_like` existent déjà en base et insèrent dans `notifications`.
+- Vérifier que `src/routes/notifications.tsx` :
+  - Affiche les types `like_annonce` et `like_short` avec le nom de l'auteur.
+  - Génère un lien cliquable vers `/annonce/$id` ou `/shorts?id=$id`.
+- Corriger les libellés/liens manquants si besoin.
 
-## Avertissement honnête
-C'est beaucoup. Certains détails visuels nécessiteront des itérations après que tu vois le résultat. Je vise un état fonctionnel cohérent, pas pixel-perfect du premier coup.
+### 7. Barre de commentaire — retirer l'avatar
+- Dans `src/components/CommentDrawer.tsx` et `src/components/Comments.tsx` : retirer l'avatar de la zone de saisie (garder juste input + bouton envoyer), comme dans le chat.
 
-Confirme et je démarre par la Phase 1 (migration). Si tu préfères toujours que je commence par un sous-ensemble plus restreint, dis-le maintenant.
+### 8. Pages statiques (pas de shift horizontal)
+- Dans `src/styles.css` : `html, body { overflow-x: hidden; width: 100%; }`, forcer `max-width: 100vw` sur les conteneurs et vérifier les grilles/carousels qui débordent.
+
+### 9. Offres d'emploi — image plein écran zoomable
+- Dans `src/routes/offres-emploi.tsx` : clic sur l'image ouvre un `Dialog` plein écran avec l'image et gestes de zoom (pinch tactile + molette + boutons +/−). Utiliser `react-zoom-pan-pinch` (léger, ~10 Ko) ou implémentation CSS `touch-action: none` avec transform.
+
+### Détails techniques
+- Aucune migration nécessaire (triggers notifications déjà en place, `last_seen_at` déjà présent).
+- Nouvelle dépendance possible : `react-zoom-pan-pinch` pour le zoom.
+- Lazy load vidéos via `IntersectionObserver` natif — pas de dépendance ajoutée.

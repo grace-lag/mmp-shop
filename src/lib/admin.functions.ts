@@ -98,3 +98,23 @@ export const adminDeleteAnnonce = createServerFn({ method: "POST" })
     await deleteUserAccountData(data.userId);
     return { ok: true };
   });
+
+export const adminDeleteAnnonceById = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input: { annonceId: string }) => {
+    if (!input?.annonceId || !UUID_RE.test(input.annonceId)) throw new Error("Invalid id");
+    return input;
+  })
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: roleRow } = await supabase
+      .from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+    if (!roleRow) throw new Error("Forbidden");
+    const { error } = await supabase.from("annonces").delete().eq("id", data.annonceId);
+    if (error) {
+      console.error("[admin] delete annonce error:", error);
+      throw new Error("Internal error");
+    }
+    return { ok: true };
+  });
+
