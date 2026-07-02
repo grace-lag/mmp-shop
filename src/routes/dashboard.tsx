@@ -87,7 +87,14 @@ function DashboardPage() {
         <Plus size={18} /> Nouvelle annonce
       </Link>
 
-      <h2 style={{ marginTop: 28, marginBottom: 12 }}>Mes annonces</h2>
+      <div style={{ display: "flex", gap: 8, marginTop: 28, marginBottom: 12 }}>
+        <button onClick={() => setTab("ads")} style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: tab === "ads" ? "#ea580c" : "#e2e8f0", color: tab === "ads" ? "#fff" : "#0f172a", fontWeight: 700, cursor: "pointer" }}>Mes annonces</button>
+        <button onClick={() => setTab("shorts")} style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: tab === "shorts" ? "#ea580c" : "#e2e8f0", color: tab === "shorts" ? "#fff" : "#0f172a", fontWeight: 700, cursor: "pointer" }}>Mes shorts</button>
+      </div>
+
+      {tab === "ads" ? (
+      <>
+      <h2 style={{ marginTop: 8, marginBottom: 12 }}>Mes annonces</h2>
       <div className="product-grid">
         {(myAds ?? []).map((a: any) => {
           const expired = a.expires_at && new Date(a.expires_at) <= new Date();
