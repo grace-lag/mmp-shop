@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ThumbsUp, Heart, MessageCircle, Phone, Upload, X, Download, Play, Plus, Check } from "lucide-react";
+import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth/AuthProvider";
