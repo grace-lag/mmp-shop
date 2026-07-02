@@ -111,8 +111,14 @@ function PosterPage() {
             {subs.map((s) => <option key={s}>{s}</option>)}
           </select>
         )}
-        <PhoneInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="Téléphone" />
-        <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="WhatsApp" />
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ fontSize: "0.9em", color: "#475569" }}>Téléphone *</span>
+          <PhoneInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="Téléphone" required />
+        </label>
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ fontSize: "0.9em", color: "#475569" }}>WhatsApp *</span>
+          <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="WhatsApp" required />
+        </label>
 
         <div>
           <label style={{ fontWeight: 600, display: "block", marginBottom: 8 }}>
