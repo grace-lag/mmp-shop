@@ -3,13 +3,22 @@
     box-sizing: border-box;
 }
 
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     background-color: #f4f7f6;
     color: #333;
     padding-bottom: 80px;
+    min-height: 100vh;
 }
+
 
 /* Bannière Promo */
 .delivery-promo {
