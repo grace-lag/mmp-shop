@@ -481,17 +481,13 @@ function ShortComments({ shortId, onClose }: { shortId: string; onClose: () => v
         <div style={{ padding: 12, borderTop: "1px solid #e2e8f0" }}>
           {user ? (
             <form onSubmit={(e) => { e.preventDefault(); add.mutate(); }} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>
-                {user?.user_metadata?.avatar_url
-                  ? <img src={user.user_metadata.avatar_url} alt="moi" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  : "👤"}
-              </div>
               <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Écris un commentaire..."
                      style={{ flex: 1, padding: 10, borderRadius: 20, border: "1px solid #e2e8f0", background: "#f0f2f5", outline: "none" }} />
               <button type="submit" disabled={!text.trim()} style={{ padding: "10px 16px", borderRadius: 20, border: "none", background: text.trim() ? "#2563eb" : "#cbd5e1", color: "#fff", fontWeight: 600, cursor: "pointer" }}>
                 Envoyer
               </button>
             </form>
+
           ) : (
             <p style={{ color: "#64748b", textAlign: "center", margin: 0 }}><Link to="/login" onClick={onClose}>Connectez-vous</Link> pour commenter.</p>
           )}
