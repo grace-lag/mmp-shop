@@ -17,6 +17,7 @@ type Short = {
   user_id: string;
   title: string | null;
   description: string | null;
+  price: number | null;
   video_url: string;
   thumbnail_url: string | null;
   created_at: string;
