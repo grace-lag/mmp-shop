@@ -86,7 +86,7 @@ function ShortsPage() {
 
   return (
     <SiteLayout activeNav="shorts" hideHeader hideFooter>
-      <div style={{ display: "flex", flexDirection: "column", gap: 0, marginTop: 0 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 0, marginTop: 0, background: "#000", minHeight: "100vh" }}>
         {(shorts ?? []).map((s) => (
           <ShortCard key={s.id} short={s} onOpenComments={() => setCommentsFor(s.id)} />
         ))}
