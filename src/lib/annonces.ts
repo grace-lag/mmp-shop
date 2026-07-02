@@ -59,11 +59,12 @@ export function formatPrice(p: number) {
 
 const PUBLIC_COLS = "id,title,description,price,city,category,subcategory,seller_id,seller_name,image_url,images,views,likes_count,created_at";
 
-export async function listAnnonces(opts?: { search?: string; city?: string; category?: string; subcategory?: string; limit?: number; excludeUserId?: string | null; includeExpired?: boolean }) {
+export async function listAnnonces(opts?: { search?: string; city?: string; category?: string; subcategory?: string; limit?: number; excludeUserId?: string | null; includeExpired?: boolean; includeJobs?: boolean }) {
   let q = supabase.from("annonces").select(PUBLIC_COLS + ",expires_at,seller_id").order("created_at", { ascending: false });
   if (opts?.search) q = q.ilike("title", `%${opts.search}%`);
   if (opts?.city && opts.city !== "Tout Congo") q = q.eq("city", opts.city);
   if (opts?.category) q = q.eq("category", opts.category);
+  else if (!opts?.includeJobs) q = q.neq("category", "Emplois");
   if (opts?.subcategory) q = q.eq("subcategory", opts.subcategory);
   if (opts?.excludeUserId) q = q.neq("seller_id", opts.excludeUserId);
   if (!opts?.includeExpired) q = q.gt("expires_at", new Date().toISOString());
