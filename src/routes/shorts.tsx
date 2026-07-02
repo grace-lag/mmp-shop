@@ -312,8 +312,18 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
   const isMe = user?.id === short.user_id;
 
   return (
-    <div style={{ position: "relative", background: "#000", overflow: "hidden", height: "calc(100vh - 60px)", scrollSnapAlign: "start" }}>
-      <video ref={ref} src={short.video_url} loop playsInline muted={false} controls={false} preload="metadata" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+    <div ref={wrapRef} style={{ position: "relative", background: "#000", overflow: "hidden", height: "100%", minHeight: "100%", scrollSnapAlign: "start", scrollSnapStop: "always" }}>
+      <video
+        ref={ref}
+        src={loadVideo ? short.video_url : undefined}
+        poster={short.thumbnail_url ?? undefined}
+        loop
+        playsInline
+        controls={false}
+        preload="none"
+        style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
+      />
+
 
       {/* Tap zones: left = -10s, middle = play/pause, right = +10s */}
       <div style={{ position: "absolute", inset: 0, display: "grid", gridTemplateColumns: "1fr 2fr 1fr" }}>
