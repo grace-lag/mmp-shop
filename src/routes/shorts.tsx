@@ -101,24 +101,32 @@ function ShortsPage() {
 
   return (
     <SiteLayout activeNav="shorts" hideHeader hideFooter>
-      <div style={{ display: "flex", flexDirection: "column", gap: 0, marginTop: 0, background: "#000", minHeight: "100vh" }}>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 60,
+          background: "#000",
+          overflowY: "scroll",
+          scrollSnapType: "y mandatory",
+          overscrollBehavior: "contain",
+          WebkitOverflowScrolling: "touch",
+          zIndex: 1,
+        }}
+      >
         {(shorts ?? []).map((s) => (
           <ShortCard key={s.id} short={s} onOpenComments={() => setCommentsFor(s.id)} />
         ))}
         {shorts && shorts.length === 0 && (
-          <p style={{ color: "#fff", textAlign: "center", marginTop: 30, background: "#000", padding: 40 }}>Aucun Short. Soyez le premier !</p>
+          <p style={{ color: "#fff", textAlign: "center", padding: 60 }}>Aucun Short. Soyez le premier !</p>
         )}
       </div>
 
-      <button
-        onClick={() => user ? fileRef.current?.click() : navigate({ to: "/login" })}
-        disabled={uploading}
-        aria-label="Publier"
-        style={{ position: "fixed", right: 16, bottom: 80, zIndex: 100, background: "#ea580c", color: "#fff", border: 0, borderRadius: 999, padding: "12px 18px", display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer", fontWeight: 700, boxShadow: "0 6px 18px rgba(0,0,0,0.3)" }}
-      >
-        <Upload size={18} /> {uploading ? "Envoi..." : "Publier"}
-      </button>
       <input ref={fileRef} type="file" accept="video/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) onPick(f); e.target.value = ""; }} />
+
+
 
       {pendingFile && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
