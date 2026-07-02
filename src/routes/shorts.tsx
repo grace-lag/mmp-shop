@@ -115,6 +115,8 @@ function ShortsPage() {
               style={{ width: "100%", padding: 10, marginTop: 10, border: "1px solid #cbd5e1", borderRadius: 8 }} />
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description (optionnel)" rows={3}
               style={{ width: "100%", padding: 10, marginTop: 8, border: "1px solid #cbd5e1", borderRadius: 8, fontFamily: "inherit" }} />
+            <input value={price} onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="Prix en FCFA (optionnel)" inputMode="numeric"
+              style={{ width: "100%", padding: 10, marginTop: 8, border: "1px solid #cbd5e1", borderRadius: 8 }} />
             <div style={{ display: "flex", gap: 8, marginTop: 12, justifyContent: "flex-end" }}>
               <button onClick={() => setPendingFile(null)} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid #cbd5e1", background: "white", cursor: "pointer" }}>Annuler</button>
               <button onClick={publish} disabled={uploading} style={{ padding: "8px 16px", borderRadius: 8, border: "none", background: "#ea580c", color: "white", fontWeight: 700, cursor: "pointer" }}>{uploading ? "Publication..." : "Publier"}</button>
