@@ -406,9 +406,11 @@ export type Database = {
           annonce_id: string | null
           caption: string | null
           created_at: string
+          description: string | null
           id: string
           likes_count: number
           thumbnail_url: string | null
+          title: string | null
           user_id: string
           video_url: string
           views: number
@@ -417,9 +419,11 @@ export type Database = {
           annonce_id?: string | null
           caption?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           likes_count?: number
           thumbnail_url?: string | null
+          title?: string | null
           user_id: string
           video_url: string
           views?: number
@@ -428,9 +432,11 @@ export type Database = {
           annonce_id?: string | null
           caption?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           likes_count?: number
           thumbnail_url?: string | null
+          title?: string | null
           user_id?: string
           video_url?: string
           views?: number
@@ -441,6 +447,96 @@ export type Database = {
             columns: ["annonce_id"]
             isOneToOne: false
             referencedRelation: "annonces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shorts_comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          short_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          short_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          short_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shorts_comments_short_id_fkey"
+            columns: ["short_id"]
+            isOneToOne: false
+            referencedRelation: "shorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shorts_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          short_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          short_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          short_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shorts_favorites_short_id_fkey"
+            columns: ["short_id"]
+            isOneToOne: false
+            referencedRelation: "shorts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shorts_likes: {
+        Row: {
+          created_at: string
+          id: string
+          short_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          short_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          short_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shorts_likes_short_id_fkey"
+            columns: ["short_id"]
+            isOneToOne: false
+            referencedRelation: "shorts"
             referencedColumns: ["id"]
           },
         ]

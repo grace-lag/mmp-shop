@@ -51,6 +51,8 @@ function Index() {
       {/* Barre 1 : recherche de boutique, collée sous le bandeau orange */}
       <form
         className="shop-search-bar"
+        style={{ marginTop: -32 }}
+
         onSubmit={(e) => {
           e.preventDefault();
           navigate({ to: "/recherche-utilisateur", search: { q: shopSearch } as any });
@@ -67,7 +69,7 @@ function Index() {
         </button>
       </form>
 
-      {/* Carrousel publicitaire */}
+      {/* Carrousel publicitaire - collé sous la barre de recherche */}
       <div
         style={{
           position: "relative",
@@ -75,9 +77,10 @@ function Index() {
           overflow: "hidden",
           aspectRatio: "5/2",
           background: "#0f172a",
-          margin: "12px 0",
+          margin: "0 0 10px 0",
         }}
       >
+
         {ADS.map((ad, i) => (
           <img
             key={ad.src}
