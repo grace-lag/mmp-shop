@@ -32,6 +32,7 @@ function ShortsPage() {
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [commentsFor, setCommentsFor] = useState<string | null>(null);
 
   const { data: shorts, refetch } = useQuery({
