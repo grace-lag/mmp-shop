@@ -29,6 +29,7 @@ type Short = {
 function ShortsPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const search = Route.useSearch();
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -37,8 +38,20 @@ function ShortsPage() {
   const [price, setPrice] = useState("");
   const [commentsFor, setCommentsFor] = useState<string | null>(null);
 
+  // Open file picker when the "+" nav button navigates here with ?upload=1
+  useEffect(() => {
+    if (search.upload && user) {
+      fileRef.current?.click();
+      // Clear query so subsequent opens don't loop
+      navigate({ to: "/shorts", search: {} as any, replace: true });
+    } else if (search.upload && !user) {
+      navigate({ to: "/login" });
+    }
+  }, [search.upload, user, navigate]);
+
   const { data: shorts, refetch } = useQuery({
     queryKey: ["shorts-feed"],
+
     queryFn: async () => {
       const { data, error } = await (supabase as any)
         .from("shorts")
