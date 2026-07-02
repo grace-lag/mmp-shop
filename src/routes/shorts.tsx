@@ -50,10 +50,10 @@ function ShortsPage() {
 
   const onPick = (f: File) => {
     if (!user) { navigate({ to: "/login" }); return; }
-    if (f.size > 10 * 1024 * 1024) { toast.error("Vidéo trop volumineuse (max 10 Mo)"); return; }
+    if (f.size > 50 * 1024 * 1024) { toast.error("Vidéo trop volumineuse (max 50 Mo)"); return; }
     if (!f.type.startsWith("video/")) { toast.error("Format vidéo invalide"); return; }
     setPendingFile(f);
-    setTitle(""); setDescription("");
+    setTitle(""); setDescription(""); setPrice("");
   };
 
   const publish = async () => {
