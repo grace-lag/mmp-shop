@@ -87,7 +87,7 @@ function JobsPage() {
         {(jobs ?? []).map((a: any) => (
           <div key={a.id} style={{ position: "relative", background: "#000", borderRadius: 14, overflow: "hidden", aspectRatio: "3/4" }}>
             {a.image_url ? (
-              <img src={a.image_url} alt={a.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={a.image_url} alt={a.title} onClick={() => setLightbox(a.image_url!)} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "zoom-in" }} />
             ) : (
               <div style={{ width: "100%", height: "100%", background: "#1e293b", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 64, color: "#94a3b8" }}>💼</div>
             )}
