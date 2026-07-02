@@ -24,6 +24,7 @@ function JobsPage() {
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [sellerName, setSellerName] = useState("");
 
@@ -36,7 +37,7 @@ function JobsPage() {
 
   const { data: jobs, refetch } = useQuery({
     queryKey: ["jobs"],
-    queryFn: () => listAnnonces({ category: "Emplois", limit: 60 }),
+    queryFn: () => listAnnonces({ category: "Emplois", limit: 60, includeJobs: true }),
   });
 
   const submit = async (e: React.FormEvent) => {
@@ -86,7 +87,7 @@ function JobsPage() {
         {(jobs ?? []).map((a: any) => (
           <div key={a.id} style={{ position: "relative", background: "#000", borderRadius: 14, overflow: "hidden", aspectRatio: "3/4" }}>
             {a.image_url ? (
-              <img src={a.image_url} alt={a.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={a.image_url} alt={a.title} onClick={() => setLightbox(a.image_url!)} style={{ width: "100%", height: "100%", objectFit: "cover", cursor: "zoom-in" }} />
             ) : (
               <div style={{ width: "100%", height: "100%", background: "#1e293b", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 64, color: "#94a3b8" }}>💼</div>
             )}
@@ -137,6 +138,13 @@ function JobsPage() {
               </button>
             </div>
           </form>
+        </div>
+      )}
+
+      {lightbox && (
+        <div onClick={() => setLightbox(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)", zIndex: 300, display: "flex", alignItems: "center", justifyContent: "center", cursor: "zoom-out" }}>
+          <img src={lightbox} alt="" style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+          <button onClick={() => setLightbox(null)} aria-label="Fermer" style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.15)", color: "#fff", border: "none", borderRadius: "50%", width: 40, height: 40, cursor: "pointer" }}><X size={22} /></button>
         </div>
       )}
     </SiteLayout>

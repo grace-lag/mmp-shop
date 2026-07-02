@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useAuth } from "@/lib/auth/AuthProvider";
@@ -47,6 +47,21 @@ function DashboardPage() {
     },
   });
 
+  const [tab, setTab] = useState<"ads" | "shorts">("ads");
+
+  const { data: myShorts } = useQuery({
+    queryKey: ["my-shorts-list", user?.id],
+    enabled: !!user && tab === "shorts",
+    queryFn: async () => {
+      const { data } = await (supabase as any)
+        .from("shorts")
+        .select("id,title,video_url,thumbnail_url,price,created_at")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      return data ?? [];
+    },
+  });
+
   if (!user) return null;
 
   const fullName = [profile?.prenom, profile?.nom].filter(Boolean).join(" ").trim() || "Mon compte";
@@ -72,7 +87,14 @@ function DashboardPage() {
         <Plus size={18} /> Nouvelle annonce
       </Link>
 
-      <h2 style={{ marginTop: 28, marginBottom: 12 }}>Mes annonces</h2>
+      <div style={{ display: "flex", gap: 8, marginTop: 28, marginBottom: 12 }}>
+        <button onClick={() => setTab("ads")} style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: tab === "ads" ? "#ea580c" : "#e2e8f0", color: tab === "ads" ? "#fff" : "#0f172a", fontWeight: 700, cursor: "pointer" }}>Mes annonces</button>
+        <button onClick={() => setTab("shorts")} style={{ flex: 1, padding: "10px 12px", borderRadius: 10, border: "none", background: tab === "shorts" ? "#ea580c" : "#e2e8f0", color: tab === "shorts" ? "#fff" : "#0f172a", fontWeight: 700, cursor: "pointer" }}>Mes shorts</button>
+      </div>
+
+      {tab === "ads" ? (
+      <>
+      <h2 style={{ marginTop: 8, marginBottom: 12 }}>Mes annonces</h2>
       <div className="product-grid">
         {(myAds ?? []).map((a: any) => {
           const expired = a.expires_at && new Date(a.expires_at) <= new Date();
@@ -113,6 +135,37 @@ function DashboardPage() {
         })}
         {myAds && myAds.length === 0 && <p style={{ color: "#64748b" }}>Vous n'avez pas encore d'annonce.</p>}
       </div>
+      </>
+      ) : (
+      <>
+      <h2 style={{ marginTop: 8, marginBottom: 12 }}>Mes shorts</h2>
+      <div className="product-grid">
+        {(myShorts ?? []).map((s: any) => (
+          <div key={s.id} className="product-card" style={{ position: "relative" }}>
+            <Link to="/shorts" className="product-link">
+              {s.thumbnail_url ? <img src={s.thumbnail_url} alt={s.title ?? "short"} /> : (
+                <video src={s.video_url} muted style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 8, background: "#000" }} />
+              )}
+            </Link>
+            <h3>{s.title || "Sans titre"}</h3>
+            {s.price != null && <p className="price">{formatPrice(s.price)}</p>}
+            <button
+              onClick={async () => {
+                if (!confirm("Supprimer ce short ?")) return;
+                const { error } = await (supabase as any).from("shorts").delete().eq("id", s.id);
+                if (error) toast.error(error.message);
+                else { toast.success("Short supprimé"); qc.invalidateQueries({ queryKey: ["my-shorts-list"] }); }
+              }}
+              style={{ width: "100%", background: "#dc2626", color: "#fff", borderRadius: 8, padding: "8px", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4 }}
+            >
+              <Trash2 size={14} /> Supprimer
+            </button>
+          </div>
+        ))}
+        {myShorts && myShorts.length === 0 && <p style={{ color: "#64748b" }}>Vous n'avez pas encore publié de short.</p>}
+      </div>
+      </>
+      )}
     </SiteLayout>
   );
 }

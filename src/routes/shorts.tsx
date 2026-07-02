@@ -17,6 +17,7 @@ type Short = {
   user_id: string;
   title: string | null;
   description: string | null;
+  price: number | null;
   video_url: string;
   thumbnail_url: string | null;
   created_at: string;
@@ -31,6 +32,7 @@ function ShortsPage() {
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [commentsFor, setCommentsFor] = useState<string | null>(null);
 
   const { data: shorts, refetch } = useQuery({
@@ -48,10 +50,10 @@ function ShortsPage() {
 
   const onPick = (f: File) => {
     if (!user) { navigate({ to: "/login" }); return; }
-    if (f.size > 10 * 1024 * 1024) { toast.error("Vidéo trop volumineuse (max 10 Mo)"); return; }
+    if (f.size > 50 * 1024 * 1024) { toast.error("Vidéo trop volumineuse (max 50 Mo)"); return; }
     if (!f.type.startsWith("video/")) { toast.error("Format vidéo invalide"); return; }
     setPendingFile(f);
-    setTitle(""); setDescription("");
+    setTitle(""); setDescription(""); setPrice("");
   };
 
   const publish = async () => {
@@ -69,6 +71,7 @@ function ShortsPage() {
         video_url,
         title: title.trim() || null,
         description: description.trim() || null,
+        price: price.trim() ? Number(price) : null,
       });
       if (insErr) throw insErr;
       toast.success("Short publié !");
@@ -83,7 +86,7 @@ function ShortsPage() {
 
   return (
     <SiteLayout activeNav="shorts" hideHeader hideFooter>
-      <div style={{ display: "flex", flexDirection: "column", gap: 0, marginTop: 0 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 0, marginTop: 0, background: "#000", minHeight: "100vh" }}>
         {(shorts ?? []).map((s) => (
           <ShortCard key={s.id} short={s} onOpenComments={() => setCommentsFor(s.id)} />
         ))}
@@ -112,6 +115,8 @@ function ShortsPage() {
               style={{ width: "100%", padding: 10, marginTop: 10, border: "1px solid #cbd5e1", borderRadius: 8 }} />
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description (optionnel)" rows={3}
               style={{ width: "100%", padding: 10, marginTop: 8, border: "1px solid #cbd5e1", borderRadius: 8, fontFamily: "inherit" }} />
+            <input value={price} onChange={(e) => setPrice(e.target.value.replace(/[^0-9.]/g, ""))} placeholder="Prix en FCFA (optionnel)" inputMode="numeric"
+              style={{ width: "100%", padding: 10, marginTop: 8, border: "1px solid #cbd5e1", borderRadius: 8 }} />
             <div style={{ display: "flex", gap: 8, marginTop: 12, justifyContent: "flex-end" }}>
               <button onClick={() => setPendingFile(null)} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid #cbd5e1", background: "white", cursor: "pointer" }}>Annuler</button>
               <button onClick={publish} disabled={uploading} style={{ padding: "8px 16px", borderRadius: 8, border: "none", background: "#ea580c", color: "white", fontWeight: 700, cursor: "pointer" }}>{uploading ? "Publication..." : "Publier"}</button>
@@ -337,6 +342,11 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
       <div style={{ position: "absolute", left: 12, right: 84, bottom: 70, color: "#fff", textShadow: "0 1px 3px rgba(0,0,0,0.8)", zIndex: 4 }}>
         {short.title && <div style={{ fontWeight: 700, fontSize: "1rem", marginBottom: 4 }}>{short.title}</div>}
         {short.description && <div style={{ fontSize: "0.9rem", opacity: 0.95, lineHeight: 1.35 }}>{short.description}</div>}
+        {short.price != null && (
+          <div style={{ marginTop: 6, display: "inline-block", background: "#16a34a", color: "#fff", padding: "3px 10px", borderRadius: 999, fontWeight: 700, fontSize: "0.85rem" }}>
+            {new Intl.NumberFormat("fr-FR").format(short.price)} FCFA
+          </div>
+        )}
       </div>
 
       <Link
@@ -418,7 +428,12 @@ function ShortComments({ shortId, onClose }: { shortId: string; onClose: () => v
         </div>
         <div style={{ padding: 12, borderTop: "1px solid #e2e8f0" }}>
           {user ? (
-            <form onSubmit={(e) => { e.preventDefault(); add.mutate(); }} style={{ display: "flex", gap: 8 }}>
+            <form onSubmit={(e) => { e.preventDefault(); add.mutate(); }} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>
+                {user?.user_metadata?.avatar_url
+                  ? <img src={user.user_metadata.avatar_url} alt="moi" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  : "👤"}
+              </div>
               <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Écris un commentaire..."
                      style={{ flex: 1, padding: 10, borderRadius: 20, border: "1px solid #e2e8f0", background: "#f0f2f5", outline: "none" }} />
               <button type="submit" disabled={!text.trim()} style={{ padding: "10px 16px", borderRadius: 20, border: "none", background: text.trim() ? "#2563eb" : "#cbd5e1", color: "#fff", fontWeight: 600, cursor: "pointer" }}>

@@ -44,11 +44,12 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
   });
 
   const menuItems = [
+    { to: "/annonces", icon: "🛍️", title: "Plus d'annonces", sub: "Voir toutes les annonces" },
     { to: "/offres-emploi", icon: "💼", title: "Offre d'emploi", sub: "Trouver ou proposer un emploi" },
     ...(user
       ? [
           { to: "/historique", icon: "📋", title: "Historique", sub: "Visites & conversations" },
-          { to: "/notifications", icon: "🔔", title: "Notifications", sub: "Boutiques suivies" },
+          { to: "/notifications", icon: "🔔", title: "Notifications", sub: "Alertes & boutiques suivies" },
         ]
       : [
           { to: "/login", icon: "🔑", title: "Se connecter", sub: "Accéder à votre compte" },

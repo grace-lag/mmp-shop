@@ -60,6 +60,8 @@ function PosterPage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.price) return toast.error("Titre et prix requis");
+    if (!form.phone.trim()) return toast.error("Numéro de téléphone requis");
+    if (!form.whatsapp.trim()) return toast.error("Numéro WhatsApp requis");
     if (files.length === 0) return toast.error("Ajoute au moins une photo du produit");
     if (subs.length > 0 && !form.subcategory) return toast.error("Choisis une sous-catégorie");
     setSubmitting(true);
@@ -109,8 +111,14 @@ function PosterPage() {
             {subs.map((s) => <option key={s}>{s}</option>)}
           </select>
         )}
-        <PhoneInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="Téléphone" />
-        <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="WhatsApp" />
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ fontSize: "0.9em", color: "#475569" }}>Téléphone *</span>
+          <PhoneInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="Téléphone" required />
+        </label>
+        <label style={{ display: "grid", gap: 4 }}>
+          <span style={{ fontSize: "0.9em", color: "#475569" }}>WhatsApp *</span>
+          <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="WhatsApp" required />
+        </label>
 
         <div>
           <label style={{ fontWeight: 600, display: "block", marginBottom: 8 }}>

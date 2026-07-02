@@ -276,6 +276,42 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          read_at: string | null
+          title: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          read_at?: string | null
+          title?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          read_at?: string | null
+          title?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           annonce_id: string
@@ -409,6 +445,7 @@ export type Database = {
           description: string | null
           id: string
           likes_count: number
+          price: number | null
           thumbnail_url: string | null
           title: string | null
           user_id: string
@@ -422,6 +459,7 @@ export type Database = {
           description?: string | null
           id?: string
           likes_count?: number
+          price?: number | null
           thumbnail_url?: string | null
           title?: string | null
           user_id: string
@@ -435,6 +473,7 @@ export type Database = {
           description?: string | null
           id?: string
           likes_count?: number
+          price?: number | null
           thumbnail_url?: string | null
           title?: string | null
           user_id?: string

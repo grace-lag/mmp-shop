@@ -37,8 +37,8 @@ function Index() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: annonces } = useQuery({
-    queryKey: ["annonces", "tendance", user?.id ?? "anon"],
-    queryFn: () => listAnnonces({ limit: 9, excludeUserId: user?.id ?? null }),
+    queryKey: ["annonces", "tendance"],
+    queryFn: () => listAnnonces({ limit: 9 }),
   });
 
   useEffect(() => {
@@ -55,12 +55,13 @@ function Index() {
 
         onSubmit={(e) => {
           e.preventDefault();
-          navigate({ to: "/recherche-utilisateur", search: { q: shopSearch } as any });
+          const q = shopSearch.trim();
+          navigate({ to: "/annonces", search: { q } as any });
         }}
       >
         <input
           type="text"
-          placeholder="Rechercher une boutique sur ma marketplace"
+          placeholder="Rechercher un produit, une boutique..."
           value={shopSearch}
           onChange={(e) => setShopSearch(e.target.value)}
         />

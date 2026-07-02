@@ -4,7 +4,7 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { CATEGORIES, CITIES, formatPrice, listAnnonces } from "@/lib/annonces";
 import { AnnonceStats } from "@/components/AnnonceStats";
-import { useAuth } from "@/lib/auth/AuthProvider";
+
 
 export const Route = createFileRoute("/annonces")({
   validateSearch: (s: Record<string, unknown>) => ({
@@ -22,11 +22,11 @@ function AnnoncesPage() {
   const [city, setCity] = useState(sp.city);
   const [category, setCategory] = useState(sp.category);
   const subcategory = sp.subcategory;
-  const { user } = useAuth();
+  
 
   const { data, isLoading } = useQuery({
-    queryKey: ["annonces", { search, city, category, subcategory, uid: user?.id ?? "anon" }],
-    queryFn: () => listAnnonces({ search, city, category, subcategory, excludeUserId: user?.id ?? null }),
+    queryKey: ["annonces", { search, city, category, subcategory }],
+    queryFn: () => listAnnonces({ search, city, category, subcategory }),
   });
 
   return (
