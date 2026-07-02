@@ -37,8 +37,8 @@ function Index() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { data: annonces } = useQuery({
-    queryKey: ["annonces", "tendance", user?.id ?? "anon"],
-    queryFn: () => listAnnonces({ limit: 9, excludeUserId: user?.id ?? null }),
+    queryKey: ["annonces", "tendance"],
+    queryFn: () => listAnnonces({ limit: 9 }),
   });
 
   useEffect(() => {
