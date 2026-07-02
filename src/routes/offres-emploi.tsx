@@ -24,6 +24,7 @@ function JobsPage() {
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const [sellerName, setSellerName] = useState("");
 
