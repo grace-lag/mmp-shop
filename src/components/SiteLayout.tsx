@@ -141,10 +141,35 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
           <span className="nav-icon">🎬</span>
           <span className="nav-label">Shorts</span>
         </Link>
-        <Link to="/poster" className={`nav-item ${isActive("poster", "/poster") ? "active" : ""}`}>
-          <span className="nav-icon">➕</span>
-          <span className="nav-label">Poster</span>
-        </Link>
+        {path.startsWith("/shorts") ? (
+          <Link
+            to="/shorts"
+            search={{ upload: 1 } as any}
+            className="nav-item"
+            aria-label="Publier un short"
+          >
+            <span
+              className="nav-icon"
+              style={{
+                background: "linear-gradient(90deg,#00f2ea,#ff0050)",
+                color: "#fff",
+                borderRadius: 10,
+                padding: "2px 10px",
+                fontWeight: 900,
+                fontSize: 22,
+                lineHeight: 1,
+              }}
+            >
+              ＋
+            </span>
+            <span className="nav-label">Short</span>
+          </Link>
+        ) : (
+          <Link to="/poster" className={`nav-item ${isActive("poster", "/poster") ? "active" : ""}`}>
+            <span className="nav-icon">➕</span>
+            <span className="nav-label">Poster</span>
+          </Link>
+        )}
         <Link to="/historique" className={`nav-item ${isActive("historique", "/historique") ? "active" : ""}`}>
           <span className="nav-icon">💬</span>
           <span className="nav-label">Messages</span>
@@ -155,6 +180,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
           <span className="nav-label">Mon compte</span>
         </Link>
       </nav>
+
 
       {!hideFooter && (
       <footer>
