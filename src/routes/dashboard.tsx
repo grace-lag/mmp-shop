@@ -47,6 +47,21 @@ function DashboardPage() {
     },
   });
 
+  const [tab, setTab] = useState<"ads" | "shorts">("ads");
+
+  const { data: myShorts } = useQuery({
+    queryKey: ["my-shorts-list", user?.id],
+    enabled: !!user && tab === "shorts",
+    queryFn: async () => {
+      const { data } = await (supabase as any)
+        .from("shorts")
+        .select("id,title,video_url,thumbnail_url,price,created_at")
+        .eq("user_id", user!.id)
+        .order("created_at", { ascending: false });
+      return data ?? [];
+    },
+  });
+
   if (!user) return null;
 
   const fullName = [profile?.prenom, profile?.nom].filter(Boolean).join(" ").trim() || "Mon compte";
