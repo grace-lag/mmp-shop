@@ -51,6 +51,8 @@ function Index() {
       {/* Barre 1 : recherche de boutique, collée sous le bandeau orange */}
       <form
         className="shop-search-bar"
+        style={{ marginTop: -32 }}
+
         onSubmit={(e) => {
           e.preventDefault();
           navigate({ to: "/recherche-utilisateur", search: { q: shopSearch } as any });
