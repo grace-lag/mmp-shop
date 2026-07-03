@@ -10,7 +10,7 @@ import { usePresenceMap, PresenceDot } from "@/lib/presence";
 
 import { useAuth } from "@/lib/auth/AuthProvider";
 import ad1 from "@/assets/ad-1.jpg";
-import ad2 from "@/assets/ad-2.jpg";
+
 import ad3 from "@/assets/ad-3.jpg";
 import heroPlatform from "@/assets/mamarketplace-eshop-hero.jpg";
 
