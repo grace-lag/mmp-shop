@@ -80,26 +80,48 @@ function Index() {
 
   return (
     <SiteLayout activeNav="accueil">
-      {/* Barre 1 : recherche de boutique, collée sous le bandeau orange */}
+      {/* Barre 1 : recherche de personnes (boutiques) */}
       <form
         className="shop-search-bar"
-        style={{ marginTop: -32 }}
-
+        style={{ marginTop: -32, position: "relative" }}
         onSubmit={(e) => {
           e.preventDefault();
           const q = shopSearch.trim();
-          navigate({ to: "/annonces", search: { q } as any });
+          navigate({ to: "/recherche-utilisateur", search: { q } as any });
         }}
       >
         <input
           type="text"
-          placeholder="Rechercher un produit, une boutique..."
+          placeholder="Rechercher une personne, une boutique..."
           value={shopSearch}
-          onChange={(e) => setShopSearch(e.target.value)}
+          onChange={(e) => { setShopSearch(e.target.value); setShowSuggest(true); }}
+          onFocus={() => setShowSuggest(true)}
+          onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
         />
-        <button type="submit" aria-label="Rechercher une boutique">
+        <button type="submit" aria-label="Rechercher">
           <Search size={18} />
         </button>
+        {showSuggest && shopSearch.trim().length >= 2 && (peopleSuggest?.length ?? 0) > 0 && (
+          <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid #fed7aa", borderRadius: 12, marginTop: 4, boxShadow: "0 4px 12px rgba(0,0,0,0.08)", zIndex: 40, overflow: "hidden" }}>
+            {(peopleSuggest ?? []).map((p: any) => {
+              const name = [p.prenom, p.nom].filter(Boolean).join(" ").trim() || "Utilisateur";
+              return (
+                <button
+                  key={p.id}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={() => { setShowSuggest(false); navigate({ to: "/vendeur/$id", params: { id: p.id } }); }}
+                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", width: "100%", border: "none", background: "transparent", cursor: "pointer", textAlign: "left" }}
+                >
+                  <div style={{ width: 32, height: 32, borderRadius: "50%", overflow: "hidden", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    {p.avatar_url ? <img src={p.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : "👤"}
+                  </div>
+                  <span style={{ fontWeight: 500 }}>{name}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
       </form>
 
       {/* Carrousel publicitaire - collé sous la barre de recherche */}
