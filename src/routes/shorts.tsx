@@ -489,7 +489,7 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
         style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
       />
 
-      {/* Tap zones: left = -10s, middle = play/pause, right = +10s */}
+      {/* Tap zones: left = -5s, middle = play/pause, right = +5s */}
       <div style={{ position: "absolute", inset: 0, display: "grid", gridTemplateColumns: "1fr 2fr 1fr" }}>
         <div onDoubleClick={() => seek(-5)} onClick={togglePlay} />
         <div onClick={togglePlay} />
