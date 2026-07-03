@@ -4,6 +4,7 @@ import { Phone, MessageSquare } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { isOnline } from "@/lib/presence";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 export const Route = createFileRoute("/contact/$id")({
   head: () => ({ meta: [{ title: "Contacter le vendeur — MaMarketplace E-Shop" }] }),
@@ -12,6 +13,7 @@ export const Route = createFileRoute("/contact/$id")({
 
 function ContactPage() {
   const { id } = Route.useParams();
+  const { user } = useAuth();
   const { data: profile, isLoading } = useQuery({
     queryKey: ["contact-profile", id],
     queryFn: async () => {
@@ -51,9 +53,15 @@ function ContactPage() {
               💬 WhatsApp
             </a>
           )}
-          <Link to="/chat" search={{ to: id }} style={btn("#2563eb")}>
-            <MessageSquare size={20} /> Message privé
-          </Link>
+          {user ? (
+            <Link to="/chat" search={{ to: id }} style={btn("#2563eb")}>
+              <MessageSquare size={20} /> Message privé
+            </Link>
+          ) : (
+            <Link to="/login" style={btn("#2563eb")}>
+              <MessageSquare size={20} /> Connectez-vous pour envoyer un message
+            </Link>
+          )}
           <Link to="/u/$id" params={{ id }} style={{ ...btn("#64748b"), background: "white", color: "#0f172a", border: "1px solid #cbd5e1" }}>
             👤 Voir le profil
           </Link>

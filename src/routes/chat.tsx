@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Smile, Paperclip, Pencil, Trash2, Check, X, MoreVertical, Copy, Archive } from "lucide-react";
+import { Smile, Paperclip, Pencil, Trash2, Check, X, MoreVertical, Copy, Archive, Mic } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { Attachment } from "@/components/Attachment";
@@ -32,6 +32,12 @@ function ChatPage() {
   const [headerMenuOpen, setHeaderMenuOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [recording, setRecording] = useState(false);
+  const [recordSeconds, setRecordSeconds] = useState(0);
+  const mediaRecRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const recordTimerRef = useRef<number | null>(null);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
 
@@ -148,6 +154,48 @@ function ChatPage() {
     }
   };
 
+  const startRecording = async () => {
+    if (!user) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mime = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
+      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+      mediaRecRef.current = rec;
+      chunksRef.current = [];
+      rec.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+      rec.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: rec.mimeType || "audio/webm" });
+        const ext = (rec.mimeType || "audio/webm").includes("mp4") ? "m4a" : "webm";
+        const file = new File([blob], `voice-${Date.now()}.${ext}`, { type: blob.type });
+        setUploading(true);
+        try {
+          const att = await uploadChatFile(file, user.id, "chat");
+          await sendMessage({ content: null, attachment_url: att.url, attachment_type: att.type || "audio/webm", attachment_name: file.name });
+        } catch (err: any) {
+          toast.error(err.message ?? "Envoi audio échoué");
+        } finally {
+          setUploading(false);
+        }
+      };
+      rec.start();
+      setRecording(true);
+      setRecordSeconds(0);
+      recordTimerRef.current = window.setInterval(() => setRecordSeconds((s) => s + 1), 1000);
+    } catch (err: any) {
+      toast.error("Micro indisponible : " + (err?.message ?? "permission refusée"));
+    }
+  };
+  const stopRecording = (cancel = false) => {
+    const rec = mediaRecRef.current;
+    if (recordTimerRef.current) { clearInterval(recordTimerRef.current); recordTimerRef.current = null; }
+    setRecording(false);
+    if (!rec) return;
+    if (cancel) { rec.ondataavailable = null as any; rec.onstop = () => rec.stream.getTracks().forEach((t) => t.stop()); }
+    if (rec.state !== "inactive") rec.stop();
+    mediaRecRef.current = null;
+  };
+
   const startEdit = (m: any) => { setEditingId(m.id); setEditingText(m.content ?? ""); };
   const saveEdit = async () => {
     if (!editingId) return;
@@ -242,12 +290,19 @@ function ChatPage() {
     <SiteLayout activeNav="historique" hideFooter>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb", position: "relative" }} onClick={stop}>
         <Link to="/historique" style={{ textDecoration: "none", color: "#e67e22", fontSize: "1.4rem" }}>←</Link>
-        <div style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b" }}>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); if (partner?.avatar_url) setLightbox(partner.avatar_url); }}
+          aria-label="Voir la photo"
+          style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b", border: "none", padding: 0, cursor: partner?.avatar_url ? "pointer" : "default" }}
+        >
           {partner?.avatar_url
             ? <img src={partner.avatar_url} alt={partnerName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             : (partnerName[0]?.toUpperCase() ?? "U")}
-        </div>
-        <strong style={{ flex: 1 }}>{partnerName}</strong>
+        </button>
+        <Link to="/vendeur/$id" params={{ id: validTo }} style={{ flex: 1, textDecoration: "none", color: "inherit" }}>
+          <strong>{partnerName}</strong>
+        </Link>
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); setHeaderMenuOpen((v) => !v); setOpenMenuId(null); setShowPerso(false); }}
@@ -329,7 +384,7 @@ function ChatPage() {
                     opacity: m._optimistic ? 0.7 : 1,
                   }}>
                     {m.content && <div>{m.content}</div>}
-                    {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} />}
+                    {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} onImageClick={setLightbox} />}
                     {m.edited_at && <span style={{ marginLeft: 6, fontSize: "0.72em", opacity: 0.75, fontStyle: "italic" }}>(modifié)</span>}
                     {mine && !m._optimistic && (
                       <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#bbf7d0" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
@@ -374,15 +429,54 @@ function ChatPage() {
             resize: "none", minHeight: 42, maxHeight: 140,
           }}
         />
-        <button type="submit" disabled={!text.trim()}
-          style={{
-            padding: "10px 18px", borderRadius: 20, border: "none",
-            background: text.trim() ? "#2563eb" : "#cbd5e1", color: "#fff",
-            fontWeight: 600, fontSize: 14, cursor: text.trim() ? "pointer" : "not-allowed",
-          }}>
-          Envoyer
-        </button>
+        {recording ? (
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 20, color: "#b91c1c", fontWeight: 600 }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#dc2626", animation: "pulse 1s infinite" }} />
+              {String(Math.floor(recordSeconds / 60)).padStart(2, "0")}:{String(recordSeconds % 60).padStart(2, "0")}
+            </div>
+            <button type="button" onClick={() => stopRecording(true)} aria-label="Annuler"
+              style={{ background: "#f0f2f5", border: "1px solid #e2e8f0", borderRadius: 20, padding: 10, cursor: "pointer", color: "#64748b" }}>
+              <X size={20} />
+            </button>
+            <button type="button" onClick={() => stopRecording(false)} aria-label="Envoyer l'audio"
+              style={{ background: "#16a34a", border: "none", borderRadius: 20, padding: 10, cursor: "pointer", color: "#fff" }}>
+              <Check size={20} />
+            </button>
+          </>
+        ) : text.trim() ? (
+          <button type="submit"
+            style={{
+              padding: "10px 18px", borderRadius: 20, border: "none",
+              background: "#2563eb", color: "#fff",
+              fontWeight: 600, fontSize: 14, cursor: "pointer",
+            }}>
+            Envoyer
+          </button>
+        ) : (
+          <button type="button" onClick={startRecording} aria-label="Message vocal" disabled={uploading}
+            style={{ background: "#e67e22", border: "none", borderRadius: 20, padding: 10, cursor: "pointer", color: "#fff" }}>
+            <Mic size={20} />
+          </button>
+        )}
       </form>
+
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.9)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, cursor: "zoom-out" }}
+        >
+          <img src={lightbox} alt="" style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setLightbox(null); }}
+            aria-label="Fermer"
+            style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.15)", color: "#fff", border: "none", borderRadius: "50%", width: 40, height: 40, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <X size={24} />
+          </button>
+        </div>
+      )}
     </SiteLayout>
   );
 }
