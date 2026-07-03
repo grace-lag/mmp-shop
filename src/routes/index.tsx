@@ -42,6 +42,8 @@ function Index() {
     queryKey: ["annonces", "tendance"],
     queryFn: () => listAnnonces({ limit: 9 }),
   });
+  const { data: presence } = usePresenceMap((annonces ?? []).map((a: any) => a.seller_id));
+
 
   useEffect(() => {
     const t = setInterval(() => setAdIndex((i) => (i + 1) % ADS.length), 3000);
