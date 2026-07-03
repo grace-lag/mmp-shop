@@ -191,7 +191,7 @@ function Index() {
 
               <Link to="/annonce/$id" params={{ id: a.id }} className="product-link">
                 {a.image_url ? (
-                  <img src={a.image_url} alt={a.title} />
+                  <img src={a.image_url} alt={a.title} loading="lazy" decoding="async" />
                 ) : (
                   <div
                     style={{
