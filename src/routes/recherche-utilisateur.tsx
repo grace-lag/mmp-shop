@@ -42,7 +42,7 @@ function Page() {
         {(data ?? []).map((p: any) => {
           const name = [p.prenom, p.nom].filter(Boolean).join(" ").trim() || "Utilisateur";
           return (
-            <Link key={p.id} to="/social-chat" search={{ to: p.id } as any} style={{ display: "flex", alignItems: "center", gap: 12, padding: 10, background: "#fff", borderRadius: 12, border: "1px solid #fed7aa", textDecoration: "none", color: "inherit" }}>
+            <Link key={p.id} to="/vendeur/$id" params={{ id: p.id }} style={{ display: "flex", alignItems: "center", gap: 12, padding: 10, background: "#fff", borderRadius: 12, border: "1px solid #fed7aa", textDecoration: "none", color: "inherit" }}>
               <div style={{ width: 48, height: 48, borderRadius: "50%", overflow: "hidden", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 }}>
                 {p.avatar_url ? <img src={p.avatar_url} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : "👤"}
               </div>
