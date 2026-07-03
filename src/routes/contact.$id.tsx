@@ -53,9 +53,15 @@ function ContactPage() {
               💬 WhatsApp
             </a>
           )}
-          <Link to="/chat" search={{ to: id }} style={btn("#2563eb")}>
-            <MessageSquare size={20} /> Message privé
-          </Link>
+          {user ? (
+            <Link to="/chat" search={{ to: id }} style={btn("#2563eb")}>
+              <MessageSquare size={20} /> Message privé
+            </Link>
+          ) : (
+            <Link to="/login" style={btn("#2563eb")}>
+              <MessageSquare size={20} /> Connectez-vous pour envoyer un message
+            </Link>
+          )}
           <Link to="/u/$id" params={{ id }} style={{ ...btn("#64748b"), background: "white", color: "#0f172a", border: "1px solid #cbd5e1" }}>
             👤 Voir le profil
           </Link>
