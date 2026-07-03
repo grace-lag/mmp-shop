@@ -412,6 +412,7 @@ export type Database = {
       }
       seller_ratings: {
         Row: {
+          comment: string | null
           created_at: string
           id: string
           rater_id: string
@@ -420,6 +421,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          comment?: string | null
           created_at?: string
           id?: string
           rater_id: string
@@ -428,6 +430,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          comment?: string | null
           created_at?: string
           id?: string
           rater_id?: string
