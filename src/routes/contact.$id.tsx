@@ -4,6 +4,7 @@ import { Phone, MessageSquare } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { isOnline } from "@/lib/presence";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 export const Route = createFileRoute("/contact/$id")({
   head: () => ({ meta: [{ title: "Contacter le vendeur — MaMarketplace E-Shop" }] }),
