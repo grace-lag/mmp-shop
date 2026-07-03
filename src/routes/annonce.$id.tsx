@@ -207,7 +207,7 @@ function AnnonceDetail() {
             )}
             {annonce.whatsapp && (
               <a
-                href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Bonjour, votre article "${annonce.title}" est-il toujours disponible ?`)}`}
+                href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Bonjour, votre article "${annonce.title}" posté sur MaMarketplace E-Shop est-il toujours disponible ?`)}`}
                 className="btn-whatsapp"
                 style={{ background: "#25D366" }}
                 onClick={requireAuth}
