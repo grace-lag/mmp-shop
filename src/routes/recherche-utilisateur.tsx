@@ -4,10 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 
-export const Route = createFileRoute("/recherche-utilisateur")({ component: Page });
+export const Route = createFileRoute("/recherche-utilisateur")({
+  validateSearch: (s: Record<string, unknown>) => ({ q: (s.q as string) || "" }),
+  component: Page,
+});
 
 function Page() {
-  const [q, setQ] = useState("");
+  const sp = Route.useSearch();
+  const [q, setQ] = useState(sp.q);
   const { data } = useQuery({
     queryKey: ["user-search", q],
     enabled: q.trim().length >= 2,
