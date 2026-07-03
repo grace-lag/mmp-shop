@@ -26,7 +26,7 @@ function NotificationsPage() {
   const qc = useQueryClient();
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
 
-  // Direct notifications (likes, etc.)
+  // Direct notifications (likes, comments, follows, etc.)
   const { data: notifs } = useQuery({
     queryKey: ["notif-rows", user?.id],
     enabled: !!user,
@@ -41,6 +41,19 @@ function NotificationsPage() {
       return (data ?? []) as Notif[];
     },
   });
+
+  // Mark all as read on visit (like the Messages tab)
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      await (supabase as any)
+        .from("notifications")
+        .update({ read_at: new Date().toISOString() })
+        .eq("user_id", user.id)
+        .is("read_at", null);
+      qc.invalidateQueries({ queryKey: ["compte-notifs-unread", user.id] });
+    })();
+  }, [user, qc]);
 
   // Enrich with actor names
   const actorIds = Array.from(new Set((notifs ?? []).map((n) => n.actor_id).filter(Boolean))) as string[];
@@ -85,16 +98,27 @@ function NotificationsPage() {
     const actorName = actor ? `${actor.prenom ?? ""} ${actor.nom ?? ""}`.trim() || "Quelqu'un" : "Quelqu'un";
     const isLikeAnnonce = n.type === "like_annonce";
     const isLikeShort = n.type === "like_short";
+    const isCommentAnnonce = n.type === "comment_annonce";
+    const isCommentShort = n.type === "comment_short";
+    const isNewFollower = n.type === "new_follower";
     const label = isLikeAnnonce
       ? `👍 ${actorName} a liké votre annonce${n.title ? ` "${n.title}"` : ""}`
       : isLikeShort
         ? `👍 ${actorName} a liké votre short${n.title ? ` "${n.title}"` : ""}`
-        : n.title ?? "Nouvelle notification";
-    const linkProps: any = isLikeAnnonce && n.entity_id
+        : isCommentAnnonce
+          ? `💬 ${actorName} a commenté votre annonce${n.title ? ` "${n.title}"` : ""}`
+          : isCommentShort
+            ? `💬 ${actorName} a commenté votre short${n.title ? ` "${n.title}"` : ""}`
+            : isNewFollower
+              ? `⭐ ${actorName} s'est abonné à votre boutique`
+              : n.title ?? "Nouvelle notification";
+    const linkProps: any = (isLikeAnnonce || isCommentAnnonce) && n.entity_id
       ? { to: "/annonce/$id", params: { id: n.entity_id } }
-      : isLikeShort
+      : (isLikeShort || isCommentShort)
         ? { to: "/shorts" }
-        : { to: "/notifications" };
+        : isNewFollower && n.actor_id
+          ? { to: "/vendeur/$id", params: { id: n.actor_id } }
+          : { to: "/notifications" };
 
     return (
       <Link

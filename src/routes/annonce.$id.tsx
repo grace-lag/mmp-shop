@@ -6,7 +6,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Comments } from "@/components/Comments";
 import { AnnonceStats } from "@/components/AnnonceStats";
 import { SellerRating } from "@/components/SellerRating";
-import { formatPrice, getAnnonce, incrementViews } from "@/lib/annonces";
+import { formatPrice, getAnnonce, incrementViews, listAnnonces } from "@/lib/annonces";
 import { deleteAnnonceServerFn } from "@/lib/annonces.functions";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
@@ -86,13 +86,15 @@ function AnnonceDetail() {
     mutationFn: () => deleteAnnonce({ data: { id } }),
     onSuccess: () => {
       toast.success("Annonce supprimée");
-      window.location.href = "/annonces";
+      qc.invalidateQueries();
+      navigate({ to: "/annonces", search: { q: "", city: "", category: "", subcategory: "" } as any });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e?.message ?? "Suppression impossible"),
   });
 
   const [activeImg, setActiveImg] = useState(0);
   const [enlargedAvatar, setEnlargedAvatar] = useState(false);
+  const [enlargedPhoto, setEnlargedPhoto] = useState<string | null>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
 
   if (isLoading) return <SiteLayout><p>Chargement...</p></SiteLayout>;
@@ -166,7 +168,7 @@ function AnnonceDetail() {
                 className="annonce-gallery"
               >
                 {gallery.map((src, i) => (
-                  <img key={src + i} src={src} alt={`photo ${i + 1}`} className="annonce-main-image" />
+                  <img key={src + i} src={src} alt={`photo ${i + 1}`} className="annonce-main-image" style={{ cursor: "zoom-in" }} onClick={() => setEnlargedPhoto(src)} />
                 ))}
               </div>
               {gallery.length > 1 && (
@@ -192,7 +194,9 @@ function AnnonceDetail() {
 
         <div>
           <h1>{annonce.title}</h1>
-          <p className="price" style={{ fontSize: "1.8em" }}>{formatPrice(annonce.price)}</p>
+          {annonce.category !== "Emplois" && (
+            <p className="price" style={{ fontSize: "1.8em" }}>{formatPrice(annonce.price)}</p>
+          )}
           {annonce.city && <p>📍 {annonce.city}</p>}
           {annonce.category && <p>🏷️ {annonce.category}{annonce.subcategory ? ` — ${annonce.subcategory}` : ""}</p>}
 
@@ -202,7 +206,12 @@ function AnnonceDetail() {
               <a href={`tel:${annonce.phone}`} className="btn-whatsapp" onClick={requireAuth}>📞 Appel</a>
             )}
             {annonce.whatsapp && (
-              <a href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}`} className="btn-whatsapp" style={{ background: "#25D366" }} onClick={requireAuth}>💬 WhatsApp</a>
+              <a
+                href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Bonjour, votre article "${annonce.title}" est-il toujours disponible ?`)}`}
+                className="btn-whatsapp"
+                style={{ background: "#25D366" }}
+                onClick={requireAuth}
+              >💬 WhatsApp</a>
             )}
             {!isOwner && annonce.seller_id && (
               <>
@@ -223,8 +232,13 @@ function AnnonceDetail() {
               </>
             )}
             {isOwner && (
-              <button className="btn-whatsapp" style={{ background: "#dc2626" }} onClick={() => confirm("Supprimer cette annonce ?") && del.mutate()}>
-                🗑️ Supprimer
+              <button
+                className="btn-whatsapp"
+                style={{ background: "#dc2626" }}
+                disabled={del.isPending}
+                onClick={() => { if (confirm("Supprimer cette annonce ?")) del.mutate(); }}
+              >
+                🗑️ {del.isPending ? "Suppression..." : "Supprimer"}
               </button>
             )}
           </div>
@@ -247,6 +261,8 @@ function AnnonceDetail() {
         </ul>
       </section>
 
+      {/* Annonces similaires */}
+      <SimilarAnnonces category={annonce.category} excludeId={annonce.id} />
 
       {/* Avatar lightbox */}
       {enlargedAvatar && seller?.avatar_url && (
@@ -261,6 +277,54 @@ function AnnonceDetail() {
           <img src={seller.avatar_url} alt={sellerLabel} style={{ maxWidth: "92vw", maxHeight: "92vh", borderRadius: 12 }} />
         </div>
       )}
+
+      {/* Photo lightbox */}
+      {enlargedPhoto && (
+        <div
+          onClick={() => setEnlargedPhoto(null)}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            zIndex: 2000, cursor: "zoom-out", padding: 12,
+          }}
+        >
+          <img src={enlargedPhoto} alt="" style={{ maxWidth: "100vw", maxHeight: "100vh", objectFit: "contain" }} />
+        </div>
+      )}
     </SiteLayout>
+  );
+}
+
+function SimilarAnnonces({ category, excludeId }: { category: string; excludeId: string }) {
+  const { data } = useQuery({
+    queryKey: ["similar", category, excludeId],
+    enabled: !!category,
+    queryFn: async () => {
+      const rows = await listAnnonces({ category, limit: 12 });
+      return (rows ?? []).filter((r: any) => r.id !== excludeId).slice(0, 8);
+    },
+  });
+  if (!data || data.length === 0) return null;
+  return (
+    <section style={{ marginTop: 24 }}>
+      <h2 style={{ fontSize: "1.05rem", marginBottom: 10 }}>Annonces similaires</h2>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+        {data.map((a: any) => (
+          <Link key={a.id} to="/annonce/$id" params={{ id: a.id }} style={{ background: "#fff", border: "1px solid #fed7aa", borderRadius: 12, overflow: "hidden", textDecoration: "none", color: "inherit" }}>
+            {a.image_url ? (
+              <img src={a.image_url} alt={a.title} loading="lazy" style={{ width: "100%", aspectRatio: "1/1", objectFit: "cover" }} />
+            ) : (
+              <div style={{ width: "100%", aspectRatio: "1/1", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}>📷</div>
+            )}
+            <div style={{ padding: 8 }}>
+              <div style={{ fontSize: "0.85rem", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</div>
+              {category !== "Emplois" && (
+                <div style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price)}</div>
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }

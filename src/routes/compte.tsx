@@ -47,14 +47,15 @@ function ComptePage() {
   });
 
   const { data: newNotifs = 0 } = useQuery({
-    queryKey: ["compte-notifs", user?.id],
+    queryKey: ["compte-notifs-unread", user?.id],
     enabled: !!user,
+    refetchInterval: 15000,
     queryFn: async () => {
-      const { data: follows } = await supabase.from("seller_followers").select("seller_id").eq("follower_id", user!.id);
-      const ids = (follows ?? []).map((f: any) => f.seller_id);
-      if (ids.length === 0) return 0;
-      const since = new Date(Date.now() - 7 * 86400000).toISOString();
-      const { count } = await supabase.from("annonces").select("id", { count: "exact", head: true }).in("seller_id", ids).gt("created_at", since);
+      const { count } = await (supabase as any)
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", user!.id)
+        .is("read_at", null);
       return count ?? 0;
     },
   });

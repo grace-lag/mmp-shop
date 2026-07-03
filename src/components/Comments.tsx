@@ -113,11 +113,6 @@ export function Comments({ annonceId }: { annonceId: string }) {
               }}
               style={{ display: "flex", gap: 8, alignItems: "flex-end" }}
             >
-              <div style={{ width: 36, height: 36, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>
-                {user?.user_metadata?.avatar_url
-                  ? <img src={user.user_metadata.avatar_url} alt="moi" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  : "👤"}
-              </div>
               <input ref={fileRef} type="file" accept="image/*,video/*,*/*" onChange={onPickFile} style={{ display: "none" }} />
               <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading} aria-label="Joindre"
                 style={{ background: "#f0f2f5", border: "1px solid #e2e8f0", borderRadius: 20, padding: 8, cursor: "pointer", color: "#64748b" }}>
