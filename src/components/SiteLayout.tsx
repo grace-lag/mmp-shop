@@ -135,11 +135,29 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
       </div>
 
       <nav className="bottom-nav">
-        <Link to="/" className={`nav-item ${isActive("accueil") ? "active" : ""}`}>
+        <Link
+          to="/"
+          className={`nav-item ${isActive("accueil") ? "active" : ""}`}
+          onClick={(e) => {
+            if (path === "/") {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
+        >
           <span className="nav-icon">🏠</span>
           <span className="nav-label">Accueil</span>
         </Link>
-        <Link to="/shorts" className={`nav-item ${isActive("shorts", "/shorts") ? "active" : ""}`}>
+        <Link
+          to="/shorts"
+          className={`nav-item ${isActive("shorts", "/shorts") ? "active" : ""}`}
+          onClick={(e) => {
+            if (path.startsWith("/shorts")) {
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }}
+        >
           <span className="nav-icon">🎬</span>
           <span className="nav-label">Shorts</span>
         </Link>
