@@ -1,11 +1,62 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
-import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check } from "lucide-react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check, Volume2, VolumeX } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { toast } from "sonner";
+
+// Global mute state shared across all short cards (start muted so autoplay works).
+let g_muted = true;
+const g_listeners = new Set<() => void>();
+function useGlobalMuted(): [boolean, (v: boolean) => void] {
+  const val = useSyncExternalStore(
+    (cb) => { g_listeners.add(cb); return () => g_listeners.delete(cb); },
+    () => g_muted,
+    () => true,
+  );
+  const set = (v: boolean) => { g_muted = v; g_listeners.forEach((l) => l()); };
+  return [val, set];
+}
+
+// Best-effort client-side re-encode to a lower-bitrate WebM to keep uploads light.
+// Falls back to the original file on iOS Safari or if the codec is unsupported.
+async function compressVideo(file: File, onProgress?: (pct: number) => void): Promise<File> {
+  try {
+    if (typeof MediaRecorder === "undefined") return file;
+    const proto = HTMLVideoElement.prototype as any;
+    if (typeof proto.captureStream !== "function" && typeof proto.mozCaptureStream !== "function") return file;
+    const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus") ? "video/webm;codecs=vp9,opus"
+      : MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus") ? "video/webm;codecs=vp8,opus"
+      : MediaRecorder.isTypeSupported("video/webm") ? "video/webm" : "";
+    if (!mime) return file;
+
+    const url = URL.createObjectURL(file);
+    const v = document.createElement("video");
+    v.src = url; v.muted = true; (v as any).playsInline = true; v.preload = "auto";
+    await new Promise<void>((res, rej) => { v.onloadedmetadata = () => res(); v.onerror = () => rej(new Error("meta")); });
+    const stream: MediaStream = (v as any).captureStream ? (v as any).captureStream() : (v as any).mozCaptureStream();
+    const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 1_200_000, audioBitsPerSecond: 96_000 });
+    const chunks: Blob[] = [];
+    rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+    const done = new Promise<Blob>((res) => { rec.onstop = () => res(new Blob(chunks, { type: mime })); });
+    v.muted = false;
+    const onTime = () => { if (onProgress && v.duration) onProgress(Math.min(99, (v.currentTime / v.duration) * 100)); };
+    v.addEventListener("timeupdate", onTime);
+    rec.start(1000);
+    await v.play();
+    await new Promise<void>((res) => { v.onended = () => res(); });
+    rec.stop();
+    const blob = await done;
+    v.removeEventListener("timeupdate", onTime);
+    URL.revokeObjectURL(url);
+    if (blob.size >= file.size * 0.95) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webm", { type: mime });
+  } catch {
+    return file;
+  }
+}
 
 export const Route = createFileRoute("/shorts")({
   head: () => ({ meta: [{ title: "Shorts — MaMarketplace E-Shop" }] }),
