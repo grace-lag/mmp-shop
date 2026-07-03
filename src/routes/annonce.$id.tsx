@@ -168,7 +168,7 @@ function AnnonceDetail() {
                 className="annonce-gallery"
               >
                 {gallery.map((src, i) => (
-                  <img key={src + i} src={src} alt={`photo ${i + 1}`} className="annonce-main-image" />
+                  <img key={src + i} src={src} alt={`photo ${i + 1}`} className="annonce-main-image" style={{ cursor: "zoom-in" }} onClick={() => setEnlargedPhoto(src)} />
                 ))}
               </div>
               {gallery.length > 1 && (
