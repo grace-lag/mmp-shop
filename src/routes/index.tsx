@@ -36,11 +36,39 @@ function Index() {
   const [productSearch, setProductSearch] = useState("");
   const [city, setCity] = useState("Brazzaville");
   const [adIndex, setAdIndex] = useState(0);
+  const [showSuggest, setShowSuggest] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { data: annonces } = useQuery({
+
+  // People suggestions for the top search bar
+  const { data: peopleSuggest } = useQuery({
+    queryKey: ["people-suggest", shopSearch],
+    enabled: shopSearch.trim().length >= 2,
+    queryFn: async () => {
+      const term = `%${shopSearch.trim()}%`;
+      const { supabase } = await import("@/integrations/supabase/client");
+      const { data } = await supabase
+        .from("profiles")
+        .select("id,prenom,nom,avatar_url")
+        .or(`prenom.ilike.${term},nom.ilike.${term}`)
+        .limit(6);
+      return data ?? [];
+    },
+  });
+
+  const { data: annoncesRaw } = useQuery({
     queryKey: ["annonces", "tendance"],
-    queryFn: () => listAnnonces({ limit: 9 }),
+    queryFn: () => listAnnonces({ limit: 50 }),
+  });
+  // Trending: last 24h first (by recency), then by views desc
+  const annonces = (annoncesRaw ?? []).slice().sort((a: any, b: any) => {
+    const now = Date.now();
+    const dayMs = 24 * 3600 * 1000;
+    const aRecent = now - new Date(a.created_at).getTime() < dayMs;
+    const bRecent = now - new Date(b.created_at).getTime() < dayMs;
+    if (aRecent !== bRecent) return aRecent ? -1 : 1;
+    if (aRecent && bRecent) return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    return (b.views ?? 0) - (a.views ?? 0);
   });
   const { data: presence } = usePresenceMap((annonces ?? []).map((a: any) => a.seller_id));
 
