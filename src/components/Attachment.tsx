@@ -4,10 +4,10 @@ function isAudio(type?: string | null) {
   return !!type && type.startsWith("audio/");
 }
 
-export function Attachment({ url, type, name }: { url: string; type?: string | null; name?: string | null }) {
+export function Attachment({ url, type, name, onImageClick }: { url: string; type?: string | null; name?: string | null; onImageClick?: (url: string) => void }) {
   if (!url) return null;
   if (isImage(type)) {
-    return <img src={url} alt={name ?? "image"} style={{ maxWidth: 240, maxHeight: 240, borderRadius: 10, display: "block", marginTop: 6 }} />;
+    return <img src={url} alt={name ?? "image"} onClick={onImageClick ? () => onImageClick(url) : undefined} style={{ maxWidth: 240, maxHeight: 240, borderRadius: 10, display: "block", marginTop: 6, cursor: onImageClick ? "zoom-in" : "default" }} />;
   }
   if (isVideo(type)) {
     return <video src={url} controls playsInline style={{ maxWidth: 280, maxHeight: 280, borderRadius: 10, display: "block", marginTop: 6 }} />;
