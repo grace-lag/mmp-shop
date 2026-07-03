@@ -6,7 +6,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Comments } from "@/components/Comments";
 import { AnnonceStats } from "@/components/AnnonceStats";
 import { SellerRating } from "@/components/SellerRating";
-import { formatPrice, getAnnonce, incrementViews } from "@/lib/annonces";
+import { formatPrice, getAnnonce, incrementViews, listAnnonces } from "@/lib/annonces";
 import { deleteAnnonceServerFn } from "@/lib/annonces.functions";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
@@ -292,5 +292,39 @@ function AnnonceDetail() {
         </div>
       )}
     </SiteLayout>
+  );
+}
+
+function SimilarAnnonces({ category, excludeId }: { category: string; excludeId: string }) {
+  const { data } = useQuery({
+    queryKey: ["similar", category, excludeId],
+    enabled: !!category,
+    queryFn: async () => {
+      const rows = await listAnnonces({ category, limit: 12 });
+      return (rows ?? []).filter((r: any) => r.id !== excludeId).slice(0, 8);
+    },
+  });
+  if (!data || data.length === 0) return null;
+  return (
+    <section style={{ marginTop: 24 }}>
+      <h2 style={{ fontSize: "1.05rem", marginBottom: 10 }}>Annonces similaires</h2>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+        {data.map((a: any) => (
+          <Link key={a.id} to="/annonce/$id" params={{ id: a.id }} style={{ background: "#fff", border: "1px solid #fed7aa", borderRadius: 12, overflow: "hidden", textDecoration: "none", color: "inherit" }}>
+            {a.image_url ? (
+              <img src={a.image_url} alt={a.title} loading="lazy" style={{ width: "100%", aspectRatio: "1/1", objectFit: "cover" }} />
+            ) : (
+              <div style={{ width: "100%", aspectRatio: "1/1", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}>📷</div>
+            )}
+            <div style={{ padding: 8 }}>
+              <div style={{ fontSize: "0.85rem", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</div>
+              {category !== "Emplois" && (
+                <div style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price)}</div>
+              )}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
