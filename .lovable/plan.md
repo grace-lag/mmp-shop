@@ -1,46 +1,39 @@
-## Changements demandés
+Votre message contient une trentaine de demandes distinctes. Pour éviter un très long tour risqué (et rendre chaque changement vérifiable), je propose de les traiter en 6 lots. Dites-moi si l'ordre vous convient ou quels lots faire en priorité.
 
-### 1. Page Admin — suppression d'annonces individuelles
-- Ajouter dans la boutique d'un vendeur (`src/routes/vendeur.$id.tsx` ou `boutique.tsx` selon la route utilisée depuis l'admin) un bouton **Supprimer** par annonce, visible uniquement si l'utilisateur courant est admin (via `useIsAdmin`).
-- Nouveau server function `adminDeleteAnnonceById(annonceId)` dans `src/lib/admin.functions.ts` avec vérification du rôle admin puis `DELETE` sur `annonces` (RLS admin ou via `supabaseAdmin`).
+## Lot 1 — Recherche & Notifications
+- Barre de recherche (accueil) : suggestions d'utilisateurs en tapant, clic loupe → page résultats, clic sur un nom → boutique de la personne.
+- Notifier le vendeur quand : commentaire annonce, commentaire short, nouvel abonné boutique.
+- Compteur "Notifications" sur Mon compte = total réel ; se remet à zéro à l'ouverture (comme Messages).
 
-### 2. Liste des 150 mots bannis
-- Requête `SELECT word FROM banned_words` et affichage complet de la liste dans la réponse (pas de changement de code).
+## Lot 2 — Annonces (accueil, détail, poster, supprimer)
+- Accueil "Annonces tendance" : jusqu'à 50 annonces ; algo = récent en premier pendant 24 h puis tri par vues. Idem sur /annonces.
+- WhatsApp optionnel au post (téléphone reste obligatoire) ; masquer le bouton WhatsApp si vide.
+- Bouton WhatsApp du détail : message pré-rempli "Bonjour, votre article est-il toujours disponible ?" (modifiable).
+- Détail annonce : image cliquable → plein écran ; agrandir la zone photo et remonter bloc profil + bouton "Accéder à la boutique".
+- Similaires par catégorie sous les messages de sécurité.
+- Offres d'emploi : ne plus afficher "0 FCFA" ; image cliquable → plein écran sans textes autour.
+- Corriger le bouton Supprimer sur sa propre annonce.
 
-### 3. Page Shorts — bouton "+" personnalisé
-- Sur `src/components/SiteLayout.tsx` : détecter la route `/shorts`. Sur cette page, le bouton central "+" de la barre du bas pointe vers un formulaire "Poster un short" (au lieu de `/poster`).
-- Style spécifique (icône vidéo) uniquement sur `/shorts`.
-- Retirer le bouton "Publier" en haut de `src/routes/shorts.tsx` — la publication se fait uniquement via le "+" de la barre.
-- Extraire le formulaire de post d'un short en route dédiée `src/routes/poster-short.tsx` (réutilisation de la logique existante).
+## Lot 3 — Présence en ligne (vrai fix)
+- Rendre le heartbeat fiable (RPC touch_last_seen + focus/visibility + interval).
+- Point vert si en ligne, gris sinon, sur chaque annonce et sur les profils.
 
-### 4. Shorts — lecture différée + swipe TikTok + fond noir
-- `src/routes/shorts.tsx` :
-  - **Lazy load** : ne monter le `<video>` que pour la vidéo visible ± 1 (IntersectionObserver, `preload="none"` pour les autres).
-  - **Swipe court** : remplacer le scroll libre par snap vertical avec seuil bas (~15 % de hauteur ou vitesse) déclenchant `scrollIntoView` sur la vidéo suivante — comportement TikTok.
-  - **Fond noir** intégral autour de la vidéo (container `bg-black`, layout plein écran, retirer le fond pêche).
+## Lot 4 — Paramètres & Menu
+- Menu burger "Paramètres" → pointer vers la vraie page /parametres (pas modif compte).
+- Thème clair/sombre et changement de langue réellement appliqués globalement.
 
-### 5. Indicateur en ligne (point vert/gris) fiable
-- Vérifier `src/lib/presence.ts` (seuil 5 min sur `profiles.last_seen_at`).
-- Cause probable : `touch_last_seen()` n'est pas appelée assez souvent. Ajouter un appel régulier (toutes les 60s + au focus) dans `AuthProvider` via `supabase.rpc("touch_last_seen")`.
-- Auditer tous les endroits qui affichent le point (annonces, boutique, chat, admin, shorts) — s'assurer qu'ils lisent `last_seen_at` du profil et utilisent `isOnline()`.
+## Lot 5 — Shorts & Messages
+- iPhone : autoplay des shorts sans clic central (muted+playsInline+lecture forcée au geste initial).
+- Dashboard "Mes shorts" : vignettes noires sur iPhone → générer poster/thumbnail.
+- Clic sur un short de "Mes shorts" ouvre exactement cette vidéo.
+- Short → "Contacter le vendeur" sans compte : afficher CTA connexion en bas (pas "Vendeur introuvable"). Poster une annonce sans compte → redirection login (comportement conservé).
+- Messages vocaux dans le chat.
+- Chat : clic photo profil → plein écran ; clic nom → boutique.
+- Retirer l'avatar de l'utilisateur dans le formulaire de commentaire pour dégager le bouton Envoyer.
 
-### 6. Notifications de likes
-- Les triggers `notify_annonce_like` et `notify_short_like` existent déjà en base et insèrent dans `notifications`.
-- Vérifier que `src/routes/notifications.tsx` :
-  - Affiche les types `like_annonce` et `like_short` avec le nom de l'auteur.
-  - Génère un lien cliquable vers `/annonce/$id` ou `/shorts?id=$id`.
-- Corriger les libellés/liens manquants si besoin.
+## Lot 6 — Navigation & Publicité
+- Clic icône Accueil / Shorts quand on est en bas → scroll top + refresh.
+- Régénérer les 2 images pub qui contiennent "Market" en remplaçant par "MaMarketplace E-Shop".
 
-### 7. Barre de commentaire — retirer l'avatar
-- Dans `src/components/CommentDrawer.tsx` et `src/components/Comments.tsx` : retirer l'avatar de la zone de saisie (garder juste input + bouton envoyer), comme dans le chat.
-
-### 8. Pages statiques (pas de shift horizontal)
-- Dans `src/styles.css` : `html, body { overflow-x: hidden; width: 100%; }`, forcer `max-width: 100vw` sur les conteneurs et vérifier les grilles/carousels qui débordent.
-
-### 9. Offres d'emploi — image plein écran zoomable
-- Dans `src/routes/offres-emploi.tsx` : clic sur l'image ouvre un `Dialog` plein écran avec l'image et gestes de zoom (pinch tactile + molette + boutons +/−). Utiliser `react-zoom-pan-pinch` (léger, ~10 Ko) ou implémentation CSS `touch-action: none` avec transform.
-
-### Détails techniques
-- Aucune migration nécessaire (triggers notifications déjà en place, `last_seen_at` déjà présent).
-- Nouvelle dépendance possible : `react-zoom-pan-pinch` pour le zoom.
-- Lazy load vidéos via `IntersectionObserver` natif — pas de dépendance ajoutée.
+---
+**Question** : je commence par **Lot 1 + Lot 2** (le plus visible côté utilisateurs), ou vous préférez un autre ordre ? Répondez p.ex. "1,2,3" ou "tous dans l'ordre".
