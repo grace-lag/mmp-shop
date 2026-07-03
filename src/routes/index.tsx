@@ -6,6 +6,8 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { CITIES, CATEGORIES, formatPrice, listAnnonces } from "@/lib/annonces";
 import { shortAge } from "@/lib/time";
 import { AnnonceStats } from "@/components/AnnonceStats";
+import { usePresenceMap, PresenceDot } from "@/lib/presence";
+
 import { useAuth } from "@/lib/auth/AuthProvider";
 import ad1 from "@/assets/ad-1.jpg";
 import ad2 from "@/assets/ad-2.jpg";
