@@ -484,8 +484,10 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
         poster={short.thumbnail_url ?? undefined}
         loop
         playsInline
+        muted
+        autoPlay
         controls={false}
-        preload="none"
+        preload="metadata"
         style={{ width: "100%", height: "100%", objectFit: "contain", background: "#000" }}
       />
 
