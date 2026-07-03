@@ -261,6 +261,8 @@ function AnnonceDetail() {
         </ul>
       </section>
 
+      {/* Annonces similaires */}
+      <SimilarAnnonces category={annonce.category} excludeId={annonce.id} />
 
       {/* Avatar lightbox */}
       {enlargedAvatar && seller?.avatar_url && (
@@ -273,6 +275,20 @@ function AnnonceDetail() {
           }}
         >
           <img src={seller.avatar_url} alt={sellerLabel} style={{ maxWidth: "92vw", maxHeight: "92vh", borderRadius: 12 }} />
+        </div>
+      )}
+
+      {/* Photo lightbox */}
+      {enlargedPhoto && (
+        <div
+          onClick={() => setEnlargedPhoto(null)}
+          style={{
+            position: "fixed", inset: 0, background: "rgba(0,0,0,0.95)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            zIndex: 2000, cursor: "zoom-out", padding: 12,
+          }}
+        >
+          <img src={enlargedPhoto} alt="" style={{ maxWidth: "100vw", maxHeight: "100vh", objectFit: "contain" }} />
         </div>
       )}
     </SiteLayout>
