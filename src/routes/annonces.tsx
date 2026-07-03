@@ -26,9 +26,18 @@ function AnnoncesPage() {
   const subcategory = sp.subcategory;
   
 
-  const { data, isLoading } = useQuery({
+  const { data: rawData, isLoading } = useQuery({
     queryKey: ["annonces", { search, city, category, subcategory }],
-    queryFn: () => listAnnonces({ search, city, category, subcategory }),
+    queryFn: () => listAnnonces({ search, city, category, subcategory, limit: 50 }),
+  });
+  const data = (rawData ?? []).slice().sort((a: any, b: any) => {
+    const now = Date.now();
+    const dayMs = 24 * 3600 * 1000;
+    const aRecent = now - new Date(a.created_at).getTime() < dayMs;
+    const bRecent = now - new Date(b.created_at).getTime() < dayMs;
+    if (aRecent !== bRecent) return aRecent ? -1 : 1;
+    if (aRecent && bRecent) return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    return (b.views ?? 0) - (a.views ?? 0);
   });
   const { data: presence } = usePresenceMap((data ?? []).map((a: any) => a.seller_id));
 
