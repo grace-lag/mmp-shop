@@ -26,7 +26,7 @@ function NotificationsPage() {
   const qc = useQueryClient();
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
 
-  // Direct notifications (likes, etc.)
+  // Direct notifications (likes, comments, follows, etc.)
   const { data: notifs } = useQuery({
     queryKey: ["notif-rows", user?.id],
     enabled: !!user,
@@ -41,6 +41,19 @@ function NotificationsPage() {
       return (data ?? []) as Notif[];
     },
   });
+
+  // Mark all as read on visit (like the Messages tab)
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      await (supabase as any)
+        .from("notifications")
+        .update({ read_at: new Date().toISOString() })
+        .eq("user_id", user.id)
+        .is("read_at", null);
+      qc.invalidateQueries({ queryKey: ["compte-notifs-unread", user.id] });
+    })();
+  }, [user, qc]);
 
   // Enrich with actor names
   const actorIds = Array.from(new Set((notifs ?? []).map((n) => n.actor_id).filter(Boolean))) as string[];
