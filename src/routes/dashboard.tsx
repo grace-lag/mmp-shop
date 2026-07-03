@@ -144,7 +144,7 @@ function DashboardPage() {
         {(myShorts ?? []).map((s: any) => (
           <div key={s.id} className="product-card" style={{ position: "relative" }}>
             <Link to="/shorts" className="product-link">
-              <ShortThumb videoUrl={s.video_url} posterUrl={s.thumbnail_url} alt={s.title ?? "short"} />}
+              <ShortThumb videoUrl={s.video_url} posterUrl={s.thumbnail_url} alt={s.title ?? "short"} />
             </Link>
             <h3>{s.title || "Sans titre"}</h3>
             {s.price != null && <p className="price">{formatPrice(s.price)}</p>}
