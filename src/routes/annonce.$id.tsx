@@ -194,7 +194,9 @@ function AnnonceDetail() {
 
         <div>
           <h1>{annonce.title}</h1>
-          <p className="price" style={{ fontSize: "1.8em" }}>{formatPrice(annonce.price)}</p>
+          {annonce.category !== "Emplois" && (
+            <p className="price" style={{ fontSize: "1.8em" }}>{formatPrice(annonce.price)}</p>
+          )}
           {annonce.city && <p>📍 {annonce.city}</p>}
           {annonce.category && <p>🏷️ {annonce.category}{annonce.subcategory ? ` — ${annonce.subcategory}` : ""}</p>}
 
@@ -204,7 +206,12 @@ function AnnonceDetail() {
               <a href={`tel:${annonce.phone}`} className="btn-whatsapp" onClick={requireAuth}>📞 Appel</a>
             )}
             {annonce.whatsapp && (
-              <a href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}`} className="btn-whatsapp" style={{ background: "#25D366" }} onClick={requireAuth}>💬 WhatsApp</a>
+              <a
+                href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Bonjour, votre article "${annonce.title}" est-il toujours disponible ?`)}`}
+                className="btn-whatsapp"
+                style={{ background: "#25D366" }}
+                onClick={requireAuth}
+              >💬 WhatsApp</a>
             )}
             {!isOwner && annonce.seller_id && (
               <>
