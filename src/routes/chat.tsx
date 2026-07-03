@@ -154,6 +154,48 @@ function ChatPage() {
     }
   };
 
+  const startRecording = async () => {
+    if (!user) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mime = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
+      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+      mediaRecRef.current = rec;
+      chunksRef.current = [];
+      rec.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
+      rec.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: rec.mimeType || "audio/webm" });
+        const ext = (rec.mimeType || "audio/webm").includes("mp4") ? "m4a" : "webm";
+        const file = new File([blob], `voice-${Date.now()}.${ext}`, { type: blob.type });
+        setUploading(true);
+        try {
+          const att = await uploadChatFile(file, user.id, "chat");
+          await sendMessage({ content: null, attachment_url: att.url, attachment_type: att.type || "audio/webm", attachment_name: file.name });
+        } catch (err: any) {
+          toast.error(err.message ?? "Envoi audio échoué");
+        } finally {
+          setUploading(false);
+        }
+      };
+      rec.start();
+      setRecording(true);
+      setRecordSeconds(0);
+      recordTimerRef.current = window.setInterval(() => setRecordSeconds((s) => s + 1), 1000);
+    } catch (err: any) {
+      toast.error("Micro indisponible : " + (err?.message ?? "permission refusée"));
+    }
+  };
+  const stopRecording = (cancel = false) => {
+    const rec = mediaRecRef.current;
+    if (recordTimerRef.current) { clearInterval(recordTimerRef.current); recordTimerRef.current = null; }
+    setRecording(false);
+    if (!rec) return;
+    if (cancel) { rec.ondataavailable = null as any; rec.onstop = () => rec.stream.getTracks().forEach((t) => t.stop()); }
+    if (rec.state !== "inactive") rec.stop();
+    mediaRecRef.current = null;
+  };
+
   const startEdit = (m: any) => { setEditingId(m.id); setEditingText(m.content ?? ""); };
   const saveEdit = async () => {
     if (!editingId) return;
