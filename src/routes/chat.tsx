@@ -429,15 +429,54 @@ function ChatPage() {
             resize: "none", minHeight: 42, maxHeight: 140,
           }}
         />
-        <button type="submit" disabled={!text.trim()}
-          style={{
-            padding: "10px 18px", borderRadius: 20, border: "none",
-            background: text.trim() ? "#2563eb" : "#cbd5e1", color: "#fff",
-            fontWeight: 600, fontSize: 14, cursor: text.trim() ? "pointer" : "not-allowed",
-          }}>
-          Envoyer
-        </button>
+        {recording ? (
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 14px", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: 20, color: "#b91c1c", fontWeight: 600 }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: "#dc2626", animation: "pulse 1s infinite" }} />
+              {String(Math.floor(recordSeconds / 60)).padStart(2, "0")}:{String(recordSeconds % 60).padStart(2, "0")}
+            </div>
+            <button type="button" onClick={() => stopRecording(true)} aria-label="Annuler"
+              style={{ background: "#f0f2f5", border: "1px solid #e2e8f0", borderRadius: 20, padding: 10, cursor: "pointer", color: "#64748b" }}>
+              <X size={20} />
+            </button>
+            <button type="button" onClick={() => stopRecording(false)} aria-label="Envoyer l'audio"
+              style={{ background: "#16a34a", border: "none", borderRadius: 20, padding: 10, cursor: "pointer", color: "#fff" }}>
+              <Check size={20} />
+            </button>
+          </>
+        ) : text.trim() ? (
+          <button type="submit"
+            style={{
+              padding: "10px 18px", borderRadius: 20, border: "none",
+              background: "#2563eb", color: "#fff",
+              fontWeight: 600, fontSize: 14, cursor: "pointer",
+            }}>
+            Envoyer
+          </button>
+        ) : (
+          <button type="button" onClick={startRecording} aria-label="Message vocal" disabled={uploading}
+            style={{ background: "#e67e22", border: "none", borderRadius: 20, padding: 10, cursor: "pointer", color: "#fff" }}>
+            <Mic size={20} />
+          </button>
+        )}
       </form>
+
+      {lightbox && (
+        <div
+          onClick={() => setLightbox(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.9)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, cursor: "zoom-out" }}
+        >
+          <img src={lightbox} alt="" style={{ maxWidth: "100%", maxHeight: "100%", objectFit: "contain" }} />
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setLightbox(null); }}
+            aria-label="Fermer"
+            style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.15)", color: "#fff", border: "none", borderRadius: "50%", width: 40, height: 40, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            <X size={24} />
+          </button>
+        </div>
+      )}
     </SiteLayout>
   );
 }
