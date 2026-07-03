@@ -13,6 +13,7 @@ export const Route = createFileRoute("/contact/$id")({
 
 function ContactPage() {
   const { id } = Route.useParams();
+  const { user } = useAuth();
   const { data: profile, isLoading } = useQuery({
     queryKey: ["contact-profile", id],
     queryFn: async () => {
