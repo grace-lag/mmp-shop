@@ -44,24 +44,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     };
 
+    const ping = () => { void (supabase as any).rpc("touch_last_seen").then(({ error }: any) => { if (error) console.warn("touch_last_seen failed", error); }); };
+
     const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       setLoading(false);
       if (event === "SIGNED_IN") {
         setTimeout(() => { void syncProfile(s); }, 0);
+        if (s) ping();
       }
+      if (event === "TOKEN_REFRESHED" && s) ping();
     });
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setLoading(false);
       void syncProfile(data.session);
-      if (data.session) void (supabase as any).rpc("touch_last_seen");
+      if (data.session) ping();
     });
-    const heartbeat = setInterval(() => {
-      void (supabase as any).rpc("touch_last_seen");
-    }, 60_000);
+    const heartbeat = setInterval(() => { ping(); }, 30_000);
     const onVisible = () => {
-      if (document.visibilityState === "visible") void (supabase as any).rpc("touch_last_seen");
+      if (document.visibilityState === "visible") ping();
     };
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("focus", onVisible);
