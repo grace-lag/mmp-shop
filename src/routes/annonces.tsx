@@ -30,6 +30,8 @@ function AnnoncesPage() {
     queryKey: ["annonces", { search, city, category, subcategory }],
     queryFn: () => listAnnonces({ search, city, category, subcategory }),
   });
+  const { data: presence } = usePresenceMap((data ?? []).map((a: any) => a.seller_id));
+
 
   return (
     <SiteLayout>
