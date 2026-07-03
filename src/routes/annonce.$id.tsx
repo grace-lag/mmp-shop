@@ -232,8 +232,13 @@ function AnnonceDetail() {
               </>
             )}
             {isOwner && (
-              <button className="btn-whatsapp" style={{ background: "#dc2626" }} onClick={() => confirm("Supprimer cette annonce ?") && del.mutate()}>
-                🗑️ Supprimer
+              <button
+                className="btn-whatsapp"
+                style={{ background: "#dc2626" }}
+                disabled={del.isPending}
+                onClick={() => { if (confirm("Supprimer cette annonce ?")) del.mutate(); }}
+              >
+                🗑️ {del.isPending ? "Suppression..." : "Supprimer"}
               </button>
             )}
           </div>
