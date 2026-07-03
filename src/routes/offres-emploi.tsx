@@ -60,6 +60,7 @@ function JobsPage() {
       await createAnnonce({
         title,
         description,
+        price: 0,
         city: "Brazzaville",
         category: "Emplois",
         subcategory: "",
