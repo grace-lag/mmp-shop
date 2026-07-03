@@ -16,7 +16,7 @@ function Page() {
     queryKey: ["user-search", q],
     enabled: q.trim().length >= 2,
     queryFn: async () => {
-      const tokens = q.trim().split(/\s+/).filter((t) => t.length > 0);
+      const tokens = q.trim().split(/\s+/).filter((t: string) => t.length > 0);
       let query = supabase.from("profiles").select("id,prenom,nom,avatar_url");
       for (const t of tokens) {
         const like = `%${t}%`;
