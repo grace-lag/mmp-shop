@@ -16,12 +16,13 @@ function Page() {
     queryKey: ["user-search", q],
     enabled: q.trim().length >= 2,
     queryFn: async () => {
-      const term = `%${q.trim()}%`;
-      const { data } = await supabase
-        .from("profiles")
-        .select("id,prenom,nom,avatar_url")
-        .or(`prenom.ilike.${term},nom.ilike.${term}`)
-        .limit(30);
+      const tokens = q.trim().split(/\s+/).filter((t: string) => t.length > 0);
+      let query = supabase.from("profiles").select("id,prenom,nom,avatar_url");
+      for (const t of tokens) {
+        const like = `%${t}%`;
+        query = query.or(`prenom.ilike.${like},nom.ilike.${like}`);
+      }
+      const { data } = await query.limit(30);
       return data ?? [];
     },
   });

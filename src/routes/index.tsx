@@ -45,13 +45,14 @@ function Index() {
     queryKey: ["people-suggest", shopSearch],
     enabled: shopSearch.trim().length >= 2,
     queryFn: async () => {
-      const term = `%${shopSearch.trim()}%`;
+      const tokens = shopSearch.trim().split(/\s+/).filter((t) => t.length > 0);
       const { supabase } = await import("@/integrations/supabase/client");
-      const { data } = await supabase
-        .from("profiles")
-        .select("id,prenom,nom,avatar_url")
-        .or(`prenom.ilike.${term},nom.ilike.${term}`)
-        .limit(6);
+      let q = supabase.from("profiles").select("id,prenom,nom,avatar_url");
+      for (const t of tokens) {
+        const like = `%${t}%`;
+        q = q.or(`prenom.ilike.${like},nom.ilike.${like}`);
+      }
+      const { data } = await q.limit(6);
       return data ?? [];
     },
   });
