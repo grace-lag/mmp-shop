@@ -1,0 +1,1 @@
+ALTER TABLE public.seller_ratings ADD COLUMN IF NOT EXISTS comment TEXT;
