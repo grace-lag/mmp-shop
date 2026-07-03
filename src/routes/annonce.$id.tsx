@@ -86,13 +86,15 @@ function AnnonceDetail() {
     mutationFn: () => deleteAnnonce({ data: { id } }),
     onSuccess: () => {
       toast.success("Annonce supprimée");
-      window.location.href = "/annonces";
+      qc.invalidateQueries();
+      navigate({ to: "/annonces", search: { q: "", city: "", category: "", subcategory: "" } as any });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(e?.message ?? "Suppression impossible"),
   });
 
   const [activeImg, setActiveImg] = useState(0);
   const [enlargedAvatar, setEnlargedAvatar] = useState(false);
+  const [enlargedPhoto, setEnlargedPhoto] = useState<string | null>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
 
   if (isLoading) return <SiteLayout><p>Chargement...</p></SiteLayout>;
