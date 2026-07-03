@@ -290,12 +290,19 @@ function ChatPage() {
     <SiteLayout activeNav="historique" hideFooter>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb", position: "relative" }} onClick={stop}>
         <Link to="/historique" style={{ textDecoration: "none", color: "#e67e22", fontSize: "1.4rem" }}>←</Link>
-        <div style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b" }}>
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); if (partner?.avatar_url) setLightbox(partner.avatar_url); }}
+          aria-label="Voir la photo"
+          style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b", border: "none", padding: 0, cursor: partner?.avatar_url ? "pointer" : "default" }}
+        >
           {partner?.avatar_url
             ? <img src={partner.avatar_url} alt={partnerName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             : (partnerName[0]?.toUpperCase() ?? "U")}
-        </div>
-        <strong style={{ flex: 1 }}>{partnerName}</strong>
+        </button>
+        <Link to="/vendeur/$id" params={{ id: validTo }} style={{ flex: 1, textDecoration: "none", color: "inherit" }}>
+          <strong>{partnerName}</strong>
+        </Link>
         <button
           type="button"
           onClick={(e) => { e.stopPropagation(); setHeaderMenuOpen((v) => !v); setOpenMenuId(null); setShowPerso(false); }}
