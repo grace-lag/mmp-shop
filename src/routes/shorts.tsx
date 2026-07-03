@@ -1,11 +1,62 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
-import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check } from "lucide-react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check, Volume2, VolumeX } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { toast } from "sonner";
+
+// Global mute state shared across all short cards (start muted so autoplay works).
+let g_muted = true;
+const g_listeners = new Set<() => void>();
+function useGlobalMuted(): [boolean, (v: boolean) => void] {
+  const val = useSyncExternalStore(
+    (cb) => { g_listeners.add(cb); return () => g_listeners.delete(cb); },
+    () => g_muted,
+    () => true,
+  );
+  const set = (v: boolean) => { g_muted = v; g_listeners.forEach((l) => l()); };
+  return [val, set];
+}
+
+// Best-effort client-side re-encode to a lower-bitrate WebM to keep uploads light.
+// Falls back to the original file on iOS Safari or if the codec is unsupported.
+async function compressVideo(file: File, onProgress?: (pct: number) => void): Promise<File> {
+  try {
+    if (typeof MediaRecorder === "undefined") return file;
+    const proto = HTMLVideoElement.prototype as any;
+    if (typeof proto.captureStream !== "function" && typeof proto.mozCaptureStream !== "function") return file;
+    const mime = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus") ? "video/webm;codecs=vp9,opus"
+      : MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus") ? "video/webm;codecs=vp8,opus"
+      : MediaRecorder.isTypeSupported("video/webm") ? "video/webm" : "";
+    if (!mime) return file;
+
+    const url = URL.createObjectURL(file);
+    const v = document.createElement("video");
+    v.src = url; v.muted = true; (v as any).playsInline = true; v.preload = "auto";
+    await new Promise<void>((res, rej) => { v.onloadedmetadata = () => res(); v.onerror = () => rej(new Error("meta")); });
+    const stream: MediaStream = (v as any).captureStream ? (v as any).captureStream() : (v as any).mozCaptureStream();
+    const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 1_200_000, audioBitsPerSecond: 96_000 });
+    const chunks: Blob[] = [];
+    rec.ondataavailable = (e) => { if (e.data.size) chunks.push(e.data); };
+    const done = new Promise<Blob>((res) => { rec.onstop = () => res(new Blob(chunks, { type: mime })); });
+    v.muted = false;
+    const onTime = () => { if (onProgress && v.duration) onProgress(Math.min(99, (v.currentTime / v.duration) * 100)); };
+    v.addEventListener("timeupdate", onTime);
+    rec.start(1000);
+    await v.play();
+    await new Promise<void>((res) => { v.onended = () => res(); });
+    rec.stop();
+    const blob = await done;
+    v.removeEventListener("timeupdate", onTime);
+    URL.revokeObjectURL(url);
+    if (blob.size >= file.size * 0.95) return file;
+    return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".webm", { type: mime });
+  } catch {
+    return file;
+  }
+}
 
 export const Route = createFileRoute("/shorts")({
   head: () => ({ meta: [{ title: "Shorts — MaMarketplace E-Shop" }] }),
@@ -84,12 +135,19 @@ function ShortsPage() {
   const publish = async () => {
     if (!pendingFile || !user) return;
     setUploading(true);
+    const t = toast.loading("Compression de la vidéo...");
     try {
-      const ext = pendingFile.name.split(".").pop() || "mp4";
+      const compressed = await compressVideo(pendingFile);
+      toast.dismiss(t);
+      const savedPct = Math.max(0, Math.round((1 - compressed.size / pendingFile.size) * 100));
+      if (compressed !== pendingFile && savedPct > 0) {
+        toast.success(`Vidéo allégée de ${savedPct}%`);
+      }
+      const ext = (compressed.name.split(".").pop() || "mp4").toLowerCase();
       const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("shorts-videos")
-        .upload(path, pendingFile, { contentType: pendingFile.type });
+        .upload(path, compressed, { contentType: compressed.type });
       if (upErr) throw upErr;
       const { data: signed } = await supabase.storage.from("shorts-videos").createSignedUrl(path, 60 * 60 * 24 * 365);
       const video_url = signed?.signedUrl ?? "";
@@ -105,11 +163,14 @@ function ShortsPage() {
       setPendingFile(null);
       refetch();
     } catch (e: any) {
+      toast.dismiss(t);
       toast.error(e.message ?? "Échec de publication");
     } finally {
       setUploading(false);
     }
   };
+
+  const [globalMuted, setGlobalMuted] = useGlobalMuted();
 
   return (
     <SiteLayout activeNav="shorts" hideHeader hideFooter>
@@ -135,6 +196,20 @@ function ShortsPage() {
           <p style={{ color: "#fff", textAlign: "center", padding: 60 }}>Aucun Short. Soyez le premier !</p>
         )}
       </div>
+
+      <button
+        onClick={() => setGlobalMuted(!globalMuted)}
+        aria-label={globalMuted ? "Activer le son" : "Couper le son"}
+        style={{
+          position: "fixed", top: 12, right: 12, zIndex: 50,
+          background: "rgba(0,0,0,0.55)", color: "#fff",
+          border: "1px solid rgba(255,255,255,0.25)", borderRadius: 999,
+          width: 42, height: 42, display: "flex", alignItems: "center", justifyContent: "center",
+          cursor: "pointer",
+        }}
+      >
+        {globalMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      </button>
 
       <input
         ref={fileRef}
@@ -263,6 +338,8 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
   const [showControls, setShowControls] = useState(false);
   const [progress, setProgress] = useState(0);
   const [loadVideo, setLoadVideo] = useState(false);
+  const [muted] = useGlobalMuted();
+  useEffect(() => { if (ref.current) ref.current.muted = muted; }, [muted, loadVideo]);
 
   useEffect(() => {
     let cancelled = false;
@@ -484,7 +561,7 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
         poster={short.thumbnail_url ?? undefined}
         loop
         playsInline
-        muted
+        muted={muted}
         autoPlay
         controls={false}
         preload="metadata"
