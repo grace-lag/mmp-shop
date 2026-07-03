@@ -197,6 +197,20 @@ function ShortsPage() {
         )}
       </div>
 
+      <button
+        onClick={() => setGlobalMuted(!globalMuted)}
+        aria-label={globalMuted ? "Activer le son" : "Couper le son"}
+        style={{
+          position: "fixed", top: 12, right: 12, zIndex: 50,
+          background: "rgba(0,0,0,0.55)", color: "#fff",
+          border: "1px solid rgba(255,255,255,0.25)", borderRadius: 999,
+          width: 42, height: 42, display: "flex", alignItems: "center", justifyContent: "center",
+          cursor: "pointer",
+        }}
+      >
+        {globalMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+      </button>
+
       <input
         ref={fileRef}
         type="file"
