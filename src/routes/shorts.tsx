@@ -187,13 +187,13 @@ function ShortsPage() {
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Titre (optionnel)"
+              placeholder="Titre"
               style={{ width: "100%", padding: 10, marginTop: 10, border: "1px solid #cbd5e1", borderRadius: 8 }}
             />
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Description (optionnel)"
+              placeholder="Description"
               rows={3}
               style={{
                 width: "100%",
@@ -491,9 +491,9 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
 
       {/* Tap zones: left = -10s, middle = play/pause, right = +10s */}
       <div style={{ position: "absolute", inset: 0, display: "grid", gridTemplateColumns: "1fr 2fr 1fr" }}>
-        <div onDoubleClick={() => seek(-10)} onClick={togglePlay} />
+        <div onDoubleClick={() => seek(-5)} onClick={togglePlay} />
         <div onClick={togglePlay} />
-        <div onDoubleClick={() => seek(10)} onClick={togglePlay} />
+        <div onDoubleClick={() => seek(5)} onClick={togglePlay} />
       </div>
 
       {/* Play/pause indicator */}
@@ -531,7 +531,7 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
         <div style={{ width: `${progress}%`, height: "100%", background: "#fff" }} />
       </div>
 
-      {/* Right rail — TikTok style */}
+      {/* Right rail */}
       <div
         style={{
           position: "absolute",
