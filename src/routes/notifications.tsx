@@ -98,16 +98,27 @@ function NotificationsPage() {
     const actorName = actor ? `${actor.prenom ?? ""} ${actor.nom ?? ""}`.trim() || "Quelqu'un" : "Quelqu'un";
     const isLikeAnnonce = n.type === "like_annonce";
     const isLikeShort = n.type === "like_short";
+    const isCommentAnnonce = n.type === "comment_annonce";
+    const isCommentShort = n.type === "comment_short";
+    const isNewFollower = n.type === "new_follower";
     const label = isLikeAnnonce
       ? `👍 ${actorName} a liké votre annonce${n.title ? ` "${n.title}"` : ""}`
       : isLikeShort
         ? `👍 ${actorName} a liké votre short${n.title ? ` "${n.title}"` : ""}`
-        : n.title ?? "Nouvelle notification";
-    const linkProps: any = isLikeAnnonce && n.entity_id
+        : isCommentAnnonce
+          ? `💬 ${actorName} a commenté votre annonce${n.title ? ` "${n.title}"` : ""}`
+          : isCommentShort
+            ? `💬 ${actorName} a commenté votre short${n.title ? ` "${n.title}"` : ""}`
+            : isNewFollower
+              ? `⭐ ${actorName} s'est abonné à votre boutique`
+              : n.title ?? "Nouvelle notification";
+    const linkProps: any = (isLikeAnnonce || isCommentAnnonce) && n.entity_id
       ? { to: "/annonce/$id", params: { id: n.entity_id } }
-      : isLikeShort
+      : (isLikeShort || isCommentShort)
         ? { to: "/shorts" }
-        : { to: "/notifications" };
+        : isNewFollower && n.actor_id
+          ? { to: "/vendeur/$id", params: { id: n.actor_id } }
+          : { to: "/notifications" };
 
     return (
       <Link
