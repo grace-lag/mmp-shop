@@ -182,7 +182,13 @@ function Index() {
           {(annonces ?? []).map((a) => (
             <div className="product-card" key={a.id}>
               <span className="age-badge">{shortAge((a as any).created_at)}</span>
-              {a.city && <div className="badge-city">{a.city}</div>}
+              {a.city && (
+                <div className="badge-city">
+                  {a.city}
+                  <PresenceDot lastSeenAt={presence?.[(a as any).seller_id]} />
+                </div>
+              )}
+
               <Link to="/annonce/$id" params={{ id: a.id }} className="product-link">
                 {a.image_url ? (
                   <img src={a.image_url} alt={a.title} />
