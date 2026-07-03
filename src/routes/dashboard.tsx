@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { ShortThumb } from "@/components/ShortThumb";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteAnnonceServerFn } from "@/lib/annonces.functions";
 import { formatPrice } from "@/lib/annonces";
@@ -143,9 +144,7 @@ function DashboardPage() {
         {(myShorts ?? []).map((s: any) => (
           <div key={s.id} className="product-card" style={{ position: "relative" }}>
             <Link to="/shorts" className="product-link">
-              {s.thumbnail_url ? <img src={s.thumbnail_url} alt={s.title ?? "short"} /> : (
-                <video src={s.video_url} muted style={{ width: "100%", height: 160, objectFit: "cover", borderRadius: 8, background: "#000" }} />
-              )}
+              <ShortThumb videoUrl={s.video_url} posterUrl={s.thumbnail_url} alt={s.title ?? "short"} />
             </Link>
             <h3>{s.title || "Sans titre"}</h3>
             {s.price != null && <p className="price">{formatPrice(s.price)}</p>}
