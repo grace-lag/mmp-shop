@@ -115,8 +115,8 @@ function PosterPage() {
           <PhoneInput value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} placeholder="Téléphone" required />
         </label>
         <label style={{ display: "grid", gap: 4 }}>
-          <span style={{ fontSize: "0.9em", color: "#475569" }}>WhatsApp *</span>
-          <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="WhatsApp" required />
+          <span style={{ fontSize: "0.9em", color: "#475569" }}>WhatsApp (optionnel)</span>
+          <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="WhatsApp" />
         </label>
 
         <div>
