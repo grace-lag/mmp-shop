@@ -135,12 +135,19 @@ function ShortsPage() {
   const publish = async () => {
     if (!pendingFile || !user) return;
     setUploading(true);
+    const t = toast.loading("Compression de la vidéo...");
     try {
-      const ext = pendingFile.name.split(".").pop() || "mp4";
+      const compressed = await compressVideo(pendingFile);
+      toast.dismiss(t);
+      const savedPct = Math.max(0, Math.round((1 - compressed.size / pendingFile.size) * 100));
+      if (compressed !== pendingFile && savedPct > 0) {
+        toast.success(`Vidéo allégée de ${savedPct}%`);
+      }
+      const ext = (compressed.name.split(".").pop() || "mp4").toLowerCase();
       const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("shorts-videos")
-        .upload(path, pendingFile, { contentType: pendingFile.type });
+        .upload(path, compressed, { contentType: compressed.type });
       if (upErr) throw upErr;
       const { data: signed } = await supabase.storage.from("shorts-videos").createSignedUrl(path, 60 * 60 * 24 * 365);
       const video_url = signed?.signedUrl ?? "";
@@ -156,11 +163,14 @@ function ShortsPage() {
       setPendingFile(null);
       refetch();
     } catch (e: any) {
+      toast.dismiss(t);
       toast.error(e.message ?? "Échec de publication");
     } finally {
       setUploading(false);
     }
   };
+
+  const [globalMuted, setGlobalMuted] = useGlobalMuted();
 
   return (
     <SiteLayout activeNav="shorts" hideHeader hideFooter>
