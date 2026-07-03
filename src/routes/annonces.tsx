@@ -4,6 +4,8 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { CATEGORIES, CITIES, formatPrice, listAnnonces } from "@/lib/annonces";
 import { AnnonceStats } from "@/components/AnnonceStats";
+import { usePresenceMap, PresenceDot } from "@/lib/presence";
+
 
 
 export const Route = createFileRoute("/annonces")({
@@ -28,6 +30,8 @@ function AnnoncesPage() {
     queryKey: ["annonces", { search, city, category, subcategory }],
     queryFn: () => listAnnonces({ search, city, category, subcategory }),
   });
+  const { data: presence } = usePresenceMap((data ?? []).map((a: any) => a.seller_id));
+
 
   return (
     <SiteLayout>
@@ -50,9 +54,15 @@ function AnnoncesPage() {
       <div className="product-grid">
         {(data ?? []).map((a) => (
           <div className="product-card" key={a.id}>
-            {a.city && <div className="badge-city">{a.city}</div>}
+            {a.city && (
+              <div className="badge-city">
+                {a.city}
+                <PresenceDot lastSeenAt={presence?.[(a as any).seller_id]} />
+              </div>
+            )}
             <Link to="/annonce/$id" params={{ id: a.id }} className="product-link">
-              {a.image_url ? <img src={a.image_url} alt={a.title} /> : <div style={{ height: 160, background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8 }}>📷</div>}
+              {a.image_url ? <img src={a.image_url} alt={a.title} loading="lazy" decoding="async" /> : <div style={{ height: 160, background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: 8 }}>📷</div>}
+
             </Link>
             <h3>{a.title}</h3>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>

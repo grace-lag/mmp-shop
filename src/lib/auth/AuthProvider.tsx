@@ -60,8 +60,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const heartbeat = setInterval(() => {
       void (supabase as any).rpc("touch_last_seen");
     }, 60_000);
-    return () => { sub.subscription.unsubscribe(); clearInterval(heartbeat); };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void (supabase as any).rpc("touch_last_seen");
+    };
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("focus", onVisible);
+    return () => {
+      sub.subscription.unsubscribe();
+      clearInterval(heartbeat);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("focus", onVisible);
+    };
   }, []);
+
 
 
   return (

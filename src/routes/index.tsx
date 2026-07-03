@@ -6,6 +6,8 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { CITIES, CATEGORIES, formatPrice, listAnnonces } from "@/lib/annonces";
 import { shortAge } from "@/lib/time";
 import { AnnonceStats } from "@/components/AnnonceStats";
+import { usePresenceMap, PresenceDot } from "@/lib/presence";
+
 import { useAuth } from "@/lib/auth/AuthProvider";
 import ad1 from "@/assets/ad-1.jpg";
 import ad2 from "@/assets/ad-2.jpg";
@@ -40,6 +42,8 @@ function Index() {
     queryKey: ["annonces", "tendance"],
     queryFn: () => listAnnonces({ limit: 9 }),
   });
+  const { data: presence } = usePresenceMap((annonces ?? []).map((a: any) => a.seller_id));
+
 
   useEffect(() => {
     const t = setInterval(() => setAdIndex((i) => (i + 1) % ADS.length), 3000);
@@ -178,10 +182,16 @@ function Index() {
           {(annonces ?? []).map((a) => (
             <div className="product-card" key={a.id}>
               <span className="age-badge">{shortAge((a as any).created_at)}</span>
-              {a.city && <div className="badge-city">{a.city}</div>}
+              {a.city && (
+                <div className="badge-city">
+                  {a.city}
+                  <PresenceDot lastSeenAt={presence?.[(a as any).seller_id]} />
+                </div>
+              )}
+
               <Link to="/annonce/$id" params={{ id: a.id }} className="product-link">
                 {a.image_url ? (
-                  <img src={a.image_url} alt={a.title} />
+                  <img src={a.image_url} alt={a.title} loading="lazy" decoding="async" />
                 ) : (
                   <div
                     style={{
