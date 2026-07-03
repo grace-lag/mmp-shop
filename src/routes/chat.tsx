@@ -384,7 +384,7 @@ function ChatPage() {
                     opacity: m._optimistic ? 0.7 : 1,
                   }}>
                     {m.content && <div>{m.content}</div>}
-                    {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} />}
+                    {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} onImageClick={setLightbox} />}
                     {m.edited_at && <span style={{ marginLeft: 6, fontSize: "0.72em", opacity: 0.75, fontStyle: "italic" }}>(modifié)</span>}
                     {mine && !m._optimistic && (
                       <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#bbf7d0" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
