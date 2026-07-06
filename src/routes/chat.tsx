@@ -6,6 +6,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { Attachment } from "@/components/Attachment";
 import { uploadChatFile } from "@/lib/uploads";
+import { WavRecorder } from "@/lib/wav-recorder";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
