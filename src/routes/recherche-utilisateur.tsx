@@ -37,7 +37,7 @@ function Page() {
         autoFocus
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Tapez un nom ou un prénom..."
+        placeholder="Tapez un nom ou un prénom"
         className="search-input"
         style={{ width: "100%", padding: 12, borderRadius: 12, border: "1px solid #fed7aa", marginTop: 8 }}
       />
