@@ -96,10 +96,15 @@ function Index() {
           type="text"
           placeholder="Rechercher une boutique"
           value={shopSearch}
-          onChange={(e) => {
+          onSubmit={(e) => {
+          e.preventDefault();
+          const q = shopSearch.trim();
+          navigate({ to: "/recherche-utilisateur", search: { q } as any });
+          }}
+          {/* onChange={(e) => {
             setShopSearch(e.target.value);
             setShowSuggest(true);
-          }}
+          }} */}
           onFocus={() => setShowSuggest(true)}
           onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
         />
