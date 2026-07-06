@@ -44,7 +44,10 @@ function Index() {
     queryKey: ["people-suggest", shopSearch],
     enabled: shopSearch.trim().length >= 2,
     queryFn: async () => {
-      const tokens = shopSearch.trim().split(/\s+/).filter((t) => t.length > 0);
+      const tokens = shopSearch
+        .trim()
+        .split(/\s+/)
+        .filter((t) => t.length > 0);
       const { supabase } = await import("@/integrations/supabase/client");
       let q = supabase.from("profiles").select("id,prenom,nom,avatar_url");
       for (const t of tokens) {
@@ -72,7 +75,6 @@ function Index() {
   });
   const { data: presence } = usePresenceMap((annonces ?? []).map((a: any) => a.seller_id));
 
-
   useEffect(() => {
     const t = setInterval(() => setAdIndex((i) => (i + 1) % ADS.length), 3000);
     return () => clearInterval(t);
@@ -92,9 +94,12 @@ function Index() {
       >
         <input
           type="text"
-          placeholder="Rechercher une personne, une boutique..."
+          placeholder="Rechercher une boutique..."
           value={shopSearch}
-          onChange={(e) => { setShopSearch(e.target.value); setShowSuggest(true); }}
+          onChange={(e) => {
+            setShopSearch(e.target.value);
+            setShowSuggest(true);
+          }}
           onFocus={() => setShowSuggest(true)}
           onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
         />
@@ -102,7 +107,21 @@ function Index() {
           <Search size={18} />
         </button>
         {showSuggest && shopSearch.trim().length >= 2 && (peopleSuggest?.length ?? 0) > 0 && (
-          <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "#fff", border: "1px solid #fed7aa", borderRadius: 12, marginTop: 4, boxShadow: "0 4px 12px rgba(0,0,0,0.08)", zIndex: 40, overflow: "hidden" }}>
+          <div
+            style={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              background: "#fff",
+              border: "1px solid #fed7aa",
+              borderRadius: 12,
+              marginTop: 4,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+              zIndex: 40,
+              overflow: "hidden",
+            }}
+          >
             {(peopleSuggest ?? []).map((p: any) => {
               const name = [p.prenom, p.nom].filter(Boolean).join(" ").trim() || "Utilisateur";
               return (
@@ -110,11 +129,39 @@ function Index() {
                   key={p.id}
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
-                  onClick={() => { setShowSuggest(false); navigate({ to: "/vendeur/$id", params: { id: p.id } }); }}
-                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 12px", width: "100%", border: "none", background: "transparent", cursor: "pointer", textAlign: "left" }}
+                  onClick={() => {
+                    setShowSuggest(false);
+                    navigate({ to: "/vendeur/$id", params: { id: p.id } });
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "8px 12px",
+                    width: "100%",
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    textAlign: "left",
+                  }}
                 >
-                  <div style={{ width: 32, height: 32, borderRadius: "50%", overflow: "hidden", background: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    {p.avatar_url ? <img src={p.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : "👤"}
+                  <div
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                      background: "#f1f5f9",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {p.avatar_url ? (
+                      <img src={p.avatar_url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    ) : (
+                      "👤"
+                    )}
                   </div>
                   <span style={{ fontWeight: 500 }}>{name}</span>
                 </button>
@@ -135,7 +182,6 @@ function Index() {
           margin: "0 0 10px 0",
         }}
       >
-
         {ADS.map((ad, i) => (
           <img
             key={ad.src}
@@ -186,12 +232,7 @@ function Index() {
       {/* Catégories horizontales texte uniquement */}
       <div className="cat-scroll text-only">
         {CATEGORIES.filter((c) => c !== "Emplois").map((c) => (
-          <Link
-            key={c}
-            to="/annonces"
-            search={{ q: "", city: "", category: c } as any}
-            className="cat-pill"
-          >
+          <Link key={c} to="/annonces" search={{ q: "", city: "", category: c } as any} className="cat-pill">
             {c}
           </Link>
         ))}
@@ -213,7 +254,9 @@ function Index() {
         />
         <select value={city} onChange={(e) => setCity(e.target.value)}>
           {CITIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
         <button type="submit" aria-label="Rechercher">
