@@ -6,6 +6,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { Attachment } from "@/components/Attachment";
 import { uploadChatFile } from "@/lib/uploads";
+import { WavRecorder } from "@/lib/wav-recorder";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -35,8 +36,7 @@ function ChatPage() {
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [recording, setRecording] = useState(false);
   const [recordSeconds, setRecordSeconds] = useState(0);
-  const mediaRecRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
+  const wavRecRef = useRef<WavRecorder | null>(null);
   const recordTimerRef = useRef<number | null>(null);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
@@ -157,28 +157,8 @@ function ChatPage() {
   const startRecording = async () => {
     if (!user) return;
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mime = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : (MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "");
-      const rec = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
-      mediaRecRef.current = rec;
-      chunksRef.current = [];
-      rec.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data); };
-      rec.onstop = async () => {
-        stream.getTracks().forEach((t) => t.stop());
-        const blob = new Blob(chunksRef.current, { type: rec.mimeType || "audio/webm" });
-        const ext = (rec.mimeType || "audio/webm").includes("mp4") ? "m4a" : "webm";
-        const file = new File([blob], `voice-${Date.now()}.${ext}`, { type: blob.type });
-        setUploading(true);
-        try {
-          const att = await uploadChatFile(file, user.id, "chat");
-          await sendMessage({ content: null, attachment_url: att.url, attachment_type: att.type || "audio/webm", attachment_name: file.name });
-        } catch (err: any) {
-          toast.error(err.message ?? "Envoi audio échoué");
-        } finally {
-          setUploading(false);
-        }
-      };
-      rec.start();
+      const rec = await WavRecorder.start();
+      wavRecRef.current = rec;
       setRecording(true);
       setRecordSeconds(0);
       recordTimerRef.current = window.setInterval(() => setRecordSeconds((s) => s + 1), 1000);
@@ -186,14 +166,24 @@ function ChatPage() {
       toast.error("Micro indisponible : " + (err?.message ?? "permission refusée"));
     }
   };
-  const stopRecording = (cancel = false) => {
-    const rec = mediaRecRef.current;
+  const stopRecording = async (cancel = false) => {
+    const rec = wavRecRef.current;
     if (recordTimerRef.current) { clearInterval(recordTimerRef.current); recordTimerRef.current = null; }
     setRecording(false);
+    wavRecRef.current = null;
     if (!rec) return;
-    if (cancel) { rec.ondataavailable = null as any; rec.onstop = () => rec.stream.getTracks().forEach((t) => t.stop()); }
-    if (rec.state !== "inactive") rec.stop();
-    mediaRecRef.current = null;
+    if (cancel) { rec.cancel(); return; }
+    const blob = rec.stop();
+    const file = new File([blob], `voice-${Date.now()}.wav`, { type: "audio/wav" });
+    setUploading(true);
+    try {
+      const att = await uploadChatFile(file, user!.id, "chat");
+      await sendMessage({ content: null, attachment_url: att.url, attachment_type: "audio/wav", attachment_name: file.name });
+    } catch (err: any) {
+      toast.error(err.message ?? "Envoi audio échoué");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const startEdit = (m: any) => { setEditingId(m.id); setEditingText(m.content ?? ""); };
@@ -385,12 +375,15 @@ function ChatPage() {
                   }}>
                     {m.content && <div>{m.content}</div>}
                     {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} onImageClick={setLightbox} />}
-                    {m.edited_at && <span style={{ marginLeft: 6, fontSize: "0.72em", opacity: 0.75, fontStyle: "italic" }}>(modifié)</span>}
-                    {mine && !m._optimistic && (
-                      <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#bbf7d0" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
-                        {read ? "✓✓" : "✓"}
-                      </span>
-                    )}
+                    <div style={{ marginTop: 4, fontSize: "0.7em", opacity: 0.85, textAlign: mine ? "right" : "left", color: mine || darkTheme ? "rgba(255,255,255,0.85)" : "#64748b" }}>
+                      {new Date(m.created_at).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      {m.edited_at && <span style={{ marginLeft: 6, fontStyle: "italic" }}>(modifié)</span>}
+                      {mine && !m._optimistic && (
+                        <span style={{ marginLeft: 6, color: read ? "#bbf7d0" : "inherit", fontWeight: 700 }}>
+                          {read ? "✓✓" : "✓"}
+                        </span>
+                      )}
+                    </div>
                   </span>
                 )}
               </div>
