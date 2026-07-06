@@ -375,12 +375,15 @@ function ChatPage() {
                   }}>
                     {m.content && <div>{m.content}</div>}
                     {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} onImageClick={setLightbox} />}
-                    {m.edited_at && <span style={{ marginLeft: 6, fontSize: "0.72em", opacity: 0.75, fontStyle: "italic" }}>(modifié)</span>}
-                    {mine && !m._optimistic && (
-                      <span style={{ marginLeft: 6, fontSize: "0.78em", color: read ? "#bbf7d0" : "rgba(255,255,255,0.85)", fontWeight: 700 }}>
-                        {read ? "✓✓" : "✓"}
-                      </span>
-                    )}
+                    <div style={{ marginTop: 4, fontSize: "0.7em", opacity: 0.85, textAlign: mine ? "right" : "left", color: mine || darkTheme ? "rgba(255,255,255,0.85)" : "#64748b" }}>
+                      {new Date(m.created_at).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      {m.edited_at && <span style={{ marginLeft: 6, fontStyle: "italic" }}>(modifié)</span>}
+                      {mine && !m._optimistic && (
+                        <span style={{ marginLeft: 6, color: read ? "#bbf7d0" : "inherit", fontWeight: 700 }}>
+                          {read ? "✓✓" : "✓"}
+                        </span>
+                      )}
+                    </div>
                   </span>
                 )}
               </div>
