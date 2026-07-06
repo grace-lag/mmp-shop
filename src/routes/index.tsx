@@ -15,7 +15,8 @@ import ad from "@/assets/ad-3.jpg";
 
 const ADS = [
   { src: logoPlatform, caption: "MaMarketplace E-Shop" },
-  { src: ad, caption: "Livraison rapide à Brazzaville et au-delà" },
+  {src: hero, caption: "Vendez et achetez avec toute facilité"}
+  { src: ad, caption: "trouvez tout ce dont vous avez besoin à Brazzaville et partout au Congo" },
 ];
 
 export const Route = createFileRoute("/")({
