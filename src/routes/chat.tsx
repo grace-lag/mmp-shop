@@ -36,8 +36,7 @@ function ChatPage() {
   const [lightbox, setLightbox] = useState<string | null>(null);
   const [recording, setRecording] = useState(false);
   const [recordSeconds, setRecordSeconds] = useState(0);
-  const mediaRecRef = useRef<MediaRecorder | null>(null);
-  const chunksRef = useRef<Blob[]>([]);
+  const wavRecRef = useRef<WavRecorder | null>(null);
   const recordTimerRef = useRef<number | null>(null);
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
