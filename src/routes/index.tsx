@@ -9,7 +9,7 @@ import { AnnonceStats } from "@/components/AnnonceStats";
 import { usePresenceMap, PresenceDot } from "@/lib/presence";
 
 import { useAuth } from "@/lib/auth/AuthProvider";
-import logoPlatform from "@/assets/legacy/logo marketplace.jpeg";
+import logoPlatform from "@/assets/legacy/logo marketplace.jpg";
 
 import ad3 from "@/assets/ad-3.jpg";
 import heroPlatform from "@/assets/mamarketplace-eshop-hero.jpg";
