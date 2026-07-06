@@ -83,8 +83,7 @@ export function ShortThumb({ videoUrl, posterUrl, alt, height = 160 }: Props) {
         muted
         playsInline
         preload="metadata"
-        // @ts-expect-error webkit-only
-        webkit-playsinline="true"
+        {...({ "webkit-playsinline": "true" } as any)}
         style={{ width: "100%", height, objectFit: "cover", borderRadius: 8, background: "#000", display: "block" }}
       />
     );
