@@ -94,7 +94,7 @@ function Index() {
       >
         <input
           type="text"
-          placeholder="Rechercher une boutique..."
+          placeholder="Rechercher une boutique"
           value={shopSearch}
           onChange={(e) => {
             setShopSearch(e.target.value);
