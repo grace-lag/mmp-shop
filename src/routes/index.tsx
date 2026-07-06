@@ -10,7 +10,7 @@ import { usePresenceMap, PresenceDot } from "@/lib/presence";
 
 import { useAuth } from "@/lib/auth/AuthProvider";
 import logoPlatform from "@/assets/logo-marketplace.jpeg";
-
+import hero from "@/assets/mamarketplace-eshop-hero.jpg";
 import ad from "@/assets/ad-3.jpg";
 
 const ADS = [
