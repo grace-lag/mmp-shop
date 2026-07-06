@@ -9,14 +9,14 @@ import { AnnonceStats } from "@/components/AnnonceStats";
 import { usePresenceMap, PresenceDot } from "@/lib/presence";
 
 import { useAuth } from "@/lib/auth/AuthProvider";
-import ad1 from "@/assets/legacy/logo marketplace.jpeg";
+import logoPlatform from "@/assets/legacy/logo marketplace.jpeg";
 
 import ad3 from "@/assets/ad-3.jpg";
 import heroPlatform from "@/assets/mamarketplace-eshop-hero.jpg";
 
 const ADS = [
   { src: heroPlatform, caption: "MaMarketplace E-Shop : la plateforme N°1 au Congo" },
-  { src: ad1, caption: "MaMarketplace E-Shop" },
+  { src: logoPlatform, caption: "MaMarketplace E-Shop" },
   { src: ad3, caption: "Livraison rapide à Brazzaville et au-delà" },
 ];
 
