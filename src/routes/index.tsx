@@ -11,11 +11,11 @@ import { usePresenceMap, PresenceDot } from "@/lib/presence";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import logoPlatform from "@/assets/logo-marketplace.jpeg";
 
-import ad3 from "@/assets/ad-3.jpg";
+import ad from "@/assets/ad-3.jpg";
 
 const ADS = [
   { src: logoPlatform, caption: "MaMarketplace E-Shop" },
-  { src: ad3, caption: "Livraison rapide à Brazzaville et au-delà" },
+  { src: ad, caption: "Livraison rapide à Brazzaville et au-delà" },
 ];
 
 export const Route = createFileRoute("/")({
