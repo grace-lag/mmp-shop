@@ -96,18 +96,14 @@ function Index() {
           type="text"
           placeholder="Rechercher une boutique"
           value={shopSearch}
-          onSubmit={(e) => {
-          e.preventDefault();
-          const q = shopSearch.trim();
-          navigate({ to: "/recherche-utilisateur", search: { q } as any });
-          }}
-          {/* onChange={(e) => {
+          onChange={(e) => {
             setShopSearch(e.target.value);
             setShowSuggest(true);
-          }} */}
+          }}
           onFocus={() => setShowSuggest(true)}
           onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
         />
+
         <button type="submit" aria-label="Rechercher">
           <Search size={18} />
         </button>
