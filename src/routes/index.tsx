@@ -82,7 +82,7 @@ function Index() {
 
   return (
     <SiteLayout activeNav="accueil">
-      {/* Barre 1 : recherche de personnes (boutiques) */}
+      {/* Barre 1 : recherche de boutiques */}
       <form
         className="shop-search-bar"
         style={{ marginTop: -32, position: "relative" }}
