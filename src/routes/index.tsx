@@ -16,6 +16,7 @@ import heroPlatform from "@/assets/mamarketplace-eshop-hero.jpg";
 
 const ADS = [
   { src: heroPlatform, caption: "MaMarketplace E-Shop : la plateforme N°1 au Congo" },
+  { src: ad1, caption: "MaMarketplace E-Shop" },
   { src: ad3, caption: "Livraison rapide à Brazzaville et au-delà" },
 ];
 
