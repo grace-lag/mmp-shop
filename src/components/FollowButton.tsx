@@ -59,9 +59,16 @@ export function FollowButton({ sellerId }: { sellerId: string }) {
     <button
       onClick={() => toggle.mutate()}
       className="btn-whatsapp"
-      style={{ background: isFollowing ? "#64748b" : "#15803d", padding: "6px 14px", fontSize: "0.85rem" }}
+      style={{
+        background: isFollowing ? "#64748b" : "#15803d",
+        padding: "6px 12px",
+        fontSize: "0.8rem",
+        width: "auto",
+        whiteSpace: "nowrap",
+        lineHeight: 1.2,
+      }}
     >
-      {isFollowing ? "✓ Abonné" : "+ S'abonner"}
+      {isFollowing ? "✓ Abonné" : "+ Suivre"}
     </button>
   );
 }
