@@ -64,7 +64,7 @@ function LoginPage() {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setResetLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(frAuthError(error));
     toast.success("Lien envoyé. Ouvre l'email pour définir ton mot de passe.");
   };
 
