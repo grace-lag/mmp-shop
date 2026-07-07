@@ -5,6 +5,7 @@ import { PasswordInput } from "@/components/PasswordInput";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadAvatar } from "@/lib/annonces";
 import { PhoneInput } from "@/components/PhoneInput";
+import { frAuthError } from "@/lib/auth-errors";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/signup")({ component: SignupPage });
