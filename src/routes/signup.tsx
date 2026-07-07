@@ -48,7 +48,7 @@ function SignupPage() {
     if (!avatarFile) {
       return toast.error("La photo de profil est obligatoire.");
     }
-    if (form.password.length < 6) return toast.error("Mot de passe : 6 caractères minimum");
+    if (form.password.length < 1) return toast.error("Choisis un mot de passe.");
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
