@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { signInWithPhone } from "@/lib/auth.functions";
+import { frAuthError } from "@/lib/auth-errors";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
