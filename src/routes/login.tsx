@@ -44,7 +44,7 @@ function LoginPage() {
       }
       navigate({ to: "/compte" });
     } catch (err: any) {
-      toast.error(err?.message ?? "Connexion échouée");
+      toast.error(frAuthError(err) || "Connexion échouée");
     } finally {
       setLoading(false);
     }
