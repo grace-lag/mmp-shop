@@ -80,11 +80,16 @@ function VendeurPage() {
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
           <FollowButton sellerId={id} />
           {user && user.id !== id && (
-            <Link to="/chat" search={{ to: id }} className="btn-whatsapp" style={{ background: "#2563eb" }}>
-              💬 Message privé
+            <Link
+              to="/chat"
+              search={{ to: id }}
+              className="btn-whatsapp"
+              style={{ background: "#2563eb", padding: "6px 12px", fontSize: "0.8rem", width: "auto", whiteSpace: "nowrap", lineHeight: 1.2 }}
+            >
+              💬 Message
             </Link>
           )}
         </div>

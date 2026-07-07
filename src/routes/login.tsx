@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { signInWithPhone } from "@/lib/auth.functions";
+import { frAuthError } from "@/lib/auth-errors";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({ component: LoginPage });
@@ -43,7 +44,7 @@ function LoginPage() {
       }
       navigate({ to: "/compte" });
     } catch (err: any) {
-      toast.error(err?.message ?? "Connexion échouée");
+      toast.error(frAuthError(err) || "Connexion échouée");
     } finally {
       setLoading(false);
     }
@@ -63,7 +64,7 @@ function LoginPage() {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setResetLoading(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(frAuthError(error));
     toast.success("Lien envoyé. Ouvre l'email pour définir ton mot de passe.");
   };
 

@@ -5,6 +5,7 @@ import { PasswordInput } from "@/components/PasswordInput";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadAvatar } from "@/lib/annonces";
 import { PhoneInput } from "@/components/PhoneInput";
+import { frAuthError } from "@/lib/auth-errors";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/signup")({ component: SignupPage });
@@ -47,7 +48,7 @@ function SignupPage() {
     if (!avatarFile) {
       return toast.error("La photo de profil est obligatoire.");
     }
-    if (form.password.length < 6) return toast.error("Mot de passe : 6 caractères minimum");
+    if (form.password.length < 1) return toast.error("Choisis un mot de passe.");
     setLoading(true);
     try {
       const { data, error } = await supabase.auth.signUp({
@@ -110,7 +111,7 @@ function SignupPage() {
       toast.success("Compte créé et informations enregistrées !");
       navigate({ to: "/compte" });
     } catch (err: any) {
-      toast.error(err?.message ?? "Création du compte échouée");
+      toast.error(frAuthError(err) || "Création du compte échouée");
     } finally {
       setLoading(false);
     }
@@ -165,10 +166,9 @@ function SignupPage() {
           <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="Numéro WhatsApp" />
         </label>
         <PasswordInput
-          placeholder="Mot de passe (min 6 caractères) *"
+          placeholder="Mot de passe *"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
-          minLength={6}
           required
         />
 
