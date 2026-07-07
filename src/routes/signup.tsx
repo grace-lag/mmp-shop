@@ -111,7 +111,7 @@ function SignupPage() {
       toast.success("Compte créé et informations enregistrées !");
       navigate({ to: "/compte" });
     } catch (err: any) {
-      toast.error(err?.message ?? "Création du compte échouée");
+      toast.error(frAuthError(err) || "Création du compte échouée");
     } finally {
       setLoading(false);
     }
