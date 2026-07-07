@@ -166,10 +166,9 @@ function SignupPage() {
           <PhoneInput value={form.whatsapp} onChange={(v) => setForm({ ...form, whatsapp: v })} placeholder="Numéro WhatsApp" />
         </label>
         <PasswordInput
-          placeholder="Mot de passe (min 6 caractères) *"
+          placeholder="Mot de passe *"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
-          minLength={6}
           required
         />
 
