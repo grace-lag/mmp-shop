@@ -9,14 +9,18 @@ import { AnnonceStats } from "@/components/AnnonceStats";
 import { usePresenceMap, PresenceDot } from "@/lib/presence";
 
 import { useAuth } from "@/lib/auth/AuthProvider";
-import logoPlatform from "@/assets/logo-marketplace.jpeg";
 import hero from "@/assets/mamarketplace-eshop-hero.jpg";
 import ad from "@/assets/ad-3.jpg";
+import adBillboard from "@/assets/ad-billboard.png.asset.json";
+import adPosters from "@/assets/ad-posters.png.asset.json";
+import adMarket from "@/assets/ad-market.png.asset.json";
 
 const ADS = [
-  { src: logoPlatform, caption: "MaMarketplace E-Shop" },
   { src: hero, caption: "Vendez et achetez avec toute facilité" },
   { src: ad, caption: "trouvez tout ce dont vous avez besoin à Brazzaville et partout au Congo" },
+  { src: adBillboard.url, caption: "Vos envies en un clic !" },
+  { src: adPosters.url, caption: "Explorez, vendez, connectez-vous sur MaMarketplace" },
+  { src: adMarket.url, caption: "Faites grandir votre entreprise avec MaMarketplace" },
 ];
 
 export const Route = createFileRoute("/")({
@@ -99,8 +103,11 @@ function Index() {
             setShopSearch(e.target.value);
             setShowSuggest(true);
           }}
-          onFocus={() => setShowSuggest(true)}
-          onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
+          onFocus={(e) => {
+            e.currentTarget.blur();
+            navigate({ to: "/recherche-utilisateur", search: { q: shopSearch.trim() } as any });
+          }}
+          readOnly
         />
 
         <button type="submit" aria-label="Rechercher">

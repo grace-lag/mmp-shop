@@ -5,7 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { supabase } from "@/integrations/supabase/client";
-import logoUrl from "@/assets/logo-marketplace.jpeg";
+import logoAsset from "@/assets/logo-mamarketplace.jpeg.asset.json";
+const logoUrl = logoAsset.url;
 
 export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { children: ReactNode; activeNav?: string; hideHeader?: boolean; hideFooter?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -190,7 +191,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
             <span className="nav-label">Poster</span>
           </Link>
         )}
-        <Link to="/historique" className={`nav-item ${isActive("historique", "/historique") ? "active" : ""}`}>
+        <Link to="/conversations" className={`nav-item ${isActive("conversations", "/conversations") ? "active" : ""}`}>
           <span className="nav-icon">💬</span>
           <span className="nav-label">Messages</span>
           {unreadCount > 0 && <span className="nav-badge">{unreadCount > 99 ? "99+" : unreadCount}</span>}
