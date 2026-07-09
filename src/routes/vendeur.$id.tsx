@@ -51,14 +51,30 @@ function VendeurPage() {
     }
   };
 
+  const totalAds = (annonces ?? []).length;
+  const topLikes = Math.max(0, ...((annonces ?? []).map((a: any) => a.likes_count ?? 0)));
+
+  const statTile = (count: number | string, label: string, to?: string, params?: any) => {
+    const inner = (
+      <>
+        <div style={{ fontSize: "1.25rem", fontWeight: 800, color: "#0f172a" }}>{count}</div>
+        <div style={{ fontSize: "0.78rem", color: "#7c2d12", marginTop: 2 }}>{label}</div>
+      </>
+    );
+    const style = { textAlign: "center" as const, padding: "8px 4px", borderRadius: 10, background: "#fff7ed", border: "1px solid #fed7aa", display: "block", textDecoration: "none", color: "inherit" };
+    return to
+      ? <Link to={to as any} params={params} style={style}>{inner}</Link>
+      : <div style={style}>{inner}</div>;
+  };
+
   return (
     <SiteLayout>
-      <div style={{ display: "flex", alignItems: "center", gap: 16, marginTop: 16, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginTop: 16 }}>
         <div style={{
           width: 72, height: 72, borderRadius: "50%", overflow: "hidden",
           border: "1px solid #e2e8f0", background: "#f1f5f9",
           display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, color: "#94a3b8",
-          position: "relative",
+          position: "relative", flexShrink: 0,
         }}>
           {profile?.avatar_url ? (
             <img src={profile.avatar_url} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -66,34 +82,37 @@ function VendeurPage() {
           <span style={{ position: "absolute", bottom: 2, right: 2, width: 16, height: 16, borderRadius: "50%", background: online ? "#16a34a" : "#9ca3af", border: "2px solid #fff" }} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <h1 style={{ margin: 0, display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-            {name}
-            <span style={{ fontSize: "0.75rem", fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: online ? "#dcfce7" : "#e2e8f0", color: online ? "#15803d" : "#475569" }}>
+          <h1 style={{ margin: 0, fontSize: "1.1rem", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{name}</span>
+            <span style={{ fontSize: "0.7rem", fontWeight: 600, padding: "2px 8px", borderRadius: 999, background: online ? "#dcfce7" : "#e2e8f0", color: online ? "#15803d" : "#475569" }}>
               {online ? "● En ligne" : "○ Hors ligne"}
             </span>
           </h1>
           <div style={{ marginTop: 4 }}>
             <SellerRating sellerId={id} />
           </div>
-          <p style={{ margin: "4px 0 0", color: "#64748b", fontSize: "0.9em" }}>
-            {annonces?.length ?? 0} annonce(s) · {followers ?? 0} abonné(s)
-          </p>
-        </div>
-
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-          <FollowButton sellerId={id} />
-          {user && user.id !== id && (
-            <Link
-              to="/chat"
-              search={{ to: id }}
-              className="btn-whatsapp"
-              style={{ background: "#2563eb", padding: "6px 12px", fontSize: "0.8rem", width: "auto", whiteSpace: "nowrap", lineHeight: 1.2 }}
-            >
-              💬 Message
-            </Link>
-          )}
+          <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8, alignItems: "flex-start" }}>
+            <FollowButton sellerId={id} />
+            {user && user.id !== id && (
+              <Link
+                to="/chat"
+                search={{ to: id }}
+                className="btn-whatsapp"
+                style={{ background: "#2563eb", padding: "6px 12px", fontSize: "0.8rem", width: "auto", whiteSpace: "nowrap", lineHeight: 1.2 }}
+              >
+                💬 Message
+              </Link>
+            )}
+          </div>
         </div>
       </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 14 }}>
+        {statTile(followers ?? 0, "Abonnés", "/abonnes/$id", { id })}
+        {statTile(topLikes, "Likes", "/top-likes/$id", { id })}
+        {statTile(totalAds, "Annonces")}
+      </div>
+
       <div className="product-grid" style={{ marginTop: 16 }}>
         {(annonces ?? []).map((a: any) => (
           <div key={a.id} style={{ position: "relative" }}>
