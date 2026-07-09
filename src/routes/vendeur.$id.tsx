@@ -31,7 +31,7 @@ function VendeurPage() {
   const { data: annonces } = useQuery({
     queryKey: ["seller-annonces", id],
     queryFn: async () => {
-      const { data } = await supabase.from("annonces").select("id,title,price,city,category,image_url,created_at").eq("seller_id", id).order("created_at", { ascending: false });
+      const { data } = await supabase.from("annonces").select("id,title,price,city,category,image_url,created_at,likes_count").eq("seller_id", id).order("created_at", { ascending: false });
       return data ?? [];
     },
   });

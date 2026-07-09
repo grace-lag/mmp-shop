@@ -26,6 +26,7 @@ import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoriqueRouteImport } from './routes/historique'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ConversationsRouteImport } from './routes/conversations'
 import { Route as ConditionsRouteImport } from './routes/conditions'
 import { Route as CompteRouteImport } from './routes/compte'
 import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
@@ -134,6 +135,11 @@ const HistoriqueRoute = HistoriqueRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConversationsRoute = ConversationsRouteImport.update({
+  id: '/conversations',
+  path: '/conversations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConditionsRoute = ConditionsRouteImport.update({
@@ -271,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/complete-profile': typeof CompleteProfileRoute
   '/compte': typeof CompteRoute
   '/conditions': typeof ConditionsRoute
+  '/conversations': typeof ConversationsRoute
   '/dashboard': typeof DashboardRoute
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
@@ -313,6 +320,7 @@ export interface FileRoutesByTo {
   '/complete-profile': typeof CompleteProfileRoute
   '/compte': typeof CompteRoute
   '/conditions': typeof ConditionsRoute
+  '/conversations': typeof ConversationsRoute
   '/dashboard': typeof DashboardRoute
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
@@ -357,6 +365,7 @@ export interface FileRoutesById {
   '/complete-profile': typeof CompleteProfileRoute
   '/compte': typeof CompteRoute
   '/conditions': typeof ConditionsRoute
+  '/conversations': typeof ConversationsRoute
   '/dashboard': typeof DashboardRoute
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
@@ -402,6 +411,7 @@ export interface FileRouteTypes {
     | '/complete-profile'
     | '/compte'
     | '/conditions'
+    | '/conversations'
     | '/dashboard'
     | '/historique'
     | '/login'
@@ -444,6 +454,7 @@ export interface FileRouteTypes {
     | '/complete-profile'
     | '/compte'
     | '/conditions'
+    | '/conversations'
     | '/dashboard'
     | '/historique'
     | '/login'
@@ -487,6 +498,7 @@ export interface FileRouteTypes {
     | '/complete-profile'
     | '/compte'
     | '/conditions'
+    | '/conversations'
     | '/dashboard'
     | '/historique'
     | '/login'
@@ -531,6 +543,7 @@ export interface RootRouteChildren {
   CompleteProfileRoute: typeof CompleteProfileRoute
   CompteRoute: typeof CompteRoute
   ConditionsRoute: typeof ConditionsRoute
+  ConversationsRoute: typeof ConversationsRoute
   DashboardRoute: typeof DashboardRoute
   HistoriqueRoute: typeof HistoriqueRoute
   LoginRoute: typeof LoginRoute
@@ -677,6 +690,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conversations': {
+      id: '/conversations'
+      path: '/conversations'
+      fullPath: '/conversations'
+      preLoaderRoute: typeof ConversationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/conditions': {
@@ -888,6 +908,7 @@ const rootRouteChildren: RootRouteChildren = {
   CompleteProfileRoute: CompleteProfileRoute,
   CompteRoute: CompteRoute,
   ConditionsRoute: ConditionsRoute,
+  ConversationsRoute: ConversationsRoute,
   DashboardRoute: DashboardRoute,
   HistoriqueRoute: HistoriqueRoute,
   LoginRoute: LoginRoute,
