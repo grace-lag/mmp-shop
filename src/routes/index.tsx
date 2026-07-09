@@ -103,8 +103,11 @@ function Index() {
             setShopSearch(e.target.value);
             setShowSuggest(true);
           }}
-          onFocus={() => setShowSuggest(true)}
-          onBlur={() => setTimeout(() => setShowSuggest(false), 150)}
+          onFocus={(e) => {
+            e.currentTarget.blur();
+            navigate({ to: "/recherche-utilisateur", search: { q: shopSearch.trim() } as any });
+          }}
+          readOnly
         />
 
         <button type="submit" aria-label="Rechercher">
