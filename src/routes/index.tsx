@@ -26,8 +26,8 @@ const ADS = [
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MaMarketplace — Accueil" },
-      { name: "description", content: "Trouvez ce dont vous avez besoin au Congo." },
+      { title: "MMP Shop — MaMarketplace E-Shop | Acheter et vendre au Congo" },
+      { name: "description", content: "MMP Shop (MaMarketplace E-Shop) : achetez et vendez au Congo. Annonces locales, boutiques, shorts vidéo, paiement et livraison au Congo-Brazzaville." },
     ],
   }),
   component: Index,

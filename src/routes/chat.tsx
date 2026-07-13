@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Smile, Paperclip, Pencil, Trash2, Check, X, MoreVertical, Copy, Archive, Mic } from "lucide-react";
+import { Smile, Paperclip, Pencil, Trash2, Check, X, MoreVertical, Copy, Archive, Mic, Forward, Star, Send } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { Attachment } from "@/components/Attachment";
@@ -38,6 +38,20 @@ function ChatPage() {
   const [recordSeconds, setRecordSeconds] = useState(0);
   const wavRecRef = useRef<WavRecorder | null>(null);
   const recordTimerRef = useRef<number | null>(null);
+  const [forwardFrom, setForwardFrom] = useState<any>(null);
+  const [importantIds, setImportantIds] = useState<Set<string>>(() => {
+    if (typeof window === "undefined") return new Set();
+    try { return new Set(JSON.parse(localStorage.getItem("chat-important") || "[]")); } catch { return new Set(); }
+  });
+  const toggleImportant = (id: string) => {
+    setImportantIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) { next.delete(id); toast.success("Message retiré des importants"); }
+      else { next.add(id); toast.success("Message marqué comme important"); }
+      try { localStorage.setItem("chat-important", JSON.stringify(Array.from(next))); } catch {}
+      return next;
+    });
+  };
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
 
@@ -278,7 +292,7 @@ function ChatPage() {
 
   return (
     <SiteLayout activeNav="historique" hideFooter>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 16, paddingBottom: 12, borderBottom: "1px solid #e5e7eb", position: "relative" }} onClick={stop}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 4, paddingBottom: 6, paddingTop: 4, borderBottom: "1px solid #e5e7eb", position: "sticky", top: 0, background: "white", zIndex: 15 }} onClick={stop}>
         <Link to="/historique" style={{ textDecoration: "none", color: "#e67e22", fontSize: "1.4rem" }}>←</Link>
         <button
           type="button"
@@ -327,7 +341,7 @@ function ChatPage() {
         )}
       </div>
 
-      <div ref={scrollRef} style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, paddingBottom: 88, minHeight: 400, height: "calc(100vh - 260px)", overflowY: "auto", marginTop: 12, background: T.bg }}>
+      <div ref={scrollRef} style={{ border: "1px solid #e5e7eb", borderRadius: 12, padding: 16, paddingBottom: 88, minHeight: 400, height: "calc(100dvh - 200px)", overflowY: "auto", marginTop: 8, background: T.bg, overscrollBehavior: "contain" }}>
         {(messages ?? []).map((m: any) => {
           const mine = m.sender_id === user.id;
           const read = !!m.read_at;
@@ -343,10 +357,17 @@ function ChatPage() {
                       <MoreVertical size={16} />
                     </button>
                     {openMenuId === m.id && (
-                      <div onClick={stop} style={{ position: "absolute", top: 24, [mine ? "right" : "left"]: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 10, minWidth: 170 }}>
+                      <div onClick={stop} style={{ position: "absolute", top: 24, [mine ? "right" : "left"]: 0, background: "white", border: "1px solid #e5e7eb", borderRadius: 8, boxShadow: "0 6px 18px rgba(0,0,0,0.12)", zIndex: 10, minWidth: 210 }}>
                         {m.content && (
                           <button onClick={() => copyMsg(m)} style={menuItem}><Copy size={14} /> Copier</button>
                         )}
+                        <button onClick={() => { setOpenMenuId(null); setForwardFrom(m); }} style={menuItem}>
+                          <Forward size={14} /> Transférer
+                        </button>
+                        <button onClick={() => { setOpenMenuId(null); toggleImportant(m.id); }} style={menuItem}>
+                          <Star size={14} fill={importantIds.has(m.id) ? "#f59e0b" : "none"} color={importantIds.has(m.id) ? "#f59e0b" : "currentColor"} />
+                          {importantIds.has(m.id) ? "Retirer des importants" : "Marquer comme important"}
+                        </button>
                         {canEdit && (
                           <button onClick={() => { startEdit(m); setOpenMenuId(null); }} style={menuItem}><Pencil size={14} /> Modifier</button>
                         )}
@@ -370,11 +391,14 @@ function ChatPage() {
                   <span style={{
                     display: "inline-block", padding: "8px 12px", borderRadius: 14,
                     background: mine ? T.mine : T.other, color: mine || darkTheme ? "white" : "#333",
-                    border: mine ? "none" : (darkTheme ? "1px solid #4b5563" : "1px solid #e5e7eb"), wordBreak: "break-word",
-                    opacity: m._optimistic ? 0.7 : 1,
+                    border: importantIds.has(m.id) ? "2px solid #f59e0b" : (mine ? "none" : (darkTheme ? "1px solid #4b5563" : "1px solid #e5e7eb")), wordBreak: "break-word",
+                    opacity: m._optimistic ? 0.7 : 1, position: "relative",
                   }}>
+                    {importantIds.has(m.id) && (
+                      <Star size={12} fill="#f59e0b" color="#f59e0b" style={{ position: "absolute", top: 4, left: 4 }} />
+                    )}
                     {m.content && <div>{m.content}</div>}
-                    {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} onImageClick={setLightbox} />}
+                    {m.attachment_url && <Attachment url={m.attachment_url} type={m.attachment_type} name={m.attachment_name} onImageClick={setLightbox} mine={mine} dark={darkTheme} />}
                     <div style={{ marginTop: 4, fontSize: "0.7em", opacity: 0.85, textAlign: mine ? "right" : "left", color: mine || darkTheme ? "rgba(255,255,255,0.85)" : "#64748b" }}>
                       {new Date(m.created_at).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                       {m.edited_at && <span style={{ marginLeft: 6, fontStyle: "italic" }}>(modifié)</span>}
@@ -470,7 +494,87 @@ function ChatPage() {
           </button>
         </div>
       )}
+
+      {forwardFrom && (
+        <ForwardModal
+          message={forwardFrom}
+          userId={user.id}
+          onClose={() => setForwardFrom(null)}
+          onSent={() => { setForwardFrom(null); toast.success("Message transféré"); }}
+        />
+      )}
     </SiteLayout>
+  );
+}
+
+function ForwardModal({ message, userId, onClose, onSent }: { message: any; userId: string; onClose: () => void; onSent: () => void }) {
+  const { data: partners } = useQuery({
+    queryKey: ["forward-partners", userId],
+    queryFn: async () => {
+      const { data: msgs } = await supabase
+        .from("messages")
+        .select("sender_id,receiver_id,created_at")
+        .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+        .order("created_at", { ascending: false })
+        .limit(200);
+      const ids = new Set<string>();
+      for (const m of (msgs ?? []) as any[]) {
+        const other = m.sender_id === userId ? m.receiver_id : m.sender_id;
+        if (other) ids.add(other);
+      }
+      const arr = Array.from(ids);
+      if (arr.length === 0) return [] as any[];
+      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").in("id", arr);
+      return data ?? [];
+    },
+  });
+  const [sending, setSending] = useState<string | null>(null);
+
+  const forwardTo = async (partnerId: string) => {
+    setSending(partnerId);
+    const payload: any = {
+      sender_id: userId,
+      receiver_id: partnerId,
+      content: message.content ?? null,
+      attachment_url: message.attachment_url ?? null,
+      attachment_type: message.attachment_type ?? null,
+      attachment_name: message.attachment_name ?? null,
+    };
+    const { error } = await supabase.from("messages").insert(payload);
+    setSending(null);
+    if (error) return toast.error(error.message);
+    onSent();
+  };
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: "white", borderRadius: "16px 16px 0 0", width: "100%", maxWidth: 500, maxHeight: "70vh", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: 16, borderBottom: "1px solid #e5e7eb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <strong>Transférer à…</strong>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer" }}><X size={20} /></button>
+        </div>
+        <div style={{ padding: 12, overflowY: "auto" }}>
+          {(!partners || partners.length === 0) && <p style={{ color: "#64748b", textAlign: "center" }}>Aucune conversation existante.</p>}
+          {(partners ?? []).map((p: any) => {
+            const name = [p.prenom, p.nom].filter(Boolean).join(" ") || "Utilisateur";
+            return (
+              <button
+                key={p.id}
+                onClick={() => forwardTo(p.id)}
+                disabled={sending === p.id}
+                style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", padding: 10, background: "none", border: "none", borderBottom: "1px solid #f1f5f9", cursor: "pointer", textAlign: "left" }}
+              >
+                <div style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b" }}>
+                  {p.avatar_url ? <img src={p.avatar_url} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (name[0]?.toUpperCase() ?? "U")}
+                </div>
+                <div style={{ flex: 1 }}>{name}</div>
+                {sending === p.id ? <span style={{ fontSize: 12, color: "#64748b" }}>Envoi…</span> : <Send size={16} color="#2563eb" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 

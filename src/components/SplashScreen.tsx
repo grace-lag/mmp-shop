@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import logo from "@/assets/logo-marketplace.jpeg";
+import logoAsset from "@/assets/logo-mamarketplace.jpeg.asset.json";
 
-const SHOWN_KEY = "splash_shown_v1";
+const SHOWN_KEY = "splash_shown_v2";
+const logoUrl = logoAsset.url;
 
 export function SplashScreen() {
   const [mounted, setMounted] = useState(false);
@@ -35,11 +36,14 @@ export function SplashScreen() {
       }}
     >
       <img
-        src={logo}
-        alt="MaMarketplace E-Shop"
+        src={logoUrl}
+        alt="MMP Shop"
         style={{ width: 130, height: 130, borderRadius: 26, objectFit: "cover", boxShadow: "0 10px 30px rgba(0,0,0,0.35)" }}
       />
-      <div style={{ color: "#fff", fontWeight: 800, fontSize: "1.5rem", letterSpacing: 0.5, textShadow: "0 2px 6px rgba(0,0,0,0.4)" }}>
+      <div style={{ color: "#fff", fontWeight: 800, fontSize: "1.8rem", letterSpacing: 1, textShadow: "0 2px 6px rgba(0,0,0,0.4)" }}>
+        MMP Shop
+      </div>
+      <div style={{ color: "rgba(255,255,255,0.9)", fontSize: "0.85rem", fontStyle: "italic" }}>
         MaMarketplace E-Shop
       </div>
     </div>
