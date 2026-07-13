@@ -47,23 +47,67 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+const SITE_URL = "https://mamarketplacee.shop";
+const LOGO_URL = `${SITE_URL}/__l5e/assets-v1/d433cd3f-df72-4d05-94b1-7c56801cf6db/logo-mamarketplace.jpeg`;
+const SITE_TITLE = "MMP Shop — MaMarketplace E-Shop | Acheter et vendre au Congo";
+const SITE_DESC = "MMP Shop (MaMarketplace E-Shop) : la marketplace n°1 au Congo pour acheter et vendre entre particuliers et boutiques. Annonces, shorts vidéo, boutiques en ligne, paiement local et livraison partout au Congo-Brazzaville.";
+const SITE_KEYWORDS = "MMP Shop, MMPShop, MaMarketplace, MaMarketplace E-Shop, marketplace Congo, achat vente Congo, annonces Congo, boutique en ligne Congo, Brazzaville, Pointe-Noire";
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MaMarketplace — Acheter et vendre au Congo" },
-      { name: "description", content: "Marketplace en ligne au Congo : achetez et vendez auprès de particuliers et boutiques." },
-      { property: "og:title", content: "MaMarketplace — Acheter et vendre au Congo" },
-      { name: "twitter:title", content: "MaMarketplace — Acheter et vendre au Congo" },
-      { property: "og:description", content: "Marketplace en ligne au Congo : achetez et vendez auprès de particuliers et boutiques." },
-      { name: "twitter:description", content: "Marketplace en ligne au Congo : achetez et vendez auprès de particuliers et boutiques." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/553b1fbf-7e4d-41bb-96d2-a3815220a203" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/553b1fbf-7e4d-41bb-96d2-a3815220a203" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { title: SITE_TITLE },
+      { name: "description", content: SITE_DESC },
+      { name: "keywords", content: SITE_KEYWORDS },
+      { name: "application-name", content: "MMP Shop" },
+      { name: "apple-mobile-web-app-title", content: "MMP Shop" },
+      { property: "og:site_name", content: "MMP Shop — MaMarketplace E-Shop" },
+      { property: "og:title", content: SITE_TITLE },
+      { property: "og:description", content: SITE_DESC },
+      { property: "og:image", content: LOGO_URL },
+      { property: "og:image:alt", content: "Logo MMP Shop — MaMarketplace E-Shop" },
+      { property: "og:url", content: SITE_URL },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "fr_FR" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: SITE_TITLE },
+      { name: "twitter:description", content: SITE_DESC },
+      { name: "twitter:image", content: LOGO_URL },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", type: "image/jpeg", href: LOGO_URL },
+      { rel: "apple-touch-icon", href: LOGO_URL },
+      { rel: "canonical", href: SITE_URL },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "MMP Shop — MaMarketplace E-Shop",
+          alternateName: ["MMP Shop", "MMPShop", "MaMarketplace", "MaMarketplace E-Shop"],
+          url: SITE_URL,
+          description: SITE_DESC,
+          inLanguage: "fr",
+          publisher: {
+            "@type": "Organization",
+            name: "MMP Shop",
+            alternateName: "MaMarketplace E-Shop",
+            url: SITE_URL,
+            logo: { "@type": "ImageObject", url: LOGO_URL },
+          },
+          potentialAction: {
+            "@type": "SearchAction",
+            target: `${SITE_URL}/annonces?q={search_term_string}`,
+            "query-input": "required name=search_term_string",
+          },
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
