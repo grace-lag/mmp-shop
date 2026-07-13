@@ -24,7 +24,7 @@ function VendeurPage() {
     queryKey: ["profile", id],
     refetchInterval: 60_000,
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url,last_seen_at").eq("id", id).maybeSingle();
+      const { data } = await (supabase as any).from("profiles").select("id,prenom,nom,avatar_url,last_seen_at,account_type,business_name,business_year").eq("id", id).maybeSingle();
       return data;
     },
   });
@@ -37,7 +37,12 @@ function VendeurPage() {
   });
   const { data: followers } = useFollowersCount(id);
 
-  const name = profile ? `${profile.prenom ?? ""} ${profile.nom ?? ""}`.trim() || "Vendeur" : "Vendeur";
+  const isBiz = (profile as any)?.account_type === "entreprise";
+  const bizName = (profile as any)?.business_name as string | null;
+  const bizYear = (profile as any)?.business_year as number | null;
+  const name = isBiz && bizName
+    ? bizName
+    : profile ? `${profile.prenom ?? ""} ${profile.nom ?? ""}`.trim() || "Vendeur" : "Vendeur";
   const online = isOnline((profile as any)?.last_seen_at);
 
   const handleAdminDelete = async (annonceId: string, title: string) => {
@@ -88,6 +93,11 @@ function VendeurPage() {
               {online ? "● En ligne" : "○ Hors ligne"}
             </span>
           </h1>
+          {isBiz && bizYear && (
+            <div style={{ marginTop: 4, fontSize: "0.85rem", color: "#7c2d12", fontWeight: 600 }}>
+              🏢 Existe depuis {bizYear} ({Math.max(0, new Date().getFullYear() - bizYear)} an{new Date().getFullYear() - bizYear > 1 ? "s" : ""})
+            </div>
+          )}
           <div style={{ marginTop: 4 }}>
             <SellerRating sellerId={id} />
           </div>

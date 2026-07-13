@@ -25,7 +25,7 @@ function ConversationsPage() {
   if (!user) return null;
 
   return (
-    <SiteLayout activeNav="conversations">
+    <SiteLayout activeNav="conversations" hideFooter>
       <h1 style={{ marginTop: 16 }}>Messages</h1>
       <p style={{ color: "#64748b", marginTop: 4 }}>Vos conversations privées.</p>
       <ConversationsList userId={user.id} />
