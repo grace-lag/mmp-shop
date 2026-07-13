@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Smile, Paperclip, Pencil, Trash2, Check, X, MoreVertical, Copy, Archive, Mic } from "lucide-react";
+import { Smile, Paperclip, Pencil, Trash2, Check, X, MoreVertical, Copy, Archive, Mic, Forward, Star, Send } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { EmojiPicker } from "@/components/EmojiPicker";
 import { Attachment } from "@/components/Attachment";
@@ -38,6 +38,20 @@ function ChatPage() {
   const [recordSeconds, setRecordSeconds] = useState(0);
   const wavRecRef = useRef<WavRecorder | null>(null);
   const recordTimerRef = useRef<number | null>(null);
+  const [forwardFrom, setForwardFrom] = useState<any>(null);
+  const [importantIds, setImportantIds] = useState<Set<string>>(() => {
+    if (typeof window === "undefined") return new Set();
+    try { return new Set(JSON.parse(localStorage.getItem("chat-important") || "[]")); } catch { return new Set(); }
+  });
+  const toggleImportant = (id: string) => {
+    setImportantIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) { next.delete(id); toast.success("Message retiré des importants"); }
+      else { next.add(id); toast.success("Message marqué comme important"); }
+      try { localStorage.setItem("chat-important", JSON.stringify(Array.from(next))); } catch {}
+      return next;
+    });
+  };
 
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
 
