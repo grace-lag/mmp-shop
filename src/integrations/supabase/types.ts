@@ -346,7 +346,10 @@ export type Database = {
       }
       profiles: {
         Row: {
+          account_type: string
           avatar_url: string | null
+          business_name: string | null
+          business_year: number | null
           created_at: string
           date_naissance: string | null
           email: string | null
@@ -360,7 +363,10 @@ export type Database = {
           whatsapp: string | null
         }
         Insert: {
+          account_type?: string
           avatar_url?: string | null
+          business_name?: string | null
+          business_year?: number | null
           created_at?: string
           date_naissance?: string | null
           email?: string | null
@@ -374,7 +380,10 @@ export type Database = {
           whatsapp?: string | null
         }
         Update: {
+          account_type?: string
           avatar_url?: string | null
+          business_name?: string | null
+          business_year?: number | null
           created_at?: string
           date_naissance?: string | null
           email?: string | null
