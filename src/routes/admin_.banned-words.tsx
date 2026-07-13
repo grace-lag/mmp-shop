@@ -5,7 +5,7 @@ import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth/AuthProvider";
 
-export const Route = createFileRoute("/admin/banned-words")({
+export const Route = createFileRoute("/admin_/banned-words")({
   head: () => ({ meta: [{ title: "Mots interdits — Admin" }] }),
   component: BannedWordsPage,
 });
