@@ -494,7 +494,87 @@ function ChatPage() {
           </button>
         </div>
       )}
+
+      {forwardFrom && (
+        <ForwardModal
+          message={forwardFrom}
+          userId={user.id}
+          onClose={() => setForwardFrom(null)}
+          onSent={() => { setForwardFrom(null); toast.success("Message transféré"); }}
+        />
+      )}
     </SiteLayout>
+  );
+}
+
+function ForwardModal({ message, userId, onClose, onSent }: { message: any; userId: string; onClose: () => void; onSent: () => void }) {
+  const { data: partners } = useQuery({
+    queryKey: ["forward-partners", userId],
+    queryFn: async () => {
+      const { data: msgs } = await supabase
+        .from("messages")
+        .select("sender_id,receiver_id,created_at")
+        .or(`sender_id.eq.${userId},receiver_id.eq.${userId}`)
+        .order("created_at", { ascending: false })
+        .limit(200);
+      const ids = new Set<string>();
+      for (const m of (msgs ?? []) as any[]) {
+        const other = m.sender_id === userId ? m.receiver_id : m.sender_id;
+        if (other) ids.add(other);
+      }
+      const arr = Array.from(ids);
+      if (arr.length === 0) return [] as any[];
+      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").in("id", arr);
+      return data ?? [];
+    },
+  });
+  const [sending, setSending] = useState<string | null>(null);
+
+  const forwardTo = async (partnerId: string) => {
+    setSending(partnerId);
+    const payload: any = {
+      sender_id: userId,
+      receiver_id: partnerId,
+      content: message.content ?? null,
+      attachment_url: message.attachment_url ?? null,
+      attachment_type: message.attachment_type ?? null,
+      attachment_name: message.attachment_name ?? null,
+    };
+    const { error } = await supabase.from("messages").insert(payload);
+    setSending(null);
+    if (error) return toast.error(error.message);
+    onSent();
+  };
+
+  return (
+    <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1000, display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: "white", borderRadius: "16px 16px 0 0", width: "100%", maxWidth: 500, maxHeight: "70vh", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: 16, borderBottom: "1px solid #e5e7eb", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <strong>Transférer à…</strong>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer" }}><X size={20} /></button>
+        </div>
+        <div style={{ padding: 12, overflowY: "auto" }}>
+          {(!partners || partners.length === 0) && <p style={{ color: "#64748b", textAlign: "center" }}>Aucune conversation existante.</p>}
+          {(partners ?? []).map((p: any) => {
+            const name = [p.prenom, p.nom].filter(Boolean).join(" ") || "Utilisateur";
+            return (
+              <button
+                key={p.id}
+                onClick={() => forwardTo(p.id)}
+                disabled={sending === p.id}
+                style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", padding: 10, background: "none", border: "none", borderBottom: "1px solid #f1f5f9", cursor: "pointer", textAlign: "left" }}
+              >
+                <div style={{ width: 40, height: 40, borderRadius: "50%", overflow: "hidden", background: "#e2e8f0", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#64748b" }}>
+                  {p.avatar_url ? <img src={p.avatar_url} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (name[0]?.toUpperCase() ?? "U")}
+                </div>
+                <div style={{ flex: 1 }}>{name}</div>
+                {sending === p.id ? <span style={{ fontSize: 12, color: "#64748b" }}>Envoi…</span> : <Send size={16} color="#2563eb" />}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 
