@@ -51,7 +51,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
       ? [
           { to: "/historique", icon: "📋", title: "Historique", sub: "Visites & conversations" },
           { to: "/notifications", icon: "🔔", title: "Notifications", sub: "Alertes & boutiques suivies" },
-          { to: "/parametres", icon: "⚙️", title: "Paramètres", sub: "Préférences du compte" },
+          { to: "/parametres-site", icon: "⚙️", title: "Paramètres", sub: "Réglages du site" },
 
         ]
       : [
