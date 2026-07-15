@@ -38,7 +38,7 @@ function ParametresSitePage() {
           </select>
         </Row>
         <Row icon="🌐" label="Langue">
-          <select value={lang} onChange={(e) => { setLang(e.target.value); localStorage.setItem("lang", e.target.value); }}>
+          <select value={lang} onChange={(e) => { const v = e.target.value; setLang(v); localStorage.setItem("lang", v); window.dispatchEvent(new CustomEvent("lang-change", { detail: v })); }}>
             <option value="fr">Français</option>
             <option value="en">English</option>
           </select>
