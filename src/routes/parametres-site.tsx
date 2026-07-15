@@ -31,7 +31,7 @@ function ParametresSitePage() {
 
       <div style={{ marginTop: 14 }}>
         <Row icon="🎨" label="Thème">
-          <select value={theme} onChange={(e) => { setTheme(e.target.value); localStorage.setItem("theme", e.target.value); }}>
+          <select value={theme} onChange={(e) => { const v = e.target.value; setTheme(v); localStorage.setItem("theme", v); window.dispatchEvent(new CustomEvent("theme-change", { detail: v })); }}>
             <option value="auto">Automatique</option>
             <option value="light">Clair</option>
             <option value="dark">Sombre</option>
