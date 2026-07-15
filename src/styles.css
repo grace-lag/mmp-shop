@@ -539,3 +539,8 @@ html.dark .option-card { background: #0f172a !important; color: #e5e7eb !importa
 html.dark input, html.dark select, html.dark textarea { background: #0f172a; color: #e5e7eb; border-color: #1f2937; }
 html.dark a { color: #93c5fd; }
 html.dark .card, html.dark [class*="card"] { background: #0f172a; color: #e5e7eb; }
+
+/* Hide Google Translate top banner/tooltip while keeping translation active */
+.goog-te-banner-frame.skiptranslate, .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight { display: none !important; }
+body { top: 0 !important; }
+#google_translate_element { display: none !important; }
