@@ -524,3 +524,18 @@ body, .page { background: #f7e6d0 !important; }
 /* Menu latéral en avant-plan : couvre la barre du haut aussi */
 .menu-overlay { top: 0 !important; z-index: 9998 !important; }
 .home-options { top: 0 !important; height: 100vh !important; z-index: 9999 !important; padding-top: 24px !important; }
+
+/* ==== Dark theme overrides ==== */
+html.dark, html.dark body { background: #0b1220 !important; color: #e5e7eb; }
+html.dark .page { background: #0b1220 !important; }
+html.dark .container { background: transparent; color: #e5e7eb; }
+html.dark .top-bar { background: #111827 !important; }
+html.dark .bottom-nav { background: #111827 !important; border-top: 1px solid #1f2937; }
+html.dark .bottom-nav .nav-item { color: #cbd5e1; }
+html.dark .bottom-nav .nav-item.active { color: #fdba74; }
+html.dark footer { background: #111827 !important; color: #cbd5e1; }
+html.dark .home-options { background: #111827 !important; color: #e5e7eb; }
+html.dark .option-card { background: #0f172a !important; color: #e5e7eb !important; border-color: #1f2937 !important; }
+html.dark input, html.dark select, html.dark textarea { background: #0f172a; color: #e5e7eb; border-color: #1f2937; }
+html.dark a { color: #93c5fd; }
+html.dark .card, html.dark [class*="card"] { background: #0f172a; color: #e5e7eb; }
