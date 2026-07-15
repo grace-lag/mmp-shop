@@ -13,6 +13,7 @@ import { AuthProvider } from "@/lib/auth/AuthProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { SplashScreen } from "@/components/SplashScreen";
 import { ThemeManager } from "@/components/ThemeManager";
+import { LanguageManager } from "@/components/LanguageManager";
 
 function NotFoundComponent() {
   return (
