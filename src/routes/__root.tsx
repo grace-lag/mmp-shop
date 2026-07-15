@@ -137,6 +137,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeManager />
+        <LanguageManager />
         <SplashScreen />
         <Outlet />
         <Toaster />
