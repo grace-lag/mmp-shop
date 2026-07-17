@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 
-// Lightweight Google Website Translator integration.
+// Google Website Translator integration without banner or reload loops.
 // The site is authored in French; when the user picks another language
-// we load Google's translate widget and let it translate the DOM.
+// we load Google's translate widget and let it translate the DOM in place.
 declare global {
   interface Window {
     googleTranslateElementInit?: () => void;
     google?: any;
+    __gtInitialized?: boolean;
   }
 }
 
@@ -27,9 +28,19 @@ function setGoogTransCookie(target: string | null) {
   }
 }
 
-function ensureScript() {
+function hideBanner() {
   if (typeof document === "undefined") return;
-  if (document.getElementById("google-translate-script")) return;
+  // Neutralize the top offset Google applies and hide the banner iframe.
+  document.body.style.top = "0px";
+  document.body.style.position = "static";
+  const banner = document.querySelector<HTMLElement>(".goog-te-banner-frame");
+  if (banner) banner.style.display = "none";
+}
+
+function ensureScript(): Promise<boolean> {
+  if (typeof document === "undefined") return Promise.resolve(false);
+
+  if (window.__gtInitialized) return Promise.resolve(true);
 
   if (!document.getElementById("google_translate_element")) {
     const host = document.createElement("div");
@@ -38,64 +49,96 @@ function ensureScript() {
     document.body.appendChild(host);
   }
 
-  window.googleTranslateElementInit = () => {
-    try {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: "fr",
-          includedLanguages: "fr,en",
-          autoDisplay: false,
-        },
-        "google_translate_element",
-      );
-    } catch {
-      /* ignore */
-    }
-  };
+  return new Promise((resolve) => {
+    window.googleTranslateElementInit = () => {
+      try {
+        new window.google.translate.TranslateElement(
+          {
+            pageLanguage: "fr",
+            includedLanguages: "fr,en",
+            autoDisplay: false,
+          },
+          "google_translate_element",
+        );
+        window.__gtInitialized = true;
+        hideBanner();
+        resolve(true);
+      } catch {
+        resolve(false);
+      }
+    };
 
-  const s = document.createElement("script");
-  s.id = "google-translate-script";
-  s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-  s.async = true;
-  document.body.appendChild(s);
+    if (document.getElementById("google-translate-script")) {
+      // Script tag exists but init callback may not have run yet — wait briefly.
+      const start = Date.now();
+      const poll = () => {
+        if (window.__gtInitialized) return resolve(true);
+        if (Date.now() - start > 5000) return resolve(false);
+        setTimeout(poll, 200);
+      };
+      poll();
+      return;
+    }
+
+    const s = document.createElement("script");
+    s.id = "google-translate-script";
+    s.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    s.async = true;
+    s.onerror = () => resolve(false);
+    document.body.appendChild(s);
+  });
 }
 
-function apply(lang: string) {
+async function apply(lang: string) {
   if (typeof document === "undefined") return;
   const target = lang === "en" ? "en" : "fr";
   setGoogTransCookie(target === "fr" ? null : target);
   document.documentElement.lang = target;
 
   if (target === "fr") {
-    // Force reload to drop any translated DOM cleanly.
-    if (document.documentElement.className.includes("translated")) {
-      window.location.reload();
+    // Clear any translation via the widget combo (no reload).
+    const sel = document.querySelector<HTMLSelectElement>(".goog-te-combo");
+    if (sel) {
+      sel.value = "";
+      sel.dispatchEvent(new Event("change"));
     }
+    hideBanner();
     return;
   }
 
-  ensureScript();
+  const ready = await ensureScript();
+  if (!ready) {
+    // Script blocked/unavailable: fall back silently, no reload loop.
+    console.warn("[LanguageManager] Google Translate unavailable; staying in French.");
+    return;
+  }
 
-  // If widget is already initialized, trigger via its select element.
-  const trySelect = (attempt = 0) => {
+  // Trigger translation via the widget's select once it is present.
+  const start = Date.now();
+  const trigger = () => {
     const sel = document.querySelector<HTMLSelectElement>(".goog-te-combo");
     if (sel) {
       sel.value = target;
       sel.dispatchEvent(new Event("change"));
-    } else if (attempt < 20) {
-      setTimeout(() => trySelect(attempt + 1), 250);
-    } else {
-      // Fallback: reload so cookie-based translation takes effect.
-      window.location.reload();
+      hideBanner();
+      // Re-hide after Google injects its DOM.
+      setTimeout(hideBanner, 500);
+      setTimeout(hideBanner, 1500);
+      return;
     }
+    if (Date.now() - start < 6000) setTimeout(trigger, 250);
   };
-  trySelect();
+  trigger();
 }
 
 export function LanguageManager() {
   useEffect(() => {
     const lang = localStorage.getItem("lang") ?? "fr";
     if (lang !== "fr") apply(lang);
+
+    // Keep the banner hidden if Google re-injects it.
+    const mo = new MutationObserver(() => hideBanner());
+    mo.observe(document.body, { childList: true, subtree: false });
 
     const onCustom = (e: Event) => {
       const detail = (e as CustomEvent).detail as string | undefined;
@@ -107,6 +150,7 @@ export function LanguageManager() {
     window.addEventListener("lang-change", onCustom);
     window.addEventListener("storage", onStorage);
     return () => {
+      mo.disconnect();
       window.removeEventListener("lang-change", onCustom);
       window.removeEventListener("storage", onStorage);
     };

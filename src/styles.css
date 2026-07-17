@@ -539,8 +539,38 @@ html.dark .option-card { background: #0f172a !important; color: #e5e7eb !importa
 html.dark input, html.dark select, html.dark textarea { background: #0f172a; color: #e5e7eb; border-color: #1f2937; }
 html.dark a { color: #93c5fd; }
 html.dark .card, html.dark [class*="card"] { background: #0f172a; color: #e5e7eb; }
+/* Override inline white backgrounds so cards stay readable in dark mode */
+html.dark [style*="background:#fff"],
+html.dark [style*="background: #fff"],
+html.dark [style*="background:#ffffff"],
+html.dark [style*="background: #ffffff"],
+html.dark [style*="background-color:#fff"],
+html.dark [style*="background-color: #fff"],
+html.dark [style*="background:white"],
+html.dark [style*="background: white"] {
+  background: #0f172a !important;
+  color: #e5e7eb !important;
+  border-color: #1f2937 !important;
+}
+html.dark [style*="color:#0f172a"],
+html.dark [style*="color: #0f172a"],
+html.dark [style*="color:#111"],
+html.dark [style*="color: #111"],
+html.dark [style*="color:#000"],
+html.dark [style*="color: #000"] {
+  color: #e5e7eb !important;
+}
 
-/* Hide Google Translate top banner/tooltip while keeping translation active */
-.goog-te-banner-frame.skiptranslate, .goog-tooltip, .goog-tooltip:hover, .goog-text-highlight { display: none !important; }
-body { top: 0 !important; }
+/* Hide Google Translate top banner/tooltip completely */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame,
+.skiptranslate iframe,
+.goog-tooltip,
+.goog-tooltip:hover,
+.goog-text-highlight,
+#goog-gt-tt,
+.goog-te-balloon-frame { display: none !important; visibility: hidden !important; }
+body { top: 0 !important; position: static !important; }
 #google_translate_element { display: none !important; }
+
