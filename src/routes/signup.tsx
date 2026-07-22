@@ -34,6 +34,7 @@ function SignupPage() {
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const onAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
