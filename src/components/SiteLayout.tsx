@@ -2,6 +2,22 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import {
+  Home,
+  Film,
+  Plus,
+  MessageCircle,
+  User,
+  ShoppingBag,
+  Briefcase,
+  Clock,
+  Bell,
+  Settings,
+  HelpCircle,
+  LogIn,
+  UserPlus,
+  LogOut,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { supabase } from "@/integrations/supabase/client";
@@ -44,23 +60,22 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
     },
   });
 
-  const menuItems = [
-    { to: "/annonces", icon: "🛍️", title: "Plus d'annonces", sub: "Voir toutes les annonces" },
-    { to: "/offres-emploi", icon: "💼", title: "Offre d'emploi", sub: "Trouver ou proposer un emploi" },
+  const IconSize = 22;
+  const menuItems: { to: string; label: string; sub: string; Icon: React.ComponentType<any> }[] = [
+    { to: "/annonces", label: "Plus d'annonces", sub: "Voir toutes les annonces", Icon: ShoppingBag },
+    { to: "/offres-emploi", label: "Offre d'emploi", sub: "Trouver ou proposer un emploi", Icon: Briefcase },
     ...(user
       ? [
-          { to: "/historique", icon: "📋", title: "Historique", sub: "Visites & conversations" },
-          { to: "/notifications", icon: "🔔", title: "Notifications", sub: "Alertes & boutiques suivies" },
-          { to: "/parametres-site", icon: "⚙️", title: "Paramètres", sub: "Réglages du site" },
-
+          { to: "/historique", label: "Historique", sub: "Visites & conversations", Icon: Clock },
+          { to: "/notifications", label: "Notifications", sub: "Alertes & boutiques suivies", Icon: Bell },
+          { to: "/parametres-site", label: "Paramètres", sub: "Réglages du site", Icon: Settings },
         ]
       : [
-          { to: "/login", icon: "🔑", title: "Se connecter", sub: "Accéder à votre compte" },
-          { to: "/signup", icon: "✨", title: "Créer un compte", sub: "Rejoindre MaMarketplace" },
+          { to: "/login", label: "Se connecter", sub: "Accéder à votre compte", Icon: LogIn },
+          { to: "/signup", label: "Créer un compte", sub: "Rejoindre MMP Shop", Icon: UserPlus },
         ]),
-    { to: "/aide", icon: "❓", title: "Aide", sub: "Comment utiliser la plateforme" },
+    { to: "/aide", label: "Aide", sub: "Comment utiliser la plateforme", Icon: HelpCircle },
   ];
-
 
   return (
     <>
@@ -78,7 +93,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
             <span className="burger-line" />
           </button>
           <Link to="/" className="brand-logo" style={{ textDecoration: "none" }}>
-            <img src={logoUrl} alt="MaMarketplace logo" className="brand-image" />
+            <img src={logoUrl} alt="MMP Shop logo" className="brand-image" />
             <div>
               <div className="brand-name">MaMarketplace</div>
               <div className="brand-name">E-Shop</div>
@@ -92,39 +107,37 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
                 style={{ width: 36, height: 36, borderRadius: "50%", objectFit: "cover", border: "2px solid #fff" }}
               />
             ) : (
-              <span className="cart-icon">👤</span>
+              <User size={22} color="#fff" strokeWidth={2.2} />
             )}
           </Link>
-
         </section>
         )}
 
         {menuOpen && (
           <>
             <div className="menu-overlay active" onClick={() => setMenuOpen(false)} />
-            <section className="home-options open" style={{ position: "fixed", overflowY: "auto" }}>
-              {menuItems.map((m) => (
-                <Link key={m.to} to={m.to} className="option-card" onClick={() => setMenuOpen(false)}>
-                  <span>{m.icon}</span>
-                  <div>
-                    <h3>{m.title}</h3>
-                    <p>{m.sub}</p>
+            <section className="home-options open menu-flat" style={{ position: "fixed", overflowY: "auto" }}>
+              {menuItems.map(({ to, label, sub, Icon }) => (
+                <Link key={to} to={to} className="menu-flat-item" onClick={() => setMenuOpen(false)}>
+                  <Icon size={22} strokeWidth={1.8} className="menu-flat-icon" />
+                  <div className="menu-flat-text">
+                    <div className="menu-flat-title">{label}</div>
+                    <div className="menu-flat-sub">{sub}</div>
                   </div>
                 </Link>
               ))}
               {user && (
                 <button
-                  className="option-card"
+                  className="menu-flat-item menu-flat-item-btn"
                   onClick={async () => {
                     setMenuOpen(false);
                     await signOut();
                   }}
-                  style={{ cursor: "pointer", textAlign: "left" }}
                 >
-                  <span>🚪</span>
-                  <div>
-                    <h3>Déconnexion</h3>
-                    <p>Quitter votre session</p>
+                  <LogOut size={22} strokeWidth={1.8} className="menu-flat-icon" />
+                  <div className="menu-flat-text">
+                    <div className="menu-flat-title">Déconnexion</div>
+                    <div className="menu-flat-sub">Quitter votre session</div>
                   </div>
                 </button>
               )}
@@ -135,7 +148,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
         <main className="container">{children}</main>
       </div>
 
-      <nav className="bottom-nav">
+      <nav className="bottom-nav bottom-nav-pro">
         <Link
           to="/"
           className={`nav-item ${isActive("accueil") ? "active" : ""}`}
@@ -146,7 +159,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
             }
           }}
         >
-          <span className="nav-icon">🏠</span>
+          <Home size={IconSize} strokeWidth={isActive("accueil") ? 2.4 : 1.8} className="nav-icon-svg" />
           <span className="nav-label">Accueil</span>
         </Link>
         <Link
@@ -159,56 +172,44 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
             }
           }}
         >
-          <span className="nav-icon">🎬</span>
+          <Film size={IconSize} strokeWidth={isActive("shorts", "/shorts") ? 2.4 : 1.8} className="nav-icon-svg" />
           <span className="nav-label">Shorts</span>
         </Link>
         {path.startsWith("/shorts") ? (
           <Link
             to="/shorts"
             search={{ upload: 1 } as any}
-            className="nav-item"
+            className="nav-item nav-item-cta"
             aria-label="Publier un short"
           >
-            <span
-              className="nav-icon"
-              style={{
-                background: "linear-gradient(90deg,#00f2ea,#ff0050)",
-                color: "#fff",
-                borderRadius: 10,
-                padding: "2px 10px",
-                fontWeight: 900,
-                fontSize: 22,
-                lineHeight: 1,
-              }}
-            >
-              ＋
+            <span className="nav-cta-bubble">
+              <Plus size={22} strokeWidth={2.6} />
             </span>
             <span className="nav-label">Short</span>
           </Link>
         ) : (
           <Link to="/poster" className={`nav-item ${isActive("poster", "/poster") ? "active" : ""}`}>
-            <span className="nav-icon">➕</span>
+            <Plus size={IconSize} strokeWidth={isActive("poster", "/poster") ? 2.4 : 1.8} className="nav-icon-svg" />
             <span className="nav-label">Poster</span>
           </Link>
         )}
         <Link to="/conversations" className={`nav-item ${isActive("conversations", "/conversations") ? "active" : ""}`}>
-          <span className="nav-icon">💬</span>
+          <MessageCircle size={IconSize} strokeWidth={isActive("conversations", "/conversations") ? 2.4 : 1.8} className="nav-icon-svg" />
           <span className="nav-label">Messages</span>
           {unreadCount > 0 && <span className="nav-badge">{unreadCount > 99 ? "99+" : unreadCount}</span>}
         </Link>
         <Link to={user ? "/compte" : "/login"} className={`nav-item ${isActive("compte", "/compte") ? "active" : ""}`}>
-          <span className="nav-icon">👤</span>
+          <User size={IconSize} strokeWidth={isActive("compte", "/compte") ? 2.4 : 1.8} className="nav-icon-svg" />
           <span className="nav-label">Mon compte</span>
         </Link>
       </nav>
-
 
       {!hideFooter && (
       <footer>
         <div className="footer-content">
           <div className="footer-section">
             <h3>🏪 À propos</h3>
-            <p>MaMarketplace E-Shop est une plateforme de vente et d'achat en ligne au Congo.</p>
+            <p>MMP Shop — MaMarketplace E-Shop est une plateforme de vente et d'achat en ligne au Congo.</p>
           </div>
           <div className="footer-section">
             <h3>📞 Contact</h3>
@@ -229,7 +230,6 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
               <li><Link to={user ? "/compte" : "/login"}>Mon compte</Link></li>
               {isAdmin && <li><Link to="/admin">🛡️ Espace administrateur</Link></li>}
               {isAdmin && <li><Link to="/admin/banned-words">🚫 Mots interdits</Link></li>}
-
             </ul>
           </div>
           <div className="footer-section">
@@ -242,7 +242,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2026 MaMarketplace E-Shop. Tous droits réservés. | Créé avec ❤️ au Congo</p>
+          <p>&copy; 2026 MMP Shop — MaMarketplace E-Shop. Tous droits réservés. | Créé avec ❤️ au Congo</p>
         </div>
       </footer>
       )}
