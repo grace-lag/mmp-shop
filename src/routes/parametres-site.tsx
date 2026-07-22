@@ -9,7 +9,7 @@ function ParametresSitePage() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
-  const [theme, setTheme] = useState(() => (typeof window !== "undefined" ? localStorage.getItem("theme") ?? "auto" : "auto"));
+  const [theme, setTheme] = useState(() => (typeof window !== "undefined" ? localStorage.getItem("theme") ?? "light" : "light"));
   const [notifs, setNotifs] = useState(() => (typeof window !== "undefined" ? localStorage.getItem("notifs") !== "off" : true));
   const [lang, setLang] = useState(() => (typeof window !== "undefined" ? localStorage.getItem("lang") ?? "fr" : "fr"));
 

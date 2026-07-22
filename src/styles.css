@@ -574,3 +574,67 @@ iframe.goog-te-banner-frame,
 body { top: 0 !important; position: static !important; }
 #google_translate_element { display: none !important; }
 
+/* ==== Professional bottom nav (monochrome SVG icons) ==== */
+.bottom-nav.bottom-nav-pro {
+  background: #fff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -2px 12px rgba(15, 23, 42, 0.06);
+}
+.bottom-nav-pro .nav-item {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px !important;
+  color: #64748b !important;
+  text-decoration: none !important;
+  transition: color 0.15s ease;
+}
+.bottom-nav-pro .nav-item.active { color: #ea580c !important; }
+.bottom-nav-pro .nav-icon-svg { display: block; }
+.bottom-nav-pro .nav-label { font-weight: 500; letter-spacing: 0.02em; }
+.bottom-nav-pro .nav-cta-bubble {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 28px; border-radius: 10px;
+  background: linear-gradient(135deg, #ea580c, #f97316);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(234, 88, 12, 0.35);
+}
+html.dark .bottom-nav.bottom-nav-pro { background: #111827; border-top-color: #1f2937; }
+html.dark .bottom-nav-pro .nav-item { color: #94a3b8 !important; }
+html.dark .bottom-nav-pro .nav-item.active { color: #fdba74 !important; }
+
+/* ==== Flat borderless burger menu ==== */
+.home-options.menu-flat {
+  background: #fff;
+  padding: 24px 8px !important;
+  gap: 2px;
+}
+.menu-flat-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0;
+  text-decoration: none !important;
+  color: #0f172a;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  transition: background 0.12s ease;
+}
+.menu-flat-item:hover { background: rgba(234, 88, 12, 0.08) !important; }
+.menu-flat-icon { color: #ea580c; flex-shrink: 0; }
+.menu-flat-title { font-size: 1rem; font-weight: 600; }
+.menu-flat-sub { font-size: 0.8rem; color: #64748b; margin-top: 2px; }
+.menu-flat-item-btn { width: 100%; }
+html.dark .home-options.menu-flat { background: #0f172a !important; }
+html.dark .menu-flat-item { color: #e5e7eb; }
+html.dark .menu-flat-item:hover { background: rgba(253, 186, 116, 0.1) !important; }
+html.dark .menu-flat-icon { color: #fdba74; }
+html.dark .menu-flat-sub { color: #94a3b8; }
+
+

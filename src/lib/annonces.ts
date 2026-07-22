@@ -93,11 +93,25 @@ export async function listMyAnnonces(userId: string, opts?: { expired?: boolean 
 }
 
 export async function getAnnonce(id: string) {
-  const { data: u } = await supabase.auth.getUser();
-  const cols = u.user ? "*" : PUBLIC_COLS;
-  const { data, error } = await supabase.from("annonces").select(cols).eq("id", id).maybeSingle();
+  // Always fetch the public/safe column set — column-level SELECT grants can reject
+  // `select("*")` for authenticated non-owners on restricted columns (phone/whatsapp),
+  // which used to make the detail page show "Annonce introuvable".
+  const { data, error } = await supabase
+    .from("annonces")
+    .select(PUBLIC_COLS + ",expires_at")
+    .eq("id", id)
+    .maybeSingle();
   if (error) throw error;
-  return data as Annonce | null;
+  if (!data) return null;
+
+  // Try to enrich with contact fields — allowed by RLS for the owner (and public
+  // annonces that still expose them). Silently ignore if the DB rejects it.
+  const { data: contact } = await supabase
+    .from("annonces")
+    .select("phone,whatsapp")
+    .eq("id", id)
+    .maybeSingle();
+  return { ...(data as any), phone: contact?.phone ?? "", whatsapp: contact?.whatsapp ?? "" } as Annonce;
 }
 
 function getSessionId(): string {

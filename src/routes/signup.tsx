@@ -34,6 +34,7 @@ function SignupPage() {
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const onAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,6 +65,7 @@ function SignupPage() {
     }
     if (!avatarFile) return toast.error("La photo de profil est obligatoire.");
     if (form.password.length < 1) return toast.error("Choisis un mot de passe.");
+    if (!acceptTerms) return toast.error("Vous devez accepter les conditions d'utilisation et la politique de confidentialité.");
 
     setLoading(true);
     try {
@@ -242,7 +244,24 @@ function SignupPage() {
         </label>
         <PasswordInput placeholder="Mot de passe *" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} required />
 
-        <button className="btn-whatsapp" disabled={loading}>{loading ? "..." : "Créer mon compte"}</button>
+        <label style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: "0.9rem", color: "#334155", lineHeight: 1.5 }}>
+          <input
+            type="checkbox"
+            checked={acceptTerms}
+            onChange={(e) => setAcceptTerms(e.target.checked)}
+            style={{ marginTop: 3, width: 18, height: 18, flexShrink: 0 }}
+            required
+          />
+          <span>
+            En continuant, j'accepte les{" "}
+            <Link to="/conditions" target="_blank" style={{ color: "#ea580c", fontWeight: 600 }}>conditions d'utilisation</Link>{" "}
+            et la{" "}
+            <Link to="/privacy" target="_blank" style={{ color: "#ea580c", fontWeight: 600 }}>politique de confidentialité</Link>{" "}
+            de MMP Shop.
+          </span>
+        </label>
+
+        <button className="btn-whatsapp" disabled={loading || !acceptTerms}>{loading ? "..." : "Créer mon compte"}</button>
       </form>
       <p style={{ marginTop: 16 }}>Déjà inscrit ? <Link to="/login">Se connecter</Link></p>
     </SiteLayout>

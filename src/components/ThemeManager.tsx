@@ -17,12 +17,13 @@ function apply(theme: string) {
 
 export function ThemeManager() {
   useEffect(() => {
-    const theme = localStorage.getItem("theme") ?? "auto";
+    // Default = light. Users can switch in Paramètres du site.
+    const theme = localStorage.getItem("theme") ?? "light";
     apply(theme);
 
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
-      const t = localStorage.getItem("theme") ?? "auto";
+      const t = localStorage.getItem("theme") ?? "light";
       if (t === "auto") apply("auto");
     };
     mq.addEventListener?.("change", onChange);
