@@ -18,6 +18,7 @@ function PosterPage() {
     title: "",
     description: "",
     price: 0,
+    currency: "FCFA",
     city: "Brazzaville",
     category: "Électronique",
     subcategory: "",
@@ -70,8 +71,13 @@ function PosterPage() {
         const url = await uploadAnnonceImage(f, user.id);
         uploaded.push(url);
       }
+      const { currency, ...rest } = form;
+      const descWithCurrency = currency && currency !== "FCFA"
+        ? `${rest.description || ""}\n\n💱 Devise : ${currency}`.trim()
+        : rest.description;
       const a = await createAnnonce({
-        ...form,
+        ...rest,
+        description: descWithCurrency,
         seller_name: sellerName,
         image_url: uploaded[0] ?? "",
         images: uploaded,
@@ -97,7 +103,16 @@ function PosterPage() {
       <form onSubmit={submit} style={{ display: "grid", gap: 12, maxWidth: 600 }}>
         <input className="search-input" placeholder="Titre" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
         <textarea className="search-input" placeholder="Description" rows={4} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-        <input className="search-input" type="number" placeholder="Prix en FCFA" value={form.price || ""} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} required />
+        <div style={{ display: "flex", gap: 8 }}>
+          <input className="search-input" style={{ flex: 1 }} type="number" placeholder={`Prix en ${form.currency}`} value={form.price || ""} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} required />
+          <select className="city-select" style={{ width: 120 }} value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })} aria-label="Devise">
+            <option value="FCFA">FCFA</option>
+            <option value="USD">USD $</option>
+            <option value="EUR">EUR €</option>
+            <option value="XAF">XAF</option>
+            <option value="NGN">NGN ₦</option>
+          </select>
+        </div>
         <select className="city-select" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })}>
           {CITIES.map((c) => <option key={c}>{c}</option>)}
         </select>
