@@ -561,6 +561,24 @@ html.dark [style*="color: #000"] {
   color: #e5e7eb !important;
 }
 
+/* Extra dark polish: peach accent borders, muted subtexts, sticky headers */
+html.dark [style*="border: 1px solid #fed7aa"],
+html.dark [style*="border:1px solid #fed7aa"] { border-color: #7c2d12 !important; }
+html.dark [style*="background: #fff7ed"],
+html.dark [style*="background:#fff7ed"] { background: #1f2937 !important; color: #fde68a !important; }
+html.dark [style*="color: #64748b"],
+html.dark [style*="color:#64748b"],
+html.dark [style*="color: #7c2d12"],
+html.dark [style*="color:#7c2d12"],
+html.dark [style*="color: #475569"],
+html.dark [style*="color:#475569"] { color: #cbd5e1 !important; }
+html.dark [style*="background: #f1f5f9"],
+html.dark [style*="background:#f1f5f9"] { background: #1e293b !important; }
+html.dark [style*="background:#e2e8f0"],
+html.dark [style*="background: #e2e8f0"] { background: #1e293b !important; color: #e5e7eb !important; }
+html.dark .price { color: #fdba74 !important; }
+html.dark h1, html.dark h2, html.dark h3 { color: #f1f5f9; }
+
 /* Hide EVERY Google Translate indicator (banner, tooltip, popovers, floating icons) */
 .goog-te-banner-frame,
 .goog-te-banner-frame.skiptranslate,
