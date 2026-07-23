@@ -561,7 +561,7 @@ html.dark [style*="color: #000"] {
   color: #e5e7eb !important;
 }
 
-/* Hide Google Translate top banner/tooltip completely */
+/* Hide EVERY Google Translate indicator (banner, tooltip, popovers, floating icons) */
 .goog-te-banner-frame,
 .goog-te-banner-frame.skiptranslate,
 iframe.goog-te-banner-frame,
@@ -570,9 +570,19 @@ iframe.goog-te-banner-frame,
 .goog-tooltip:hover,
 .goog-text-highlight,
 #goog-gt-tt,
-.goog-te-balloon-frame { display: none !important; visibility: hidden !important; }
+.goog-te-balloon-frame,
+.goog-te-ftab,
+.goog-te-menu-frame,
+.goog-te-spinner-pos,
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-ZVi9od-aZ2wEe-OiiCO,
+.VIpgJd-yAWNEb-L7lbkb,
+.VIpgJd-ZVi9od-l4eHX-hSRGPd { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
 body { top: 0 !important; position: static !important; }
+html { margin-top: 0 !important; }
 #google_translate_element { display: none !important; }
+font[style*="background-color: rgb(255, 255, 138)"],
+font[style*="background-color:#fff68f"] { background: transparent !important; box-shadow: none !important; }
 
 /* ==== Professional bottom nav (monochrome SVG icons) ==== */
 .bottom-nav.bottom-nav-pro {

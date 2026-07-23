@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { LayoutDashboard, Eye, History, Bell, Settings, UserCog, Search } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
@@ -65,10 +66,10 @@ function ComptePage() {
   const topLikes = Math.max(0, ...((myAnnonces ?? []).map((a: any) => a.likes_count ?? 0)));
   const totalAds = (myAnnonces ?? []).length;
 
-  const tile = (icon: string, label: string, sub?: string, badge?: number) => (
+  const tile = (Icon: React.ComponentType<any>, label: string, sub?: string, badge?: number) => (
     <div style={{ position: "relative", background: "#fff", borderRadius: 14, padding: "18px 16px", border: "1px solid #fed7aa", display: "flex", flexDirection: "column", gap: 6, minHeight: 72, boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 22 }}>{icon}</span>
+        <Icon size={22} strokeWidth={1.8} color="#ea580c" />
         <strong style={{ fontSize: "1rem" }}>{label}</strong>
       </div>
       {sub && <span style={{ color: "#64748b", fontSize: "0.8rem" }}>{sub}</span>}
@@ -114,17 +115,19 @@ function ComptePage() {
 
       {/* Grille 2 colonnes 3 lignes */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 16 }}>
-        <Link to="/dashboard" style={{ textDecoration: "none", color: "inherit" }}>{tile("📊", "Tableau de bord", "Mes annonces")}</Link>
-        <Link to="/apercu" style={{ textDecoration: "none", color: "inherit" }}>{tile("👁️", "Aperçu", "Boutique en bref")}</Link>
-        <Link to="/historique" style={{ textDecoration: "none", color: "inherit" }}>{tile("📋", "Historique", "Visites & messages", unreadCount)}</Link>
-        <Link to="/notifications" style={{ textDecoration: "none", color: "inherit" }}>{tile("🔔", "Notifications", "Boutiques suivies", newNotifs)}</Link>
-        <Link to="/parametres-site" style={{ textDecoration: "none", color: "inherit" }}>{tile("⚙️", "Paramètres", "Réglages du site")}</Link>
-        <Link to="/parametres" style={{ textDecoration: "none", color: "inherit" }}>{tile("👤", "Compte", "Modifier mon profil")}</Link>
+        <Link to="/dashboard" style={{ textDecoration: "none", color: "inherit" }}>{tile(LayoutDashboard, "Tableau de bord", "Mes annonces")}</Link>
+        <Link to="/apercu" style={{ textDecoration: "none", color: "inherit" }}>{tile(Eye, "Aperçu", "Boutique en bref")}</Link>
+        <Link to="/historique" style={{ textDecoration: "none", color: "inherit" }}>{tile(History, "Historique", "Visites & messages", unreadCount)}</Link>
+        <Link to="/notifications" style={{ textDecoration: "none", color: "inherit" }}>{tile(Bell, "Notifications", "Boutiques suivies", newNotifs)}</Link>
+        <Link to="/parametres-site" style={{ textDecoration: "none", color: "inherit" }}>{tile(Settings, "Paramètres", "Réglages du site")}</Link>
+        <Link to="/parametres" style={{ textDecoration: "none", color: "inherit" }}>{tile(UserCog, "Compte", "Modifier mon profil")}</Link>
       </div>
 
       {/* Lien recherche */}
       <div style={{ marginTop: 18 }}>
-        <Link to="/recherche-utilisateur" className="btn-whatsapp" style={{ display: "block", textAlign: "center", background: "#ea580c" }}>🔎 Rechercher une personne</Link>
+        <Link to="/recherche-utilisateur" className="btn-whatsapp" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", textAlign: "center", background: "#ea580c" }}>
+          <Search size={18} /> Rechercher une personne
+        </Link>
       </div>
 
       {/* Durée de présence */}
