@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowLeft, Mail, CheckCircle2, Clock, Star } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
@@ -28,9 +29,9 @@ function ApercuPage() {
 
   if (!user) return null;
 
-  const Tile = ({ icon, title, to, badge, params }: any) => (
-    <Link to={to} params={params} style={{ position: "relative", textDecoration: "none", color: "inherit", background: "#fff", borderRadius: 14, padding: 20, border: "1px solid #fed7aa", minHeight: 100, display: "flex", flexDirection: "column", gap: 8 }}>
-      <div style={{ fontSize: 28 }}>{icon}</div>
+  const Tile = ({ Icon, title, to, badge, params }: any) => (
+    <Link to={to} params={params} style={{ position: "relative", textDecoration: "none", color: "inherit", background: "#fff", borderRadius: 14, padding: 20, border: "1px solid #fed7aa", minHeight: 100, display: "flex", flexDirection: "column", gap: 10 }}>
+      <Icon size={26} strokeWidth={1.8} color="#ea580c" />
       <strong>{title}</strong>
       {badge != null && badge > 0 && (
         <span style={{ position: "absolute", top: 10, right: 12, background: "#ea580c", color: "white", borderRadius: 999, padding: "2px 8px", fontSize: "0.72rem", fontWeight: 700 }}>{badge > 99 ? "99+" : badge}</span>
@@ -41,15 +42,15 @@ function ApercuPage() {
   return (
     <SiteLayout hideHeader hideFooter>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 16 }}>
-        <Link to="/compte" style={{ textDecoration: "none", color: "#0f172a", fontSize: "1.25rem" }}>←</Link>
+        <Link to="/compte" style={{ textDecoration: "none", color: "#0f172a", display: "inline-flex", alignItems: "center" }}><ArrowLeft size={22} /></Link>
         <h1 style={{ margin: 0 }}>Aperçu</h1>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }}>
-        <Tile icon="✉️" title="Messages non lus" to="/messages-non-lus" badge={counts?.unread} />
-        <Tile icon="🟢" title="Annonces actives" to="/annonces-actives" badge={counts?.actives} />
-        <Tile icon="⏰" title="Annonces expirées" to="/annonces-expirees" badge={counts?.expired} />
-        <Tile icon="⭐" title="Évaluation de ma boutique" to="/evaluations/$id" params={{ id: user.id }} />
+        <Tile Icon={Mail} title="Messages non lus" to="/messages-non-lus" badge={counts?.unread} />
+        <Tile Icon={CheckCircle2} title="Annonces actives" to="/annonces-actives" badge={counts?.actives} />
+        <Tile Icon={Clock} title="Annonces expirées" to="/annonces-expirees" badge={counts?.expired} />
+        <Tile Icon={Star} title="Évaluation de ma boutique" to="/evaluations/$id" params={{ id: user.id }} />
       </div>
     </SiteLayout>
   );

@@ -148,17 +148,23 @@ function DashboardPage() {
             </Link>
             <h3>{s.title || "Sans titre"}</h3>
             {s.price != null && <p className="price">{formatPrice(s.price)}</p>}
-            <button
-              onClick={async () => {
-                if (!confirm("Supprimer ce short ?")) return;
-                const { error } = await (supabase as any).from("shorts").delete().eq("id", s.id);
-                if (error) toast.error(error.message);
-                else { toast.success("Short supprimé"); qc.invalidateQueries({ queryKey: ["my-shorts-list"] }); }
-              }}
-              style={{ width: "100%", background: "#dc2626", color: "#fff", borderRadius: 8, padding: "8px", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4 }}
-            >
-              <Trash2 size={14} /> Supprimer
-            </button>
+            <div style={{ display: "flex", gap: 6 }}>
+              <Link to="/modifier-short/$id" params={{ id: s.id }} style={{ flex: 1, background: "#2563eb", color: "#fff", borderRadius: 8, padding: "8px 4px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, textDecoration: "none", fontSize: "0.82rem" }}>
+                <Pencil size={14} /> Modifier
+              </Link>
+              <button
+                aria-label="Supprimer"
+                onClick={async () => {
+                  if (!confirm("Supprimer ce short ?")) return;
+                  const { error } = await (supabase as any).from("shorts").delete().eq("id", s.id);
+                  if (error) toast.error(error.message);
+                  else { toast.success("Short supprimé"); qc.invalidateQueries({ queryKey: ["my-shorts-list"] }); }
+                }}
+                style={{ background: "#dc2626", color: "#fff", borderRadius: 8, padding: "8px 10px", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
+              >
+                <Trash2 size={14} />
+              </button>
+            </div>
           </div>
         ))}
         {myShorts && myShorts.length === 0 && <p style={{ color: "#64748b" }}>Vous n'avez pas encore publié de short.</p>}

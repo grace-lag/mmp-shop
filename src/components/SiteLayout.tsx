@@ -215,8 +215,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
             <h3>📞 Contact</h3>
             <ul>
               <li><a href="tel:+242064223575">📱 +242 06 422 35 75</a></li>
-              <li><a href="mailto:liyeyegrace@gmail.com">✉️ liyeyegrace@gmail.com</a></li>
-              <li><a href="mailto:jhonynguimbi500@gmail.com">✉️ jhonynguimbi500@gmail.com</a></li>
+              <li><a href="mailto:mmpeshop@gmail.com">✉️ mmpeshop@gmail.com</a></li>
               <li><Link to="/chat">💬 Chat en ligne</Link></li>
             </ul>
           </div>

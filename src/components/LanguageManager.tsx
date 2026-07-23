@@ -30,11 +30,21 @@ function setGoogTransCookie(target: string | null) {
 
 function hideBanner() {
   if (typeof document === "undefined") return;
-  // Neutralize the top offset Google applies and hide the banner iframe.
   document.body.style.top = "0px";
   document.body.style.position = "static";
-  const banner = document.querySelector<HTMLElement>(".goog-te-banner-frame");
-  if (banner) banner.style.display = "none";
+  document.documentElement.style.marginTop = "0px";
+  const selectors = [
+    ".goog-te-banner-frame",
+    ".goog-te-ftab",
+    ".goog-te-balloon-frame",
+    ".goog-tooltip",
+    "#goog-gt-tt",
+    ".skiptranslate iframe",
+    "iframe.goog-te-menu-frame",
+  ];
+  for (const sel of selectors) {
+    document.querySelectorAll<HTMLElement>(sel).forEach((el) => { el.style.display = "none"; el.style.visibility = "hidden"; });
+  }
 }
 
 function ensureScript(): Promise<boolean> {
