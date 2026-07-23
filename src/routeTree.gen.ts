@@ -44,6 +44,7 @@ import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as VendeurIdRouteImport } from './routes/vendeur.$id'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as TopLikesIdRouteImport } from './routes/top-likes.$id'
+import { Route as ModifierShortIdRouteImport } from './routes/modifier-short.$id'
 import { Route as ModifierAnnonceIdRouteImport } from './routes/modifier-annonce.$id'
 import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
 import { Route as ContactIdRouteImport } from './routes/contact.$id'
@@ -227,6 +228,11 @@ const TopLikesIdRoute = TopLikesIdRouteImport.update({
   path: '/top-likes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ModifierShortIdRoute = ModifierShortIdRouteImport.update({
+  id: '/modifier-short/$id',
+  path: '/modifier-short/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModifierAnnonceIdRoute = ModifierAnnonceIdRouteImport.update({
   id: '/modifier-annonce/$id',
   path: '/modifier-annonce/$id',
@@ -302,6 +308,7 @@ export interface FileRoutesByFullPath {
   '/contact/$id': typeof ContactIdRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
+  '/modifier-short/$id': typeof ModifierShortIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -345,6 +352,7 @@ export interface FileRoutesByTo {
   '/contact/$id': typeof ContactIdRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
+  '/modifier-short/$id': typeof ModifierShortIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -390,6 +398,7 @@ export interface FileRoutesById {
   '/contact/$id': typeof ContactIdRoute
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
+  '/modifier-short/$id': typeof ModifierShortIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -436,6 +445,7 @@ export interface FileRouteTypes {
     | '/contact/$id'
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
+    | '/modifier-short/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -479,6 +489,7 @@ export interface FileRouteTypes {
     | '/contact/$id'
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
+    | '/modifier-short/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -523,6 +534,7 @@ export interface FileRouteTypes {
     | '/contact/$id'
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
+    | '/modifier-short/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -567,6 +579,7 @@ export interface RootRouteChildren {
   ContactIdRoute: typeof ContactIdRoute
   EvaluationsIdRoute: typeof EvaluationsIdRoute
   ModifierAnnonceIdRoute: typeof ModifierAnnonceIdRoute
+  ModifierShortIdRoute: typeof ModifierShortIdRoute
   TopLikesIdRoute: typeof TopLikesIdRoute
   UIdRoute: typeof UIdRoute
   VendeurIdRoute: typeof VendeurIdRoute
@@ -819,6 +832,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TopLikesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/modifier-short/$id': {
+      id: '/modifier-short/$id'
+      path: '/modifier-short/$id'
+      fullPath: '/modifier-short/$id'
+      preLoaderRoute: typeof ModifierShortIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modifier-annonce/$id': {
       id: '/modifier-annonce/$id'
       path: '/modifier-annonce/$id'
@@ -923,6 +943,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactIdRoute: ContactIdRoute,
   EvaluationsIdRoute: EvaluationsIdRoute,
   ModifierAnnonceIdRoute: ModifierAnnonceIdRoute,
+  ModifierShortIdRoute: ModifierShortIdRoute,
   TopLikesIdRoute: TopLikesIdRoute,
   UIdRoute: UIdRoute,
   VendeurIdRoute: VendeurIdRoute,
@@ -930,13 +951,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
