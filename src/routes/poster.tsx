@@ -86,7 +86,7 @@ function PosterPage() {
       toast.success("Annonce publiée !");
       navigate({ to: "/annonce/$id", params: { id: a.id } });
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(frAuthError(err));
     } finally {
       setSubmitting(false);
     }

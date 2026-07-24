@@ -51,7 +51,7 @@ export function FollowButton({ sellerId }: { sellerId: string }) {
       qc.invalidateQueries({ queryKey: ["is-following", sellerId] });
       qc.invalidateQueries({ queryKey: ["followers-count", sellerId] });
     },
-    onError: (e: any) => { if (e?.message !== "auth" && e?.message !== "auto") toast.error(e.message); },
+    onError: (e: any) => { if (e?.message !== "auth" && e?.message !== "auto") toast.error(frAuthError(e)); },
   });
 
   if (user?.id === sellerId) return null;

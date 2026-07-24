@@ -131,7 +131,7 @@ function CompleteProfilePage() {
       toast.success("Profil complété");
       navigate({ to: "/compte" });
     } catch (err: any) {
-      toast.error(err?.message ?? "Impossible d'enregistrer le profil");
+      toast.error(frAuthError(err) || "Impossible d'enregistrer le profil");
     } finally {
       setSaving(false);
     }

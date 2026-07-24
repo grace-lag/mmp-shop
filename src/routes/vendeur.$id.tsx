@@ -53,7 +53,7 @@ function VendeurPage() {
       toast.success("Annonce supprimée");
       qc.invalidateQueries({ queryKey: ["seller-annonces", id] });
     } catch (e: any) {
-      toast.error(e?.message ?? "Échec de la suppression");
+      toast.error(frAuthError(e) || "Échec de la suppression");
     }
   };
 

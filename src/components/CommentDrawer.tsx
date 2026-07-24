@@ -25,7 +25,7 @@ export function CommentDrawer({ annonceId, open, onClose }: { annonceId: string;
       qc.invalidateQueries({ queryKey: ["comments", annonceId] });
       qc.invalidateQueries({ queryKey: ["comments-count", annonceId] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   const del = useMutation({
@@ -34,7 +34,7 @@ export function CommentDrawer({ annonceId, open, onClose }: { annonceId: string;
       qc.invalidateQueries({ queryKey: ["comments", annonceId] });
       qc.invalidateQueries({ queryKey: ["comments-count", annonceId] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   if (!open) return null;

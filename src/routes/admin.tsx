@@ -37,7 +37,7 @@ function AdminPage() {
   const del = useMutation({
     mutationFn: (userId: string) => deleteFn({ data: { userId } }),
     onSuccess: () => { toast.success("Compte supprimé"); qc.invalidateQueries({ queryKey: ["admin-users"] }); },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   if (!user) return null;

@@ -51,7 +51,7 @@ export function AnnonceStats({ annonceId, views, likes }: Props) {
       qc.invalidateQueries({ queryKey: ["annonces"] });
       qc.invalidateQueries({ queryKey: ["annonce", annonceId] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   return (

@@ -109,7 +109,7 @@ function ParametresPage() {
       toast.success("Profil mis à jour");
     } catch (err: any) {
       console.error("Profile update failed", err);
-      toast.error(err?.message ?? "Erreur lors de la mise à jour");
+      toast.error(frAuthError(err) || "Erreur lors de la mise à jour");
     } finally {
       setSaving(false);
     }
@@ -122,7 +122,7 @@ function ParametresPage() {
     setSavingEmail(true);
     const { error } = await supabase.auth.updateUser({ email: newEmail });
     setSavingEmail(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(frAuthError(error));
     toast.success("Un email de confirmation a été envoyé à la nouvelle adresse.");
   };
 
@@ -133,7 +133,7 @@ function ParametresPage() {
     setSavingPassword(true);
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     setSavingPassword(false);
-    if (error) return toast.error(error.message);
+    if (error) return toast.error(frAuthError(error));
     setNewPassword("");
     setConfirmPassword("");
     toast.success("Mot de passe mis à jour");
@@ -153,7 +153,7 @@ function ParametresPage() {
       toast.success("Compte supprimé");
       navigate({ to: "/" });
     } catch (err: any) {
-      toast.error(err?.message ?? "Échec de suppression du compte");
+      toast.error(frAuthError(err) || "Échec de suppression du compte");
     } finally {
       setDeletingAccount(false);
     }

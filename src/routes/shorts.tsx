@@ -435,7 +435,7 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
       qc.invalidateQueries({ queryKey: ["short-like", short.id, user?.id] });
       qc.invalidateQueries({ queryKey: ["short-like-count", short.id] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   // Favorites
@@ -810,7 +810,7 @@ function ShortComments({ shortId, onClose }: { shortId: string; onClose: () => v
       qc.invalidateQueries({ queryKey: ["short-comments", shortId] });
       qc.invalidateQueries({ queryKey: ["short-comment-count", shortId] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   const del = useMutation({

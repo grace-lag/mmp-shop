@@ -32,7 +32,7 @@ export function Comments({ annonceId }: { annonceId: string }) {
       qc.invalidateQueries({ queryKey: ["comments", annonceId] });
       qc.invalidateQueries({ queryKey: ["comments-count", annonceId] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   const del = useMutation({
@@ -41,7 +41,7 @@ export function Comments({ annonceId }: { annonceId: string }) {
       qc.invalidateQueries({ queryKey: ["comments", annonceId] });
       qc.invalidateQueries({ queryKey: ["comments-count", annonceId] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   const onPickFile = async (e: React.ChangeEvent<HTMLInputElement>) => {

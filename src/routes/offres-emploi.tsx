@@ -80,7 +80,7 @@ function JobsPage() {
       setFile(null);
       refetch();
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(frAuthError(err));
     } finally {
       setSubmitting(false);
     }
