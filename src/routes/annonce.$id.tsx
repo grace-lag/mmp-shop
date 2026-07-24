@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -79,7 +80,7 @@ function AnnonceDetail() {
       }
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ["fav", id] }),
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   const del = useMutation({
@@ -89,7 +90,7 @@ function AnnonceDetail() {
       qc.invalidateQueries();
       navigate({ to: "/annonces", search: { q: "", city: "", category: "", subcategory: "" } as any });
     },
-    onError: (e: any) => toast.error(e?.message ?? "Suppression impossible"),
+    onError: (e: any) => toast.error(frAuthError(e) || "Suppression impossible"),
   });
 
   const [activeImg, setActiveImg] = useState(0);

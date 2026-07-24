@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Eye, ThumbsUp, MessageCircle } from "lucide-react";
@@ -50,7 +51,7 @@ export function AnnonceStats({ annonceId, views, likes }: Props) {
       qc.invalidateQueries({ queryKey: ["annonces"] });
       qc.invalidateQueries({ queryKey: ["annonce", annonceId] });
     },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   return (

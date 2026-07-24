@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -123,7 +124,7 @@ function DashboardPage() {
                       toast.success("Annonce supprimée");
                       qc.invalidateQueries({ queryKey: ["my-ads-list"] });
                     } catch (e: any) {
-                      toast.error(e?.message ?? "Échec de suppression");
+                      toast.error(frAuthError(e) || "Échec de suppression");
                     }
                   }}
                   style={{ background: "#dc2626", color: "#fff", borderRadius: 8, padding: "8px 10px", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
@@ -157,7 +158,7 @@ function DashboardPage() {
                 onClick={async () => {
                   if (!confirm("Supprimer ce short ?")) return;
                   const { error } = await (supabase as any).from("shorts").delete().eq("id", s.id);
-                  if (error) toast.error(error.message);
+                  if (error) toast.error(frAuthError(error));
                   else { toast.success("Short supprimé"); qc.invalidateQueries({ queryKey: ["my-shorts-list"] }); }
                 }}
                 style={{ background: "#dc2626", color: "#fff", borderRadius: 8, padding: "8px 10px", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center" }}

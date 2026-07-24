@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
@@ -56,7 +57,7 @@ export function SellerRating({ sellerId, size = 18, showCount = true, interactiv
       qc.invalidateQueries({ queryKey: ["seller-rating-mine", sellerId] });
       toast.success("Note enregistrée");
     },
-    onError: (e: any) => { if (e?.message !== "Connecte-toi d'abord") toast.error(e.message); },
+    onError: (e: any) => { if (e?.message !== "Connecte-toi d'abord") toast.error(frAuthError(e)); },
   });
 
   const isOwn = user?.id === sellerId;

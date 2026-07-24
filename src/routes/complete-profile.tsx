@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -130,7 +131,7 @@ function CompleteProfilePage() {
       toast.success("Profil complété");
       navigate({ to: "/compte" });
     } catch (err: any) {
-      toast.error(err?.message ?? "Impossible d'enregistrer le profil");
+      toast.error(frAuthError(err) || "Impossible d'enregistrer le profil");
     } finally {
       setSaving(false);
     }

@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,7 +51,7 @@ export function FollowButton({ sellerId }: { sellerId: string }) {
       qc.invalidateQueries({ queryKey: ["is-following", sellerId] });
       qc.invalidateQueries({ queryKey: ["followers-count", sellerId] });
     },
-    onError: (e: any) => { if (e?.message !== "auth" && e?.message !== "auto") toast.error(e.message); },
+    onError: (e: any) => { if (e?.message !== "auth" && e?.message !== "auto") toast.error(frAuthError(e)); },
   });
 
   if (user?.id === sellerId) return null;

@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
@@ -52,7 +53,7 @@ function VendeurPage() {
       toast.success("Annonce supprimée");
       qc.invalidateQueries({ queryKey: ["seller-annonces", id] });
     } catch (e: any) {
-      toast.error(e?.message ?? "Échec de la suppression");
+      toast.error(frAuthError(e) || "Échec de la suppression");
     }
   };
 

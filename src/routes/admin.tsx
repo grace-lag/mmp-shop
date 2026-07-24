@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -36,7 +37,7 @@ function AdminPage() {
   const del = useMutation({
     mutationFn: (userId: string) => deleteFn({ data: { userId } }),
     onSuccess: () => { toast.success("Compte supprimé"); qc.invalidateQueries({ queryKey: ["admin-users"] }); },
-    onError: (e: any) => toast.error(e.message),
+    onError: (e: any) => toast.error(frAuthError(e)),
   });
 
   if (!user) return null;
