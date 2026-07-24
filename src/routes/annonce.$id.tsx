@@ -196,7 +196,7 @@ function AnnonceDetail() {
         <div>
           <h1>{annonce.title}</h1>
           {annonce.category !== "Emplois" && (
-            <p className="price" style={{ fontSize: "1.8em" }}>{formatPrice(annonce.price)}</p>
+            <p className="price" style={{ fontSize: "1.8em" }}>{formatPrice(annonce.price, (annonce as any).currency)}</p>
           )}
           {annonce.city && <p>📍 {annonce.city}</p>}
           {annonce.category && <p>🏷️ {annonce.category}{annonce.subcategory ? ` — ${annonce.subcategory}` : ""}</p>}
@@ -320,7 +320,7 @@ function SimilarAnnonces({ category, excludeId }: { category: string; excludeId:
             <div style={{ padding: 8 }}>
               <div style={{ fontSize: "0.85rem", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</div>
               {category !== "Emplois" && (
-                <div style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price)}</div>
+                <div style={{ fontSize: "0.85rem", color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price, (a as any).currency)}</div>
               )}
             </div>
           </Link>

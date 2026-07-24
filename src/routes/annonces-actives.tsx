@@ -32,7 +32,7 @@ function Page() {
               {a.image_url ? <img src={a.image_url} alt={a.title} style={{ width: 70, height: 70, objectFit: "cover", borderRadius: 8 }} /> : <div style={{ width: 70, height: 70, background: "#f1f5f9", borderRadius: 8 }} />}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <strong style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</strong>
-                <div style={{ color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price)}</div>
+                <div style={{ color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price, (a as any).currency)}</div>
                 <div style={{ marginTop: 4, fontSize: "0.78rem", color: days <= 7 ? "#dc2626" : "#64748b", fontWeight: days <= 7 ? 700 : 400 }}>
                   ⏳ Expire dans {days} jour{days > 1 ? "s" : ""}
                 </div>

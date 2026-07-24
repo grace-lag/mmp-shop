@@ -108,7 +108,7 @@ function UserProfilePage() {
           <Link key={a.id} to="/annonce/$id" params={{ id: a.id }} className="product-card" style={{ textDecoration: "none", color: "inherit" }}>
             {a.image_url ? <img src={a.image_url} alt={a.title} /> : <div style={{ height: 160, background: "#f1f5f9", borderRadius: 8 }} />}
             <h3>{a.title}</h3>
-            <p className="price">{formatPrice(a.price)}</p>
+            <p className="price">{formatPrice(a.price, (a as any).currency)}</p>
           </Link>
         ))}
         {annonces && annonces.length === 0 && <p style={{ color: "#64748b" }}>Aucune annonce publiée.</p>}

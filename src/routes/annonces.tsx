@@ -75,7 +75,7 @@ function AnnoncesPage() {
             </Link>
             <h3>{a.title}</h3>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, flexWrap: "wrap" }}>
-              <p className="price" style={{ margin: 0 }}>{formatPrice(a.price)}</p>
+              <p className="price" style={{ margin: 0 }}>{formatPrice(a.price, (a as any).currency)}</p>
               <AnnonceStats annonceId={a.id} views={a.views ?? 0} likes={a.likes_count ?? 0} />
             </div>
 

@@ -42,7 +42,7 @@ function Page() {
             {a.image_url ? <img src={a.image_url} alt={a.title} style={{ width: 70, height: 70, objectFit: "cover", borderRadius: 8 }} /> : <div style={{ width: 70, height: 70, background: "#f1f5f9", borderRadius: 8 }} />}
             <div style={{ flex: 1, minWidth: 0 }}>
               <strong style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</strong>
-              <div style={{ color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price)}</div>
+              <div style={{ color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price, (a as any).currency)}</div>
               <div style={{ marginTop: 4, fontSize: "0.78rem", color: "#dc2626" }}>⏰ Expirée le {new Date(a.expires_at).toLocaleDateString()}</div>
             </div>
             <button onClick={() => renew.mutate(a.id)} disabled={renew.isPending} className="btn-whatsapp" style={{ background: "#ea580c", whiteSpace: "nowrap", alignSelf: "center" }}>🔄 Renouveler</button>

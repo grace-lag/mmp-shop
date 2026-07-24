@@ -46,7 +46,7 @@ function TopLikesPage() {
           {top.image_url && <img src={top.image_url} alt={top.title} style={{ width: "100%", height: 220, objectFit: "cover" }} />}
           <div style={{ padding: 12 }}>
             <h3 style={{ margin: 0 }}>{top.title}</h3>
-            <div style={{ color: "#16a34a", fontWeight: 700, marginTop: 4 }}>{formatPrice(top.price)}</div>
+            <div style={{ color: "#16a34a", fontWeight: 700, marginTop: 4 }}>{formatPrice(top.price, (top as any).currency)}</div>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, color: "#64748b", fontSize: "0.85rem" }}>
               <span>📅 {new Date(top.created_at).toLocaleDateString()}</span>
               <span>❤️ {top.likes_count} j'aime</span>
