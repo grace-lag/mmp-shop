@@ -24,7 +24,22 @@ export function frAuthError(input: unknown): string {
     [/for security purposes.*(\d+) seconds/, "Pour des raisons de sécurité, patiente $1 secondes avant de réessayer."],
     [/otp|one.?time.?password/, "Code invalide ou expiré."],
     [/captcha/, "Vérification anti-robot échouée. Réessaie."],
-    [/permission denied|not allowed/, "Action non autorisée."],
+    [/permission denied for table ([\w_]+)/, "Accès refusé à la table « $1 ». Reconnecte-toi et réessaie."],
+    [/permission denied|not allowed|forbidden/, "Action non autorisée."],
+    [/row-level security|violates row-level security policy/, "Action bloquée par la politique de sécurité."],
+    [/duplicate key value|already exists/, "Cet élément existe déjà."],
+    [/violates foreign key/, "Référence invalide : élément lié introuvable."],
+    [/violates not-null constraint|null value in column/, "Un champ obligatoire est manquant."],
+    [/violates check constraint/, "Une valeur saisie n'est pas valide."],
+    [/value too long/, "Une valeur saisie est trop longue."],
+    [/invalid input syntax/, "Format de donnée invalide."],
+    [/could not connect|connection refused|timeout/, "Connexion au serveur impossible. Réessaie."],
+    [/storage.*(not found|no such)/, "Fichier introuvable."],
+    [/payload too large|file too large/, "Fichier trop volumineux."],
+    [/mime type|content-type/, "Type de fichier non autorisé."],
+    [/bucket/, "Erreur de stockage. Réessaie."],
+    [/internal server error|unexpected/, "Erreur interne. Réessaie."],
+    [/no rows|not found|introuvable/, "Élément introuvable."],
   ];
 
   for (const [re, fr] of rules) {
