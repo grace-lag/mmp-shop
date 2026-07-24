@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";

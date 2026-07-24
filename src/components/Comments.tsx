@@ -1,3 +1,4 @@
+import { frAuthError } from "@/lib/auth-errors";
 import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { MessageCircle, Trash2, Smile, Paperclip } from "lucide-react";
