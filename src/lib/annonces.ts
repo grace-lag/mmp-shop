@@ -5,6 +5,7 @@ export type Annonce = {
   title: string;
   description: string;
   price: number;
+  currency?: string;
   city: string;
   category: string;
   subcategory: string;
