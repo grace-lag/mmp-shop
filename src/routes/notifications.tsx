@@ -174,7 +174,7 @@ function NotificationsPage() {
                 : <div style={{ width: 64, height: 64, borderRadius: 8, background: "#f1f5f9" }} />}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <strong style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</strong>
-                <div style={{ color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price)}</div>
+                <div style={{ color: "#16a34a", fontWeight: 700 }}>{formatPrice(a.price, (a as any).currency)}</div>
                 <div style={{ fontSize: "0.78rem", color: "#64748b" }}>Par {a.seller_name} · {new Date(a.created_at).toLocaleDateString()}</div>
               </div>
             </Link>

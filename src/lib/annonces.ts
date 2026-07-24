@@ -5,6 +5,7 @@ export type Annonce = {
   title: string;
   description: string;
   price: number;
+  currency?: string;
   city: string;
   category: string;
   subcategory: string;
@@ -53,11 +54,12 @@ export const SUBCATEGORIES: Record<string, string[]> = {
 
 export const CITIES = ["Brazzaville", "Pointe-Noire", "Dolisie", "Nkayi", "Tout Congo"];
 
-export function formatPrice(p: number) {
-  return new Intl.NumberFormat("fr-FR").format(p) + " FCFA";
+export function formatPrice(p: number, currency?: string) {
+  const c = currency && currency.trim() ? currency : "FCFA";
+  return new Intl.NumberFormat("fr-FR").format(p) + " " + c;
 }
 
-const PUBLIC_COLS = "id,title,description,price,city,category,subcategory,seller_id,seller_name,image_url,images,views,likes_count,created_at";
+const PUBLIC_COLS = "id,title,description,price,currency,city,category,subcategory,seller_id,seller_name,image_url,images,views,likes_count,created_at";
 
 export async function listAnnonces(opts?: { search?: string; city?: string; category?: string; subcategory?: string; limit?: number; excludeUserId?: string | null; includeExpired?: boolean; includeJobs?: boolean }) {
   let q = supabase.from("annonces").select(PUBLIC_COLS + ",expires_at,seller_id").order("created_at", { ascending: false });

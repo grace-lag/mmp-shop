@@ -72,17 +72,12 @@ function PosterPage() {
         const url = await uploadAnnonceImage(f, user.id);
         uploaded.push(url);
       }
-      const { currency, ...rest } = form;
-      const descWithCurrency = currency && currency !== "FCFA"
-        ? `${rest.description || ""}\n\n💱 Devise : ${currency}`.trim()
-        : rest.description;
       const a = await createAnnonce({
-        ...rest,
-        description: descWithCurrency,
+        ...form,
         seller_name: sellerName,
         image_url: uploaded[0] ?? "",
         images: uploaded,
-      });
+      } as any);
       toast.success("Annonce publiée !");
       navigate({ to: "/annonce/$id", params: { id: a.id } });
     } catch (err: any) {

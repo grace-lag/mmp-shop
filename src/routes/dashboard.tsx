@@ -109,7 +109,7 @@ function DashboardPage() {
                 )}
               </Link>
               <h3>{a.title}</h3>
-              <p className="price">{formatPrice(a.price)}</p>
+              <p className="price">{formatPrice(a.price, (a as any).currency)}</p>
               <div style={{ color: "#64748b", fontSize: "0.78rem", marginBottom: 6 }}>{a.views ?? 0} vues</div>
               <div style={{ display: "flex", gap: 6 }}>
                 <Link to="/modifier-annonce/$id" params={{ id: a.id }} style={{ flex: 1, background: "#2563eb", color: "#fff", borderRadius: 8, padding: "8px 4px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, textDecoration: "none", fontSize: "0.82rem" }}>
@@ -148,7 +148,7 @@ function DashboardPage() {
               <ShortThumb videoUrl={s.video_url} posterUrl={s.thumbnail_url} alt={s.title ?? "short"} />
             </Link>
             <h3>{s.title || "Sans titre"}</h3>
-            {s.price != null && <p className="price">{formatPrice(s.price)}</p>}
+            {s.price != null && <p className="price">{formatPrice(s.price, (s as any).currency)}</p>}
             <div style={{ display: "flex", gap: 6 }}>
               <Link to="/modifier-short/$id" params={{ id: s.id }} style={{ flex: 1, background: "#2563eb", color: "#fff", borderRadius: 8, padding: "8px 4px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, textDecoration: "none", fontSize: "0.82rem" }}>
                 <Pencil size={14} /> Modifier

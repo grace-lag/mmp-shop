@@ -141,7 +141,7 @@ function VisitedTab({ userId }: { userId: string }) {
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <strong style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</strong>
-                      <div style={{ color: "#ea580c", fontWeight: 700, fontSize: "0.9rem" }}>{formatPrice(a.price)}</div>
+                      <div style={{ color: "#ea580c", fontWeight: 700, fontSize: "0.9rem" }}>{formatPrice(a.price, (a as any).currency)}</div>
                       <div style={{ color: "#64748b", fontSize: "0.78rem" }}>{a.city}</div>
                     </div>
                   </Link>

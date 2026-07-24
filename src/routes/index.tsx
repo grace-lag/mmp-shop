@@ -318,7 +318,7 @@ function Index() {
                 }}
               >
                 <p className="price" style={{ margin: 0 }}>
-                  {formatPrice(a.price)}
+                  {formatPrice(a.price, (a as any).currency)}
                 </p>
                 <AnnonceStats annonceId={a.id} views={a.views ?? 0} likes={a.likes_count ?? 0} />
               </div>
