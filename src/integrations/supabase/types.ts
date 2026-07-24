@@ -121,6 +121,7 @@ export type Database = {
           category: string | null
           city: string | null
           created_at: string
+          currency: string
           description: string | null
           expires_at: string
           id: string
@@ -141,6 +142,7 @@ export type Database = {
           category?: string | null
           city?: string | null
           created_at?: string
+          currency?: string
           description?: string | null
           expires_at?: string
           id?: string
@@ -161,6 +163,7 @@ export type Database = {
           category?: string | null
           city?: string | null
           created_at?: string
+          currency?: string
           description?: string | null
           expires_at?: string
           id?: string
