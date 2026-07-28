@@ -65,6 +65,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "keywords", content: SITE_KEYWORDS },
       { name: "application-name", content: "MMP Shop" },
       { name: "apple-mobile-web-app-title", content: "MMP Shop" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "theme-color", content: "#15803d" },
+
       { property: "og:site_name", content: "MMP Shop — MaMarketplace E-Shop" },
       { property: "og:title", content: SITE_TITLE },
       { property: "og:description", content: SITE_DESC },
@@ -80,10 +85,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/jpeg", href: LOGO_URL },
-      { rel: "apple-touch-icon", href: LOGO_URL },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
+      { rel: "icon", type: "image/png", sizes: "512x512", href: "/icon-512.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
       { rel: "canonical", href: SITE_URL },
     ],
+
     scripts: [
       {
         type: "application/ld+json",
