@@ -1,0 +1,1 @@
+GRANT SELECT (currency) ON public.annonces TO anon;
