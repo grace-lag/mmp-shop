@@ -65,6 +65,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "keywords", content: SITE_KEYWORDS },
       { name: "application-name", content: "MMP Shop" },
       { name: "apple-mobile-web-app-title", content: "MMP Shop" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "theme-color", content: "#15803d" },
+
       { property: "og:site_name", content: "MMP Shop — MaMarketplace E-Shop" },
       { property: "og:title", content: SITE_TITLE },
       { property: "og:description", content: SITE_DESC },
