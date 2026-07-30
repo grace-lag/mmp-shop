@@ -2,7 +2,8 @@ import { frAuthError } from "@/lib/auth-errors";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check, Volume2, VolumeX } from "lucide-react";
+import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check, Volume2, VolumeX, Share2 } from "lucide-react";
+import { shareLink } from "@/lib/share";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth/AuthProvider";
@@ -711,10 +712,27 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
           <span style={countStyle}>Favori</span>
         </button>
 
+        {/* Partager */}
+        <button
+          onClick={() =>
+            shareLink({
+              title: short.title ?? "Short — MMP Shop",
+              text: short.title ?? "Découvre ce short sur MMP Shop",
+              url: `${window.location.origin}/shorts?id=${short.id}`,
+            })
+          }
+          style={iconBtn}
+          aria-label="Partager"
+        >
+          <Share2 size={28} color="#fff" />
+          <span style={countStyle}>Partager</span>
+        </button>
+
         {/* Download */}
         <button onClick={download} style={iconBtn} aria-label="Télécharger">
           <Download size={26} color="#fff" />
         </button>
+
       </div>
 
       {/* Bottom overlay: title + description (TikTok style) */}

@@ -13,6 +13,8 @@ import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { isOnline } from "@/lib/presence";
 import { toast } from "sonner";
+import { shareLink } from "@/lib/share";
+
 
 
 
@@ -203,9 +205,23 @@ function AnnonceDetail() {
 
           <p style={{ marginTop: 16 }}>{annonce.description}</p>
           <div className="annonce-actions">
+            <button
+              className="btn-whatsapp"
+              style={{ background: "#0f172a" }}
+              onClick={() =>
+                shareLink({
+                  title: annonce.title,
+                  text: `Découvre "${annonce.title}" sur MMP Shop`,
+                  url: `${window.location.origin}/annonce/${annonce.id}`,
+                })
+              }
+            >
+              🔗 Partager
+            </button>
             {annonce.phone && (
               <a href={`tel:${annonce.phone}`} className="btn-whatsapp" onClick={requireAuth}>📞 Appel</a>
             )}
+
             {annonce.whatsapp && (
               <a
                 href={`https://wa.me/${annonce.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Bonjour, votre article "${annonce.title}" posté sur MaMarketplace E-Shop est-il toujours disponible ?`)}`}
