@@ -1,0 +1,1 @@
+GRANT SELECT (currency, is_job_offer) ON public.annonces TO authenticated;
