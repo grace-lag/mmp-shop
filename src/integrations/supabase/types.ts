@@ -624,6 +624,13 @@ export type Database = {
       }
       delete_comment_safe: { Args: { _id: string }; Returns: undefined }
       delete_conversation: { Args: { _other_user: string }; Returns: undefined }
+      get_annonce_contact: {
+        Args: { _id: string }
+        Returns: {
+          phone: string
+          whatsapp: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
