@@ -99,6 +99,7 @@ function AnnonceDetail() {
   const [activeImg, setActiveImg] = useState(0);
   const [enlargedAvatar, setEnlargedAvatar] = useState(false);
   const [enlargedPhoto, setEnlargedPhoto] = useState<string | null>(null);
+  const [shareSheetOpen, setShareSheetOpen] = useState(false);
   const galleryRef = useRef<HTMLDivElement>(null);
 
   if (isLoading) return <SiteLayout><p>Chargement...</p></SiteLayout>;
