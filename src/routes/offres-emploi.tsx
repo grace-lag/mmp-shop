@@ -43,7 +43,7 @@ function JobsPage() {
 
   const { data: jobs, refetch } = useQuery({
     queryKey: ["jobs"],
-    queryFn: () => listAnnonces({ category: "Emplois", limit: 60, includeJobs: true }),
+    queryFn: () => listAnnonces({ category: "Emplois", limit: 60, includeJobs: true, includeExpired: true }),
   });
 
   const submit = async (e: React.FormEvent) => {
