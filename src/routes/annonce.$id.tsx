@@ -210,13 +210,7 @@ function AnnonceDetail() {
             <button
               className="btn-whatsapp"
               style={{ background: "#0f172a" }}
-              onClick={() =>
-                shareLink({
-                  title: annonce.title,
-                  text: `Découvre "${annonce.title}" sur MMP Shop`,
-                  url: `${window.location.origin}/annonce/${annonce.id}`,
-                })
-              }
+              onClick={() => setShareSheetOpen(true)}
             >
               🔗 Partager
             </button>
