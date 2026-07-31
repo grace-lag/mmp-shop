@@ -3,7 +3,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check, Volume2, VolumeX, Share2 } from "lucide-react";
-import { shareLink } from "@/lib/share";
+import { ShareSheet } from "@/components/ShareSheet";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth/AuthProvider";
@@ -340,6 +340,7 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
   const [showControls, setShowControls] = useState(false);
   const [progress, setProgress] = useState(0);
   const [loadVideo, setLoadVideo] = useState(false);
+  const [shareSheetOpen, setShareSheetOpen] = useState(false);
   const [muted] = useGlobalMuted();
   useEffect(() => { if (ref.current) ref.current.muted = muted; }, [muted, loadVideo]);
 
@@ -714,19 +715,21 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
 
         {/* Partager */}
         <button
-          onClick={() =>
-            shareLink({
-              title: short.title ?? "Short — MMP Shop",
-              text: short.title ?? "Découvre ce short sur MMP Shop",
-              url: `${window.location.origin}/shorts?id=${short.id}`,
-            })
-          }
+          onClick={() => setShareSheetOpen(true)}
           style={iconBtn}
           aria-label="Partager"
         >
           <Share2 size={28} color="#fff" />
           <span style={countStyle}>Partager</span>
         </button>
+
+        <ShareSheet
+          open={shareSheetOpen}
+          onClose={() => setShareSheetOpen(false)}
+          title={short.title ?? "Short — MMP Shop"}
+          text={short.title ?? "Découvre ce short sur MMP Shop"}
+          url={`${typeof window !== "undefined" ? window.location.origin : ""}/shorts?id=${short.id}`}
+        />
 
         {/* Download */}
         <button onClick={download} style={iconBtn} aria-label="Télécharger">

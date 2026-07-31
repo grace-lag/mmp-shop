@@ -13,7 +13,7 @@ import { useAuth } from "@/lib/auth/AuthProvider";
 import { supabase } from "@/integrations/supabase/client";
 import { isOnline } from "@/lib/presence";
 import { toast } from "sonner";
-import { shareLink } from "@/lib/share";
+import { ShareSheet } from "@/components/ShareSheet";
 
 
 
@@ -98,6 +98,7 @@ function AnnonceDetail() {
   const [activeImg, setActiveImg] = useState(0);
   const [enlargedAvatar, setEnlargedAvatar] = useState(false);
   const [enlargedPhoto, setEnlargedPhoto] = useState<string | null>(null);
+  const [shareSheetOpen, setShareSheetOpen] = useState(false);
   const galleryRef = useRef<HTMLDivElement>(null);
 
   if (isLoading) return <SiteLayout><p>Chargement...</p></SiteLayout>;
@@ -208,13 +209,7 @@ function AnnonceDetail() {
             <button
               className="btn-whatsapp"
               style={{ background: "#0f172a" }}
-              onClick={() =>
-                shareLink({
-                  title: annonce.title,
-                  text: `Découvre "${annonce.title}" sur MMP Shop`,
-                  url: `${window.location.origin}/annonce/${annonce.id}`,
-                })
-              }
+              onClick={() => setShareSheetOpen(true)}
             >
               🔗 Partager
             </button>
@@ -308,6 +303,14 @@ function AnnonceDetail() {
           <img src={enlargedPhoto} alt="" style={{ maxWidth: "100vw", maxHeight: "100vh", objectFit: "contain" }} />
         </div>
       )}
+
+      <ShareSheet
+        open={shareSheetOpen}
+        onClose={() => setShareSheetOpen(false)}
+        title={annonce.title}
+        text={`Découvre "${annonce.title}" sur MMP Shop`}
+        url={`${typeof window !== "undefined" ? window.location.origin : ""}/annonce/${annonce.id}`}
+      />
     </SiteLayout>
   );
 }
