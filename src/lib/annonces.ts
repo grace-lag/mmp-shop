@@ -106,14 +106,11 @@ export async function getAnnonce(id: string) {
   if (error) throw error;
   if (!data) return null;
 
-  // Try to enrich with contact fields — allowed by RLS for the owner (and public
-  // annonces that still expose them). Silently ignore if the DB rejects it.
-  const { data: contact } = await supabase
-    .from("annonces")
-    .select("phone,whatsapp")
-    .eq("id", id)
-    .maybeSingle();
-  return { ...(data as any), phone: contact?.phone ?? "", whatsapp: contact?.whatsapp ?? "" } as Annonce;
+  // Contact details are no longer readable in bulk; fetch them through a
+  // server-side function that only answers for signed-in users.
+  const { data: contact } = await (supabase as any).rpc("get_annonce_contact", { _id: id });
+  const c = Array.isArray(contact) ? contact[0] : contact;
+  return { ...(data as any), phone: c?.phone ?? "", whatsapp: c?.whatsapp ?? "" } as Annonce;
 }
 
 function getSessionId(): string {
