@@ -2,7 +2,7 @@ import { frAuthError } from "@/lib/auth-errors";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { ThumbsUp, Heart, MessageCircle, X, Download, Play, Plus, Check, Volume2, VolumeX, Share2 } from "lucide-react";
+import { ThumbsUp, Heart, MessageCircle, Phone, X, Download, Play, Plus, Check, Volume2, VolumeX, Share2 } from "lucide-react";
 import { ShareSheet } from "@/components/ShareSheet";
 import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
