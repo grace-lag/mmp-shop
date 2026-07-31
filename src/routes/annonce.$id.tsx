@@ -304,6 +304,14 @@ function AnnonceDetail() {
           <img src={enlargedPhoto} alt="" style={{ maxWidth: "100vw", maxHeight: "100vh", objectFit: "contain" }} />
         </div>
       )}
+
+      <ShareSheet
+        open={shareSheetOpen}
+        onClose={() => setShareSheetOpen(false)}
+        title={annonce.title}
+        text={`Découvre "${annonce.title}" sur MMP Shop`}
+        url={`${typeof window !== "undefined" ? window.location.origin : ""}/annonce/${annonce.id}`}
+      />
     </SiteLayout>
   );
 }
