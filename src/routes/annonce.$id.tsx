@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { isOnline } from "@/lib/presence";
 import { toast } from "sonner";
 import { shareLink } from "@/lib/share";
+import { ShareSheet } from "@/components/ShareSheet";
 
 
 
