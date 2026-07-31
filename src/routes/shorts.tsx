@@ -715,19 +715,21 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
 
         {/* Partager */}
         <button
-          onClick={() =>
-            shareLink({
-              title: short.title ?? "Short — MMP Shop",
-              text: short.title ?? "Découvre ce short sur MMP Shop",
-              url: `${window.location.origin}/shorts?id=${short.id}`,
-            })
-          }
+          onClick={() => setShareSheetOpen(true)}
           style={iconBtn}
           aria-label="Partager"
         >
           <Share2 size={28} color="#fff" />
           <span style={countStyle}>Partager</span>
         </button>
+
+        <ShareSheet
+          open={shareSheetOpen}
+          onClose={() => setShareSheetOpen(false)}
+          title={short.title ?? "Short — MMP Shop"}
+          text={short.title ?? "Découvre ce short sur MMP Shop"}
+          url={`${typeof window !== "undefined" ? window.location.origin : ""}/shorts?id=${short.id}`}
+        />
 
         {/* Download */}
         <button onClick={download} style={iconBtn} aria-label="Télécharger">
