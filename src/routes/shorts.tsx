@@ -340,6 +340,7 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
   const [showControls, setShowControls] = useState(false);
   const [progress, setProgress] = useState(0);
   const [loadVideo, setLoadVideo] = useState(false);
+  const [shareSheetOpen, setShareSheetOpen] = useState(false);
   const [muted] = useGlobalMuted();
   useEffect(() => { if (ref.current) ref.current.muted = muted; }, [muted, loadVideo]);
 
