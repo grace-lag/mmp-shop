@@ -14,7 +14,7 @@ import { toast } from "sonner";
 const EDIT_WINDOW_MS = 15 * 60 * 1000;
 
 export const Route = createFileRoute("/chat")({
-  validateSearch: (s: Record<string, unknown>) => ({ to: (s.to as string) || "" }),
+  validateSearch: (s: Record<string, unknown>): { to?: string } => ({ to: (s.to as string) || "" }),
   component: ChatPage,
 });
 
