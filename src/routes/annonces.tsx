@@ -9,7 +9,7 @@ import { usePresenceMap, PresenceDot } from "@/lib/presence";
 
 
 export const Route = createFileRoute("/annonces")({
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): { q?: string; city?: string; category?: string; subcategory?: string } => ({
     q: (s.q as string) || "",
     city: (s.city as string) || "",
     category: (s.category as string) || "",
