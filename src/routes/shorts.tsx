@@ -62,7 +62,7 @@ async function compressVideo(file: File, onProgress?: (pct: number) => void): Pr
 
 export const Route = createFileRoute("/shorts")({
   head: () => ({ meta: [{ title: "Shorts — MaMarketplace E-Shop" }] }),
-  validateSearch: (s: Record<string, unknown>) => ({ upload: s.upload ? 1 : undefined }),
+  validateSearch: (s: Record<string, unknown>): { upload?: number } => ({ upload: s.upload ? 1 : undefined }),
   component: ShortsPage,
 });
 
