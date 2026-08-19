@@ -11,7 +11,7 @@ export const Route = createFileRoute("/recherche-utilisateur")({
 
 function Page() {
   const sp = Route.useSearch();
-  const [q, setQ] = useState(sp.q);
+  const [q, setQ] = useState(sp.q ?? "");
   const { data } = useQuery({
     queryKey: ["user-search", q],
     enabled: q.trim().length >= 2,
