@@ -347,6 +347,209 @@ export type Database = {
           },
         ]
       }
+      premium_orders: {
+        Row: {
+          address: string
+          admin_note: string
+          amount_due: number
+          base_price: number
+          city: string
+          created_at: string
+          customs_amount: number
+          eta_days_max: number
+          eta_days_min: number
+          freight_amount: number
+          full_name: string
+          id: string
+          kind: string
+          margin_amount: number
+          notes: string
+          payment_choice: string
+          payment_method: string
+          phone: string
+          product_id: string | null
+          product_name: string
+          proof_url: string | null
+          quantity: number
+          reference: string
+          service_fee: number
+          source_url: string
+          status: string
+          total_amount: number
+          updated_at: string
+          user_id: string
+          weight_kg: number
+        }
+        Insert: {
+          address?: string
+          admin_note?: string
+          amount_due?: number
+          base_price?: number
+          city?: string
+          created_at?: string
+          customs_amount?: number
+          eta_days_max?: number
+          eta_days_min?: number
+          freight_amount?: number
+          full_name?: string
+          id?: string
+          kind?: string
+          margin_amount?: number
+          notes?: string
+          payment_choice?: string
+          payment_method?: string
+          phone?: string
+          product_id?: string | null
+          product_name?: string
+          proof_url?: string | null
+          quantity?: number
+          reference?: string
+          service_fee?: number
+          source_url?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id: string
+          weight_kg?: number
+        }
+        Update: {
+          address?: string
+          admin_note?: string
+          amount_due?: number
+          base_price?: number
+          city?: string
+          created_at?: string
+          customs_amount?: number
+          eta_days_max?: number
+          eta_days_min?: number
+          freight_amount?: number
+          full_name?: string
+          id?: string
+          kind?: string
+          margin_amount?: number
+          notes?: string
+          payment_choice?: string
+          payment_method?: string
+          phone?: string
+          product_id?: string | null
+          product_name?: string
+          proof_url?: string | null
+          quantity?: number
+          reference?: string
+          service_fee?: number
+          source_url?: string
+          status?: string
+          total_amount?: number
+          updated_at?: string
+          user_id?: string
+          weight_kg?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "premium_orders_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "premium_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      premium_products: {
+        Row: {
+          base_price: number
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          image_url: string
+          images: string[]
+          is_active: boolean
+          origin_country: string
+          shop_name: string
+          source_url: string
+          title: string
+          updated_at: string
+          weight_kg: number
+        }
+        Insert: {
+          base_price?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          image_url?: string
+          images?: string[]
+          is_active?: boolean
+          origin_country?: string
+          shop_name?: string
+          source_url?: string
+          title: string
+          updated_at?: string
+          weight_kg?: number
+        }
+        Update: {
+          base_price?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          image_url?: string
+          images?: string[]
+          is_active?: boolean
+          origin_country?: string
+          shop_name?: string
+          source_url?: string
+          title?: string
+          updated_at?: string
+          weight_kg?: number
+        }
+        Relationships: []
+      }
+      premium_settings: {
+        Row: {
+          customs_percent: number
+          deposit_percent: number
+          eta_days_max: number
+          eta_days_min: number
+          freight_per_kg: number
+          id: boolean
+          margin_percent: number
+          momo_number: string
+          office_address: string
+          service_fee: number
+          updated_at: string
+        }
+        Insert: {
+          customs_percent?: number
+          deposit_percent?: number
+          eta_days_max?: number
+          eta_days_min?: number
+          freight_per_kg?: number
+          id?: boolean
+          margin_percent?: number
+          momo_number?: string
+          office_address?: string
+          service_fee?: number
+          updated_at?: string
+        }
+        Update: {
+          customs_percent?: number
+          deposit_percent?: number
+          eta_days_max?: number
+          eta_days_min?: number
+          freight_per_kg?: number
+          id?: boolean
+          margin_percent?: number
+          momo_number?: string
+          office_address?: string
+          service_fee?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           account_type: string
