@@ -5,13 +5,13 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/recherche-utilisateur")({
-  validateSearch: (s: Record<string, unknown>) => ({ q: (s.q as string) || "" }),
+  validateSearch: (s: Record<string, unknown>): { q?: string } => ({ q: (s.q as string) || "" }),
   component: Page,
 });
 
 function Page() {
   const sp = Route.useSearch();
-  const [q, setQ] = useState(sp.q);
+  const [q, setQ] = useState(sp.q ?? "");
   const { data } = useQuery({
     queryKey: ["user-search", q],
     enabled: q.trim().length >= 2,
