@@ -5,7 +5,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/recherche-utilisateur")({
-  validateSearch: (s: Record<string, unknown>) => ({ q: (s.q as string) || "" }),
+  validateSearch: (s: Record<string, unknown>): { q?: string } => ({ q: (s.q as string) || "" }),
   component: Page,
 });
 
