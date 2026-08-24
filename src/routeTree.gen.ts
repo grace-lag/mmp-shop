@@ -40,6 +40,7 @@ import { Route as AnnoncesRouteImport } from './routes/annonces'
 import { Route as AideRouteImport } from './routes/aide'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PremiumIndexRouteImport } from './routes/premium.index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as VendeurIdRouteImport } from './routes/vendeur.$id'
 import { Route as UIdRouteImport } from './routes/u.$id'
@@ -208,6 +209,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PremiumIndexRoute = PremiumIndexRouteImport.update({
+  id: '/premium/',
+  path: '/premium/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -313,6 +319,7 @@ export interface FileRoutesByFullPath {
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/premium/': typeof PremiumIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -357,6 +364,7 @@ export interface FileRoutesByTo {
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
   '/categories': typeof CategoriesIndexRoute
+  '/premium': typeof PremiumIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -403,6 +411,7 @@ export interface FileRoutesById {
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/premium/': typeof PremiumIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -450,6 +459,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/vendeur/$id'
     | '/categories/'
+    | '/premium/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -494,6 +504,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/vendeur/$id'
     | '/categories'
+    | '/premium'
   id:
     | '__root__'
     | '/'
@@ -539,6 +550,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/vendeur/$id'
     | '/categories/'
+    | '/premium/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -583,6 +595,7 @@ export interface RootRouteChildren {
   TopLikesIdRoute: typeof TopLikesIdRoute
   UIdRoute: typeof UIdRoute
   VendeurIdRoute: typeof VendeurIdRoute
+  PremiumIndexRoute: typeof PremiumIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -804,6 +817,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/premium/': {
+      id: '/premium/'
+      path: '/premium'
+      fullPath: '/premium/'
+      preLoaderRoute: typeof PremiumIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/categories/': {
       id: '/categories/'
       path: '/'
@@ -947,6 +967,7 @@ const rootRouteChildren: RootRouteChildren = {
   TopLikesIdRoute: TopLikesIdRoute,
   UIdRoute: UIdRoute,
   VendeurIdRoute: VendeurIdRoute,
+  PremiumIndexRoute: PremiumIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
