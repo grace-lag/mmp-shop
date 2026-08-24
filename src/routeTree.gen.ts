@@ -22,6 +22,7 @@ import { Route as OptionsRouteImport } from './routes/options'
 import { Route as OffresEmploiRouteImport } from './routes/offres-emploi'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesNonLusRouteImport } from './routes/messages-non-lus'
+import { Route as MesCommandesRouteImport } from './routes/mes-commandes'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoriqueRouteImport } from './routes/historique'
@@ -119,6 +120,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const MessagesNonLusRoute = MessagesNonLusRouteImport.update({
   id: '/messages-non-lus',
   path: '/messages-non-lus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MesCommandesRoute = MesCommandesRouteImport.update({
+  id: '/mes-commandes',
+  path: '/mes-commandes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -306,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-commandes': typeof MesCommandesRoute
   '/messages-non-lus': typeof MessagesNonLusRoute
   '/notifications': typeof NotificationsRoute
   '/offres-emploi': typeof OffresEmploiRoute
@@ -353,6 +360,7 @@ export interface FileRoutesByTo {
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-commandes': typeof MesCommandesRoute
   '/messages-non-lus': typeof MessagesNonLusRoute
   '/notifications': typeof NotificationsRoute
   '/offres-emploi': typeof OffresEmploiRoute
@@ -402,6 +410,7 @@ export interface FileRoutesById {
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-commandes': typeof MesCommandesRoute
   '/messages-non-lus': typeof MessagesNonLusRoute
   '/notifications': typeof NotificationsRoute
   '/offres-emploi': typeof OffresEmploiRoute
@@ -452,6 +461,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/login'
     | '/mentions-legales'
+    | '/mes-commandes'
     | '/messages-non-lus'
     | '/notifications'
     | '/offres-emploi'
@@ -499,6 +509,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/login'
     | '/mentions-legales'
+    | '/mes-commandes'
     | '/messages-non-lus'
     | '/notifications'
     | '/offres-emploi'
@@ -547,6 +558,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/login'
     | '/mentions-legales'
+    | '/mes-commandes'
     | '/messages-non-lus'
     | '/notifications'
     | '/offres-emploi'
@@ -596,6 +608,7 @@ export interface RootRouteChildren {
   HistoriqueRoute: typeof HistoriqueRoute
   LoginRoute: typeof LoginRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  MesCommandesRoute: typeof MesCommandesRoute
   MessagesNonLusRoute: typeof MessagesNonLusRoute
   NotificationsRoute: typeof NotificationsRoute
   OffresEmploiRoute: typeof OffresEmploiRoute
@@ -715,6 +728,13 @@ declare module '@tanstack/react-router' {
       path: '/messages-non-lus'
       fullPath: '/messages-non-lus'
       preLoaderRoute: typeof MessagesNonLusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mes-commandes': {
+      id: '/mes-commandes'
+      path: '/mes-commandes'
+      fullPath: '/mes-commandes'
+      preLoaderRoute: typeof MesCommandesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentions-legales': {
@@ -984,6 +1004,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoriqueRoute: HistoriqueRoute,
   LoginRoute: LoginRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  MesCommandesRoute: MesCommandesRoute,
   MessagesNonLusRoute: MessagesNonLusRoute,
   NotificationsRoute: NotificationsRoute,
   OffresEmploiRoute: OffresEmploiRoute,
