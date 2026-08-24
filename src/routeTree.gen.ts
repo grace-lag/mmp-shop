@@ -22,6 +22,7 @@ import { Route as OptionsRouteImport } from './routes/options'
 import { Route as OffresEmploiRouteImport } from './routes/offres-emploi'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as MessagesNonLusRouteImport } from './routes/messages-non-lus'
+import { Route as MesCommandesRouteImport } from './routes/mes-commandes'
 import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as HistoriqueRouteImport } from './routes/historique'
@@ -40,10 +41,13 @@ import { Route as AnnoncesRouteImport } from './routes/annonces'
 import { Route as AideRouteImport } from './routes/aide'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PremiumIndexRouteImport } from './routes/premium.index'
 import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as VendeurIdRouteImport } from './routes/vendeur.$id'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as TopLikesIdRouteImport } from './routes/top-likes.$id'
+import { Route as PremiumAchatRouteImport } from './routes/premium.achat'
+import { Route as PremiumIdRouteImport } from './routes/premium.$id'
 import { Route as ModifierShortIdRouteImport } from './routes/modifier-short.$id'
 import { Route as ModifierAnnonceIdRouteImport } from './routes/modifier-annonce.$id'
 import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
@@ -116,6 +120,11 @@ const NotificationsRoute = NotificationsRouteImport.update({
 const MessagesNonLusRoute = MessagesNonLusRouteImport.update({
   id: '/messages-non-lus',
   path: '/messages-non-lus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MesCommandesRoute = MesCommandesRouteImport.update({
+  id: '/mes-commandes',
+  path: '/mes-commandes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
@@ -208,6 +217,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PremiumIndexRoute = PremiumIndexRouteImport.update({
+  id: '/premium/',
+  path: '/premium/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -226,6 +240,16 @@ const UIdRoute = UIdRouteImport.update({
 const TopLikesIdRoute = TopLikesIdRouteImport.update({
   id: '/top-likes/$id',
   path: '/top-likes/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumAchatRoute = PremiumAchatRouteImport.update({
+  id: '/premium/achat',
+  path: '/premium/achat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumIdRoute = PremiumIdRouteImport.update({
+  id: '/premium/$id',
+  path: '/premium/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ModifierShortIdRoute = ModifierShortIdRouteImport.update({
@@ -288,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-commandes': typeof MesCommandesRoute
   '/messages-non-lus': typeof MessagesNonLusRoute
   '/notifications': typeof NotificationsRoute
   '/offres-emploi': typeof OffresEmploiRoute
@@ -309,10 +334,13 @@ export interface FileRoutesByFullPath {
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/modifier-short/$id': typeof ModifierShortIdRoute
+  '/premium/$id': typeof PremiumIdRoute
+  '/premium/achat': typeof PremiumAchatRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/premium/': typeof PremiumIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -332,6 +360,7 @@ export interface FileRoutesByTo {
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-commandes': typeof MesCommandesRoute
   '/messages-non-lus': typeof MessagesNonLusRoute
   '/notifications': typeof NotificationsRoute
   '/offres-emploi': typeof OffresEmploiRoute
@@ -353,10 +382,13 @@ export interface FileRoutesByTo {
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/modifier-short/$id': typeof ModifierShortIdRoute
+  '/premium/$id': typeof PremiumIdRoute
+  '/premium/achat': typeof PremiumAchatRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
   '/categories': typeof CategoriesIndexRoute
+  '/premium': typeof PremiumIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -378,6 +410,7 @@ export interface FileRoutesById {
   '/historique': typeof HistoriqueRoute
   '/login': typeof LoginRoute
   '/mentions-legales': typeof MentionsLegalesRoute
+  '/mes-commandes': typeof MesCommandesRoute
   '/messages-non-lus': typeof MessagesNonLusRoute
   '/notifications': typeof NotificationsRoute
   '/offres-emploi': typeof OffresEmploiRoute
@@ -399,10 +432,13 @@ export interface FileRoutesById {
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/modifier-short/$id': typeof ModifierShortIdRoute
+  '/premium/$id': typeof PremiumIdRoute
+  '/premium/achat': typeof PremiumAchatRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
   '/categories/': typeof CategoriesIndexRoute
+  '/premium/': typeof PremiumIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -425,6 +461,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/login'
     | '/mentions-legales'
+    | '/mes-commandes'
     | '/messages-non-lus'
     | '/notifications'
     | '/offres-emploi'
@@ -446,10 +483,13 @@ export interface FileRouteTypes {
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
     | '/modifier-short/$id'
+    | '/premium/$id'
+    | '/premium/achat'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
     | '/categories/'
+    | '/premium/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -469,6 +509,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/login'
     | '/mentions-legales'
+    | '/mes-commandes'
     | '/messages-non-lus'
     | '/notifications'
     | '/offres-emploi'
@@ -490,10 +531,13 @@ export interface FileRouteTypes {
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
     | '/modifier-short/$id'
+    | '/premium/$id'
+    | '/premium/achat'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
     | '/categories'
+    | '/premium'
   id:
     | '__root__'
     | '/'
@@ -514,6 +558,7 @@ export interface FileRouteTypes {
     | '/historique'
     | '/login'
     | '/mentions-legales'
+    | '/mes-commandes'
     | '/messages-non-lus'
     | '/notifications'
     | '/offres-emploi'
@@ -535,10 +580,13 @@ export interface FileRouteTypes {
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
     | '/modifier-short/$id'
+    | '/premium/$id'
+    | '/premium/achat'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
     | '/categories/'
+    | '/premium/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -560,6 +608,7 @@ export interface RootRouteChildren {
   HistoriqueRoute: typeof HistoriqueRoute
   LoginRoute: typeof LoginRoute
   MentionsLegalesRoute: typeof MentionsLegalesRoute
+  MesCommandesRoute: typeof MesCommandesRoute
   MessagesNonLusRoute: typeof MessagesNonLusRoute
   NotificationsRoute: typeof NotificationsRoute
   OffresEmploiRoute: typeof OffresEmploiRoute
@@ -580,9 +629,12 @@ export interface RootRouteChildren {
   EvaluationsIdRoute: typeof EvaluationsIdRoute
   ModifierAnnonceIdRoute: typeof ModifierAnnonceIdRoute
   ModifierShortIdRoute: typeof ModifierShortIdRoute
+  PremiumIdRoute: typeof PremiumIdRoute
+  PremiumAchatRoute: typeof PremiumAchatRoute
   TopLikesIdRoute: typeof TopLikesIdRoute
   UIdRoute: typeof UIdRoute
   VendeurIdRoute: typeof VendeurIdRoute
+  PremiumIndexRoute: typeof PremiumIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -676,6 +728,13 @@ declare module '@tanstack/react-router' {
       path: '/messages-non-lus'
       fullPath: '/messages-non-lus'
       preLoaderRoute: typeof MessagesNonLusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mes-commandes': {
+      id: '/mes-commandes'
+      path: '/mes-commandes'
+      fullPath: '/mes-commandes'
+      preLoaderRoute: typeof MesCommandesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mentions-legales': {
@@ -804,6 +863,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/premium/': {
+      id: '/premium/'
+      path: '/premium'
+      fullPath: '/premium/'
+      preLoaderRoute: typeof PremiumIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/categories/': {
       id: '/categories/'
       path: '/'
@@ -830,6 +896,20 @@ declare module '@tanstack/react-router' {
       path: '/top-likes/$id'
       fullPath: '/top-likes/$id'
       preLoaderRoute: typeof TopLikesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium/achat': {
+      id: '/premium/achat'
+      path: '/premium/achat'
+      fullPath: '/premium/achat'
+      preLoaderRoute: typeof PremiumAchatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium/$id': {
+      id: '/premium/$id'
+      path: '/premium/$id'
+      fullPath: '/premium/$id'
+      preLoaderRoute: typeof PremiumIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/modifier-short/$id': {
@@ -924,6 +1004,7 @@ const rootRouteChildren: RootRouteChildren = {
   HistoriqueRoute: HistoriqueRoute,
   LoginRoute: LoginRoute,
   MentionsLegalesRoute: MentionsLegalesRoute,
+  MesCommandesRoute: MesCommandesRoute,
   MessagesNonLusRoute: MessagesNonLusRoute,
   NotificationsRoute: NotificationsRoute,
   OffresEmploiRoute: OffresEmploiRoute,
@@ -944,9 +1025,12 @@ const rootRouteChildren: RootRouteChildren = {
   EvaluationsIdRoute: EvaluationsIdRoute,
   ModifierAnnonceIdRoute: ModifierAnnonceIdRoute,
   ModifierShortIdRoute: ModifierShortIdRoute,
+  PremiumIdRoute: PremiumIdRoute,
+  PremiumAchatRoute: PremiumAchatRoute,
   TopLikesIdRoute: TopLikesIdRoute,
   UIdRoute: UIdRoute,
   VendeurIdRoute: VendeurIdRoute,
+  PremiumIndexRoute: PremiumIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
