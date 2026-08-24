@@ -45,6 +45,7 @@ import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as VendeurIdRouteImport } from './routes/vendeur.$id'
 import { Route as UIdRouteImport } from './routes/u.$id'
 import { Route as TopLikesIdRouteImport } from './routes/top-likes.$id'
+import { Route as PremiumIdRouteImport } from './routes/premium.$id'
 import { Route as ModifierShortIdRouteImport } from './routes/modifier-short.$id'
 import { Route as ModifierAnnonceIdRouteImport } from './routes/modifier-annonce.$id'
 import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
@@ -234,6 +235,11 @@ const TopLikesIdRoute = TopLikesIdRouteImport.update({
   path: '/top-likes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PremiumIdRoute = PremiumIdRouteImport.update({
+  id: '/premium/$id',
+  path: '/premium/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ModifierShortIdRoute = ModifierShortIdRouteImport.update({
   id: '/modifier-short/$id',
   path: '/modifier-short/$id',
@@ -315,6 +321,7 @@ export interface FileRoutesByFullPath {
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/modifier-short/$id': typeof ModifierShortIdRoute
+  '/premium/$id': typeof PremiumIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -360,6 +367,7 @@ export interface FileRoutesByTo {
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/modifier-short/$id': typeof ModifierShortIdRoute
+  '/premium/$id': typeof PremiumIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -407,6 +415,7 @@ export interface FileRoutesById {
   '/evaluations/$id': typeof EvaluationsIdRoute
   '/modifier-annonce/$id': typeof ModifierAnnonceIdRoute
   '/modifier-short/$id': typeof ModifierShortIdRoute
+  '/premium/$id': typeof PremiumIdRoute
   '/top-likes/$id': typeof TopLikesIdRoute
   '/u/$id': typeof UIdRoute
   '/vendeur/$id': typeof VendeurIdRoute
@@ -455,6 +464,7 @@ export interface FileRouteTypes {
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
     | '/modifier-short/$id'
+    | '/premium/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -500,6 +510,7 @@ export interface FileRouteTypes {
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
     | '/modifier-short/$id'
+    | '/premium/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -546,6 +557,7 @@ export interface FileRouteTypes {
     | '/evaluations/$id'
     | '/modifier-annonce/$id'
     | '/modifier-short/$id'
+    | '/premium/$id'
     | '/top-likes/$id'
     | '/u/$id'
     | '/vendeur/$id'
@@ -592,6 +604,7 @@ export interface RootRouteChildren {
   EvaluationsIdRoute: typeof EvaluationsIdRoute
   ModifierAnnonceIdRoute: typeof ModifierAnnonceIdRoute
   ModifierShortIdRoute: typeof ModifierShortIdRoute
+  PremiumIdRoute: typeof PremiumIdRoute
   TopLikesIdRoute: typeof TopLikesIdRoute
   UIdRoute: typeof UIdRoute
   VendeurIdRoute: typeof VendeurIdRoute
@@ -852,6 +865,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TopLikesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/premium/$id': {
+      id: '/premium/$id'
+      path: '/premium/$id'
+      fullPath: '/premium/$id'
+      preLoaderRoute: typeof PremiumIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/modifier-short/$id': {
       id: '/modifier-short/$id'
       path: '/modifier-short/$id'
@@ -964,6 +984,7 @@ const rootRouteChildren: RootRouteChildren = {
   EvaluationsIdRoute: EvaluationsIdRoute,
   ModifierAnnonceIdRoute: ModifierAnnonceIdRoute,
   ModifierShortIdRoute: ModifierShortIdRoute,
+  PremiumIdRoute: PremiumIdRoute,
   TopLikesIdRoute: TopLikesIdRoute,
   UIdRoute: UIdRoute,
   VendeurIdRoute: VendeurIdRoute,
