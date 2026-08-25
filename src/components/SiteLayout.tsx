@@ -17,6 +17,9 @@ import {
   LogIn,
   UserPlus,
   LogOut,
+  Crown,
+  PackageSearch,
+
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
