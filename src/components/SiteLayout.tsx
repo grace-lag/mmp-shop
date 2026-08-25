@@ -231,10 +231,14 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
               <li><Link to="/">Accueil</Link></li>
               <li><Link to="/categories">Catégories</Link></li>
               <li><Link to="/poster">Poster une annonce</Link></li>
+              <li><Link to="/premium">MMP Premium</Link></li>
+              <li><Link to="/premium/achat">Achat pour vous (Alibaba)</Link></li>
               <li><Link to="/recherche-utilisateur">Rechercher une personne</Link></li>
               <li><Link to={user ? "/compte" : "/login"}>Mon compte</Link></li>
               {isAdmin && <li><Link to="/admin">🛡️ Espace administrateur</Link></li>}
               {isAdmin && <li><Link to="/admin/banned-words">🚫 Mots interdits</Link></li>}
+              {isAdmin && <li><Link to="/admin/premium">👑 Premium (admin)</Link></li>}
+
             </ul>
           </div>
           <div className="footer-section">
