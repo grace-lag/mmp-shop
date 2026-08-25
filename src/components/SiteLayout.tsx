@@ -17,6 +17,9 @@ import {
   LogIn,
   UserPlus,
   LogOut,
+  Crown,
+  PackageSearch,
+
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { useIsAdmin } from "@/hooks/useIsAdmin";
@@ -63,12 +66,15 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
   const IconSize = 22;
   const menuItems: { to: string; label: string; sub: string; Icon: React.ComponentType<any> }[] = [
     { to: "/annonces", label: "Plus d'annonces", sub: "Voir toutes les annonces", Icon: ShoppingBag },
+    { to: "/premium", label: "MMP Premium", sub: "Acheter de l'étranger, livré au Congo", Icon: Crown },
     { to: "/offres-emploi", label: "Offre d'emploi", sub: "Trouver ou proposer un emploi", Icon: Briefcase },
     ...(user
       ? [
+          { to: "/mes-commandes", label: "Mes commandes", sub: "Suivi de vos commandes Premium", Icon: PackageSearch },
           { to: "/historique", label: "Historique", sub: "Visites & conversations", Icon: Clock },
           { to: "/notifications", label: "Notifications", sub: "Alertes & boutiques suivies", Icon: Bell },
           { to: "/parametres-site", label: "Paramètres", sub: "Réglages du site", Icon: Settings },
+
         ]
       : [
           { to: "/login", label: "Se connecter", sub: "Accéder à votre compte", Icon: LogIn },
@@ -225,10 +231,14 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
               <li><Link to="/">Accueil</Link></li>
               <li><Link to="/categories">Catégories</Link></li>
               <li><Link to="/poster">Poster une annonce</Link></li>
+              <li><Link to="/premium">MMP Premium</Link></li>
+              <li><Link to="/premium/achat">Achat pour vous (Alibaba)</Link></li>
               <li><Link to="/recherche-utilisateur">Rechercher une personne</Link></li>
               <li><Link to={user ? "/compte" : "/login"}>Mon compte</Link></li>
               {isAdmin && <li><Link to="/admin">🛡️ Espace administrateur</Link></li>}
               {isAdmin && <li><Link to="/admin/banned-words">🚫 Mots interdits</Link></li>}
+              {isAdmin && <li><Link to="/admin/premium">👑 Premium (admin)</Link></li>}
+
             </ul>
           </div>
           <div className="footer-section">

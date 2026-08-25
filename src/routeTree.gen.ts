@@ -54,6 +54,7 @@ import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
 import { Route as ContactIdRouteImport } from './routes/contact.$id'
 import { Route as CategoriesHabillementRouteImport } from './routes/categories.habillement'
 import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
+import { Route as AdminPremiumRouteImport } from './routes/admin_.premium'
 import { Route as AdminBannedWordsRouteImport } from './routes/admin_.banned-words'
 import { Route as AbonnesIdRouteImport } from './routes/abonnes.$id'
 
@@ -282,6 +283,11 @@ const AnnonceIdRoute = AnnonceIdRouteImport.update({
   path: '/annonce/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminPremiumRoute = AdminPremiumRouteImport.update({
+  id: '/admin_/premium',
+  path: '/admin/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBannedWordsRoute = AdminBannedWordsRouteImport.update({
   id: '/admin_/banned-words',
   path: '/admin/banned-words',
@@ -328,6 +334,7 @@ export interface FileRoutesByFullPath {
   '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/admin/banned-words': typeof AdminBannedWordsRoute
+  '/admin/premium': typeof AdminPremiumRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
   '/contact/$id': typeof ContactIdRoute
@@ -376,6 +383,7 @@ export interface FileRoutesByTo {
   '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/admin/banned-words': typeof AdminBannedWordsRoute
+  '/admin/premium': typeof AdminPremiumRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
   '/contact/$id': typeof ContactIdRoute
@@ -426,6 +434,7 @@ export interface FileRoutesById {
   '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/admin_/banned-words': typeof AdminBannedWordsRoute
+  '/admin_/premium': typeof AdminPremiumRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
   '/contact/$id': typeof ContactIdRoute
@@ -477,6 +486,7 @@ export interface FileRouteTypes {
     | '/social-chat'
     | '/abonnes/$id'
     | '/admin/banned-words'
+    | '/admin/premium'
     | '/annonce/$id'
     | '/categories/habillement'
     | '/contact/$id'
@@ -525,6 +535,7 @@ export interface FileRouteTypes {
     | '/social-chat'
     | '/abonnes/$id'
     | '/admin/banned-words'
+    | '/admin/premium'
     | '/annonce/$id'
     | '/categories/habillement'
     | '/contact/$id'
@@ -574,6 +585,7 @@ export interface FileRouteTypes {
     | '/social-chat'
     | '/abonnes/$id'
     | '/admin_/banned-words'
+    | '/admin_/premium'
     | '/annonce/$id'
     | '/categories/habillement'
     | '/contact/$id'
@@ -624,6 +636,7 @@ export interface RootRouteChildren {
   SocialChatRoute: typeof SocialChatRoute
   AbonnesIdRoute: typeof AbonnesIdRoute
   AdminBannedWordsRoute: typeof AdminBannedWordsRoute
+  AdminPremiumRoute: typeof AdminPremiumRoute
   AnnonceIdRoute: typeof AnnonceIdRoute
   ContactIdRoute: typeof ContactIdRoute
   EvaluationsIdRoute: typeof EvaluationsIdRoute
@@ -954,6 +967,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AnnonceIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin_/premium': {
+      id: '/admin_/premium'
+      path: '/admin/premium'
+      fullPath: '/admin/premium'
+      preLoaderRoute: typeof AdminPremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin_/banned-words': {
       id: '/admin_/banned-words'
       path: '/admin/banned-words'
@@ -1020,6 +1040,7 @@ const rootRouteChildren: RootRouteChildren = {
   SocialChatRoute: SocialChatRoute,
   AbonnesIdRoute: AbonnesIdRoute,
   AdminBannedWordsRoute: AdminBannedWordsRoute,
+  AdminPremiumRoute: AdminPremiumRoute,
   AnnonceIdRoute: AnnonceIdRoute,
   ContactIdRoute: ContactIdRoute,
   EvaluationsIdRoute: EvaluationsIdRoute,
