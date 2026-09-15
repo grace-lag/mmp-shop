@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { lsGet } from "@/lib/safe-storage";
 
 // Google Website Translator integration without banner or reload loops.
 // The site is authored in French; when the user picks another language
@@ -143,7 +144,7 @@ async function apply(lang: string) {
 
 export function LanguageManager() {
   useEffect(() => {
-    const lang = localStorage.getItem("lang") ?? "fr";
+    const lang = lsGet("lang") ?? "fr";
     if (lang !== "fr") apply(lang);
 
     // Keep the banner hidden if Google re-injects it.
@@ -152,7 +153,7 @@ export function LanguageManager() {
 
     const onCustom = (e: Event) => {
       const detail = (e as CustomEvent).detail as string | undefined;
-      apply(detail ?? localStorage.getItem("lang") ?? "fr");
+      apply(detail ?? lsGet("lang") ?? "fr");
     };
     const onStorage = (e: StorageEvent) => {
       if (e.key === "lang") apply(e.newValue ?? "fr");
