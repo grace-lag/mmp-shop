@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { lsGet, lsSet } from "@/lib/safe-storage";
 
 export type Annonce = {
   id: string;
@@ -115,10 +116,10 @@ export async function getAnnonce(id: string) {
 
 function getSessionId(): string {
   if (typeof window === "undefined") return "";
-  let s = localStorage.getItem("anon_session_id");
+  let s = lsGet("anon_session_id");
   if (!s) {
     s = crypto.randomUUID();
-    localStorage.setItem("anon_session_id", s);
+    lsSet("anon_session_id", s);
   }
   return s;
 }

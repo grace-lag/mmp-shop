@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { lsGet } from "@/lib/safe-storage";
 
 function apply(theme: string) {
   if (typeof document === "undefined") return;
@@ -18,12 +19,12 @@ function apply(theme: string) {
 export function ThemeManager() {
   useEffect(() => {
     // Default = light. Users can switch in Paramètres du site.
-    const theme = localStorage.getItem("theme") ?? "light";
+    const theme = lsGet("theme") ?? "light";
     apply(theme);
 
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
-      const t = localStorage.getItem("theme") ?? "light";
+      const t = lsGet("theme") ?? "light";
       if (t === "auto") apply("auto");
     };
     mq.addEventListener?.("change", onChange);
@@ -35,7 +36,7 @@ export function ThemeManager() {
 
     const onCustom = (e: Event) => {
       const detail = (e as CustomEvent).detail as string | undefined;
-      apply(detail ?? localStorage.getItem("theme") ?? "auto");
+      apply(detail ?? lsGet("theme") ?? "auto");
     };
     window.addEventListener("theme-change", onCustom);
 
