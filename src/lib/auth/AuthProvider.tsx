@@ -46,9 +46,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const ping = () => { void (supabase as any).rpc("touch_last_seen").then(({ error }: any) => { if (error) console.warn("touch_last_seen failed", error); }); };
 
+    // Only signed-in visitors need a presence heartbeat — pinging for anonymous
+    // visitors was pure wasted network traffic on slow mobile connections.
+    let hasSession = false;
+
     const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s);
       setLoading(false);
+      hasSession = !!s;
       if (event === "SIGNED_IN") {
         setTimeout(() => { void syncProfile(s); }, 0);
         if (s) ping();
@@ -58,12 +63,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data }) => {
       setSession(data.session);
       setLoading(false);
+      hasSession = !!data.session;
       void syncProfile(data.session);
       if (data.session) ping();
     });
-    // Only signed-in visitors need a presence heartbeat — pinging for anonymous
-    // visitors was pure wasted network traffic on slow mobile connections.
-    let hasSession = false;
     const pingIfSignedIn = () => { if (hasSession) ping(); };
     const heartbeat = setInterval(pingIfSignedIn, 60_000);
     const onVisible = () => {
