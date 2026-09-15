@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft, Palette, Globe, Bell, FileText, Lock, Scale, Info, LogOut } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useAuth } from "@/lib/auth/AuthProvider";
+import { lsGet, lsSet } from "@/lib/safe-storage";
 
 export const Route = createFileRoute("/parametres-site")({ component: ParametresSitePage });
 
@@ -10,9 +11,9 @@ function ParametresSitePage() {
   const { user, loading, signOut } = useAuth();
   const navigate = useNavigate();
   useEffect(() => { if (!loading && !user) navigate({ to: "/login" }); }, [user, loading, navigate]);
-  const [theme, setTheme] = useState(() => (typeof window !== "undefined" ? localStorage.getItem("theme") ?? "light" : "light"));
-  const [notifs, setNotifs] = useState(() => (typeof window !== "undefined" ? localStorage.getItem("notifs") !== "off" : true));
-  const [lang, setLang] = useState(() => (typeof window !== "undefined" ? localStorage.getItem("lang") ?? "fr" : "fr"));
+  const [theme, setTheme] = useState(() => lsGet("theme") ?? "light");
+  const [notifs, setNotifs] = useState(() => lsGet("notifs") !== "off");
+  const [lang, setLang] = useState(() => lsGet("lang") ?? "fr");
 
   if (!user) return null;
 
@@ -35,21 +36,21 @@ function ParametresSitePage() {
 
       <div style={{ marginTop: 14 }}>
         <Row Icon={Palette} label="Thème">
-          <select value={theme} onChange={(e) => { const v = e.target.value; setTheme(v); localStorage.setItem("theme", v); window.dispatchEvent(new CustomEvent("theme-change", { detail: v })); }}>
+          <select value={theme} onChange={(e) => { const v = e.target.value; setTheme(v); lsSet("theme", v); window.dispatchEvent(new CustomEvent("theme-change", { detail: v })); }}>
             <option value="auto">Automatique</option>
             <option value="light">Clair</option>
             <option value="dark">Sombre</option>
           </select>
         </Row>
         <Row Icon={Globe} label="Langue">
-          <select value={lang} onChange={(e) => { const v = e.target.value; setLang(v); localStorage.setItem("lang", v); window.dispatchEvent(new CustomEvent("lang-change", { detail: v })); }}>
+          <select value={lang} onChange={(e) => { const v = e.target.value; setLang(v); lsSet("lang", v); window.dispatchEvent(new CustomEvent("lang-change", { detail: v })); }}>
             <option value="fr">Français</option>
             <option value="en">English</option>
           </select>
         </Row>
         <Row Icon={Bell} label="Notifications push">
           <label style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-            <input type="checkbox" checked={notifs} onChange={(e) => { setNotifs(e.target.checked); localStorage.setItem("notifs", e.target.checked ? "on" : "off"); }} />
+            <input type="checkbox" checked={notifs} onChange={(e) => { setNotifs(e.target.checked); lsSet("notifs", e.target.checked ? "on" : "off"); }} />
             {notifs ? "Activées" : "Désactivées"}
           </label>
         </Row>

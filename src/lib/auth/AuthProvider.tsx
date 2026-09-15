@@ -61,9 +61,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       void syncProfile(data.session);
       if (data.session) ping();
     });
-    const heartbeat = setInterval(() => { ping(); }, 30_000);
+    // Only signed-in visitors need a presence heartbeat — pinging for anonymous
+    // visitors was pure wasted network traffic on slow mobile connections.
+    let hasSession = false;
+    const pingIfSignedIn = () => { if (hasSession) ping(); };
+    const heartbeat = setInterval(pingIfSignedIn, 60_000);
     const onVisible = () => {
-      if (document.visibilityState === "visible") ping();
+      if (document.visibilityState === "visible") pingIfSignedIn();
     };
     document.addEventListener("visibilitychange", onVisible);
     window.addEventListener("focus", onVisible);
