@@ -189,23 +189,31 @@ function Index() {
           margin: "0 0 10px 0",
         }}
       >
-        {ADS.map((ad, i) => (
-          <img
-            key={ad.src}
-            src={ad.src}
-            alt={ad.caption}
-            loading="lazy"
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              opacity: i === adIndex ? 1 : 0,
-              transition: "opacity 700ms ease-in-out",
-            }}
-          />
-        ))}
+        {ADS.map((ad, i) => {
+          // Only the current slide (and the next one, ready to fade in) is
+          // fetched — loading all five banners at once made the first paint slow.
+          const isCurrent = i === adIndex;
+          const isNext = i === (adIndex + 1) % ADS.length;
+          if (!isCurrent && !isNext) return null;
+          return (
+            <img
+              key={ad.src}
+              src={ad.src}
+              alt={ad.caption}
+              loading={i === 0 ? "eager" : "lazy"}
+              decoding="async"
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                opacity: isCurrent ? 1 : 0,
+                transition: "opacity 700ms ease-in-out",
+              }}
+            />
+          );
+        })}
         <div
           style={{
             position: "absolute",
