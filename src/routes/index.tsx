@@ -14,6 +14,7 @@ import ad from "@/assets/ad-3.jpg";
 import adBillboard from "@/assets/ad-billboard.png.asset.json";
 import adPosters from "@/assets/ad-posters.png.asset.json";
 import adMarket from "@/assets/ad-market.png.asset.json";
+import { listBanners } from "@/lib/banners";
 
 const DEFAULT_ADS = [
   { src: hero, type: "image" as const, caption: "Vendez et achetez avec toute facilité" },
@@ -78,10 +79,25 @@ function Index() {
   });
   const { data: presence } = usePresenceMap((annonces ?? []).map((a: any) => a.seller_id));
 
+  // Bannières gérées par les administrateurs (images + vidéos courtes muettes)
+  const { data: banners } = useQuery({
+    queryKey: ["site-banners", "home"],
+    queryFn: () => listBanners(),
+    staleTime: 5 * 60 * 1000,
+  });
+  const slides =
+    banners && banners.length > 0
+      ? banners.map((b) => ({ src: b.url, type: b.media_type, caption: b.caption ?? "" }))
+      : DEFAULT_ADS;
+
   useEffect(() => {
-    const t = setInterval(() => setAdIndex((i) => (i + 1) % ADS.length), 3000);
+    setAdIndex(0);
+  }, [banners]);
+
+  useEffect(() => {
+    const t = setInterval(() => setAdIndex((i) => (i + 1) % slides.length), 4000);
     return () => clearInterval(t);
-  }, []);
+  }, [slides.length]);
 
   return (
     <SiteLayout activeNav="accueil">
@@ -189,12 +205,35 @@ function Index() {
           margin: "0 0 10px 0",
         }}
       >
-        {ADS.map((ad, i) => {
+        {slides.map((ad, i) => {
           // Only the current slide (and the next one, ready to fade in) is
-          // fetched — loading all five banners at once made the first paint slow.
+          // fetched — loading all banners at once made the first paint slow.
           const isCurrent = i === adIndex;
-          const isNext = i === (adIndex + 1) % ADS.length;
+          const isNext = i === (adIndex + 1) % slides.length;
           if (!isCurrent && !isNext) return null;
+          const style = {
+            position: "absolute" as const,
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover" as const,
+            opacity: isCurrent ? 1 : 0,
+            transition: "opacity 700ms ease-in-out",
+          };
+          if (ad.type === "video") {
+            return (
+              <video
+                key={ad.src}
+                src={ad.src}
+                muted
+                autoPlay
+                loop
+                playsInline
+                preload="metadata"
+                style={style}
+              />
+            );
+          }
           return (
             <img
               key={ad.src}
@@ -202,15 +241,7 @@ function Index() {
               alt={ad.caption}
               loading={i === 0 ? "eager" : "lazy"}
               decoding="async"
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                opacity: isCurrent ? 1 : 0,
-                transition: "opacity 700ms ease-in-out",
-              }}
+              style={style}
             />
           );
         })}
@@ -227,10 +258,10 @@ function Index() {
             fontSize: "0.9rem",
           }}
         >
-          {ADS[adIndex].caption}
+          {slides[adIndex]?.caption ?? ""}
         </div>
         <div style={{ position: "absolute", bottom: 6, right: 10, display: "flex", gap: 4 }}>
-          {ADS.map((_, i) => (
+          {slides.map((_, i) => (
             <span
               key={i}
               style={{
