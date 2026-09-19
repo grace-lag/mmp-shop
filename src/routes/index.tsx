@@ -15,12 +15,12 @@ import adBillboard from "@/assets/ad-billboard.png.asset.json";
 import adPosters from "@/assets/ad-posters.png.asset.json";
 import adMarket from "@/assets/ad-market.png.asset.json";
 
-const ADS = [
-  { src: hero, caption: "Vendez et achetez avec toute facilité" },
-  { src: ad, caption: "trouvez tout ce dont vous avez besoin à Brazzaville et partout au Congo" },
-  { src: adBillboard.url, caption: "Vos envies en un clic !" },
-  { src: adPosters.url, caption: "Explorez, vendez, connectez-vous sur MaMarketplace" },
-  { src: adMarket.url, caption: "Faites grandir votre entreprise avec MaMarketplace" },
+const DEFAULT_ADS = [
+  { src: hero, type: "image" as const, caption: "Vendez et achetez avec toute facilité" },
+  { src: ad, type: "image" as const, caption: "trouvez tout ce dont vous avez besoin à Brazzaville et partout au Congo" },
+  { src: adBillboard.url, type: "image" as const, caption: "Vos envies en un clic !" },
+  { src: adPosters.url, type: "image" as const, caption: "Explorez, vendez, connectez-vous sur MaMarketplace" },
+  { src: adMarket.url, type: "image" as const, caption: "Faites grandir votre entreprise avec MaMarketplace" },
 ];
 
 export const Route = createFileRoute("/")({

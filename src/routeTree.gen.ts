@@ -55,6 +55,7 @@ import { Route as ContactIdRouteImport } from './routes/contact.$id'
 import { Route as CategoriesHabillementRouteImport } from './routes/categories.habillement'
 import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
 import { Route as AdminPremiumRouteImport } from './routes/admin_.premium'
+import { Route as AdminBanniereRouteImport } from './routes/admin_.banniere'
 import { Route as AdminBannedWordsRouteImport } from './routes/admin_.banned-words'
 import { Route as AbonnesIdRouteImport } from './routes/abonnes.$id'
 
@@ -288,6 +289,11 @@ const AdminPremiumRoute = AdminPremiumRouteImport.update({
   path: '/admin/premium',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminBanniereRoute = AdminBanniereRouteImport.update({
+  id: '/admin_/banniere',
+  path: '/admin/banniere',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminBannedWordsRoute = AdminBannedWordsRouteImport.update({
   id: '/admin_/banned-words',
   path: '/admin/banned-words',
@@ -334,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/admin/banned-words': typeof AdminBannedWordsRoute
+  '/admin/banniere': typeof AdminBanniereRoute
   '/admin/premium': typeof AdminPremiumRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
@@ -383,6 +390,7 @@ export interface FileRoutesByTo {
   '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/admin/banned-words': typeof AdminBannedWordsRoute
+  '/admin/banniere': typeof AdminBanniereRoute
   '/admin/premium': typeof AdminPremiumRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
@@ -434,6 +442,7 @@ export interface FileRoutesById {
   '/social-chat': typeof SocialChatRoute
   '/abonnes/$id': typeof AbonnesIdRoute
   '/admin_/banned-words': typeof AdminBannedWordsRoute
+  '/admin_/banniere': typeof AdminBanniereRoute
   '/admin_/premium': typeof AdminPremiumRoute
   '/annonce/$id': typeof AnnonceIdRoute
   '/categories/habillement': typeof CategoriesHabillementRoute
@@ -486,6 +495,7 @@ export interface FileRouteTypes {
     | '/social-chat'
     | '/abonnes/$id'
     | '/admin/banned-words'
+    | '/admin/banniere'
     | '/admin/premium'
     | '/annonce/$id'
     | '/categories/habillement'
@@ -535,6 +545,7 @@ export interface FileRouteTypes {
     | '/social-chat'
     | '/abonnes/$id'
     | '/admin/banned-words'
+    | '/admin/banniere'
     | '/admin/premium'
     | '/annonce/$id'
     | '/categories/habillement'
@@ -585,6 +596,7 @@ export interface FileRouteTypes {
     | '/social-chat'
     | '/abonnes/$id'
     | '/admin_/banned-words'
+    | '/admin_/banniere'
     | '/admin_/premium'
     | '/annonce/$id'
     | '/categories/habillement'
@@ -636,6 +648,7 @@ export interface RootRouteChildren {
   SocialChatRoute: typeof SocialChatRoute
   AbonnesIdRoute: typeof AbonnesIdRoute
   AdminBannedWordsRoute: typeof AdminBannedWordsRoute
+  AdminBanniereRoute: typeof AdminBanniereRoute
   AdminPremiumRoute: typeof AdminPremiumRoute
   AnnonceIdRoute: typeof AnnonceIdRoute
   ContactIdRoute: typeof ContactIdRoute
@@ -974,6 +987,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPremiumRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin_/banniere': {
+      id: '/admin_/banniere'
+      path: '/admin/banniere'
+      fullPath: '/admin/banniere'
+      preLoaderRoute: typeof AdminBanniereRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin_/banned-words': {
       id: '/admin_/banned-words'
       path: '/admin/banned-words'
@@ -1040,6 +1060,7 @@ const rootRouteChildren: RootRouteChildren = {
   SocialChatRoute: SocialChatRoute,
   AbonnesIdRoute: AbonnesIdRoute,
   AdminBannedWordsRoute: AdminBannedWordsRoute,
+  AdminBanniereRoute: AdminBanniereRoute,
   AdminPremiumRoute: AdminPremiumRoute,
   AnnonceIdRoute: AnnonceIdRoute,
   ContactIdRoute: ContactIdRoute,
