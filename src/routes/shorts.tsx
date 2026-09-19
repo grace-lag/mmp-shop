@@ -108,6 +108,7 @@ function ShortsPage() {
       const { data, error } = await (supabase as any)
         .from("shorts")
         .select("*")
+        .gt("expires_at", new Date().toISOString())
         .order("created_at", { ascending: false })
         .limit(30);
       if (error) throw error;

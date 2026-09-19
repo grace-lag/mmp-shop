@@ -238,6 +238,7 @@ export function SiteLayout({ children, activeNav, hideHeader, hideFooter }: { ch
               {isAdmin && <li><Link to="/admin">🛡️ Espace administrateur</Link></li>}
               {isAdmin && <li><Link to="/admin/banned-words">🚫 Mots interdits</Link></li>}
               {isAdmin && <li><Link to="/admin/premium">👑 Premium (admin)</Link></li>}
+              {isAdmin && <li><Link to="/admin/banniere">🖼️ Barre publicitaire</Link></li>}
 
             </ul>
           </div>
