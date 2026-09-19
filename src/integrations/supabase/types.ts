@@ -661,6 +661,7 @@ export type Database = {
           caption: string | null
           created_at: string
           description: string | null
+          expires_at: string
           id: string
           likes_count: number
           price: number | null
@@ -675,6 +676,7 @@ export type Database = {
           caption?: string | null
           created_at?: string
           description?: string | null
+          expires_at?: string
           id?: string
           likes_count?: number
           price?: number | null
@@ -689,6 +691,7 @@ export type Database = {
           caption?: string | null
           created_at?: string
           description?: string | null
+          expires_at?: string
           id?: string
           likes_count?: number
           price?: number | null
@@ -798,6 +801,42 @@ export type Database = {
           },
         ]
       }
+      site_banners: {
+        Row: {
+          caption: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          media_type: string
+          media_url: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          caption?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          media_type?: string
+          media_url: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          caption?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          media_type?: string
+          media_url?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -845,7 +884,9 @@ export type Database = {
         Args: { _id: string; _session_id?: string }
         Returns: undefined
       }
+      purge_expired_content: { Args: never; Returns: undefined }
       renew_annonce: { Args: { _id: string }; Returns: undefined }
+      renew_short: { Args: { _id: string }; Returns: undefined }
       text_contains_banned: { Args: { _text: string }; Returns: boolean }
       touch_last_seen: { Args: never; Returns: undefined }
     }
