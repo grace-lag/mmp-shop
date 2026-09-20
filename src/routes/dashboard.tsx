@@ -182,7 +182,8 @@ function DashboardPage() {
               </button>
             </div>
           </div>
-        ))}
+          );
+        })}
         {myShorts && myShorts.length === 0 && <p style={{ color: "#64748b" }}>Vous n'avez pas encore publié de short.</p>}
       </div>
       </>
