@@ -57,7 +57,7 @@ function DashboardPage() {
     queryFn: async () => {
       const { data } = await (supabase as any)
         .from("shorts")
-        .select("id,title,video_url,thumbnail_url,price,created_at")
+        .select("id,title,video_url,thumbnail_url,price,created_at,expires_at")
         .eq("user_id", user!.id)
         .order("created_at", { ascending: false });
       return data ?? [];
@@ -142,13 +142,28 @@ function DashboardPage() {
       <>
       <h2 style={{ marginTop: 8, marginBottom: 12 }}>Mes shorts</h2>
       <div className="product-grid">
-        {(myShorts ?? []).map((s: any) => (
+        {(myShorts ?? []).map((s: any) => {
+          const sExpired = s.expires_at && new Date(s.expires_at) <= new Date();
+          return (
           <div key={s.id} className="product-card" style={{ position: "relative" }}>
+            <span className="age-badge" style={{ background: sExpired ? "#dc2626" : "rgba(15,23,42,0.78)" }}>{sExpired ? "Expiré" : "Actif"}</span>
             <Link to="/shorts" className="product-link">
               <ShortThumb videoUrl={s.video_url} posterUrl={s.thumbnail_url} alt={s.title ?? "short"} />
             </Link>
             <h3>{s.title || "Sans titre"}</h3>
             {s.price != null && <p className="price">{formatPrice(s.price, (s as any).currency)}</p>}
+            {sExpired && (
+              <button
+                onClick={async () => {
+                  const { error } = await (supabase as any).rpc("renew_short", { _id: s.id });
+                  if (error) toast.error(frAuthError(error) || "Échec du renouvellement");
+                  else { toast.success("Short renouvelé pour 30 jours"); qc.invalidateQueries({ queryKey: ["my-shorts-list"] }); }
+                }}
+                style={{ width: "100%", marginBottom: 6, background: "#16a34a", color: "#fff", border: 0, borderRadius: 8, padding: "8px 4px", fontWeight: 700, cursor: "pointer", fontSize: "0.82rem" }}
+              >
+                Renouveler 30 jours
+              </button>
+            )}
             <div style={{ display: "flex", gap: 6 }}>
               <Link to="/modifier-short/$id" params={{ id: s.id }} style={{ flex: 1, background: "#2563eb", color: "#fff", borderRadius: 8, padding: "8px 4px", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 4, textDecoration: "none", fontSize: "0.82rem" }}>
                 <Pencil size={14} /> Modifier
