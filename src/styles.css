@@ -666,3 +666,66 @@ html.dark .menu-flat-icon { color: #fdba74; }
 html.dark .menu-flat-sub { color: #94a3b8; }
 
 
+
+/* ---------- Arrière-plan personnalisé (choix personnel de l'utilisateur) ---------- */
+html.custom-bg,
+html.custom-bg body,
+html.custom-bg .page {
+  background-color: var(--site-bg, #f7e6d0) !important;
+  background-image: var(--site-bg-image, none) !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+/* ---------- Repli couleurs pour anciens iPhone / Android sans oklch() ---------- */
+@supports not (color: oklch(0.5 0.1 200)) {
+  :root {
+    --background: #ffffff;
+    --foreground: #0f172a;
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    --primary: #1f2937;
+    --primary-foreground: #f8fafc;
+    --secondary: #f1f5f9;
+    --secondary-foreground: #1f2937;
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    --accent: #f1f5f9;
+    --accent-foreground: #1f2937;
+    --destructive: #dc2626;
+    --destructive-foreground: #f8fafc;
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #94a3b8;
+    --sidebar: #f8fafc;
+    --sidebar-foreground: #0f172a;
+    --sidebar-primary: #1f2937;
+    --sidebar-primary-foreground: #f8fafc;
+    --sidebar-accent: #f1f5f9;
+    --sidebar-accent-foreground: #1f2937;
+    --sidebar-border: #e2e8f0;
+    --sidebar-ring: #94a3b8;
+  }
+  html.dark {
+    --background: #0b1220;
+    --foreground: #e5e7eb;
+    --card: #0f172a;
+    --card-foreground: #e5e7eb;
+    --popover: #0f172a;
+    --popover-foreground: #e5e7eb;
+    --primary: #e5e7eb;
+    --primary-foreground: #0f172a;
+    --secondary: #1f2937;
+    --secondary-foreground: #e5e7eb;
+    --muted: #1f2937;
+    --muted-foreground: #94a3b8;
+    --accent: #1f2937;
+    --accent-foreground: #e5e7eb;
+    --border: rgba(255, 255, 255, 0.12);
+    --input: rgba(255, 255, 255, 0.16);
+  }
+}

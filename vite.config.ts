@@ -12,4 +12,10 @@ export default defineConfig({
     // nitro/vite builds from this
     server: { entry: "server" },
   },
+  // Older iPhones (iOS 13/14) and budget Android WebViews choke on the default
+  // esnext output and render a blank page. Down-level the client bundle so the
+  // site stays reachable on those devices.
+  vite: {
+    build: { target: ["es2020", "safari14", "chrome80", "firefox78"] },
+  },
 });
