@@ -13,6 +13,7 @@ import { AuthProvider } from "@/lib/auth/AuthProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { SplashScreen } from "@/components/SplashScreen";
 import { ThemeManager } from "@/components/ThemeManager";
+import { BackgroundManager } from "@/components/BackgroundManager";
 import { LanguageManager } from "@/components/LanguageManager";
 
 function NotFoundComponent() {
@@ -145,6 +146,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ThemeManager />
+        <BackgroundManager />
         <LanguageManager />
         <SplashScreen />
         <Outlet />

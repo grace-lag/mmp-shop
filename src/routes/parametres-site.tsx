@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Palette, Globe, Bell, FileText, Lock, Scale, Info, LogOut } from "lucide-react";
+import { ArrowLeft, Palette, Globe, Bell, FileText, Lock, Scale, Info, LogOut, Wallpaper } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { useAuth } from "@/lib/auth/AuthProvider";
 import { lsGet, lsSet } from "@/lib/safe-storage";
+import { BackgroundCustomizer } from "@/components/BackgroundCustomizer";
 
 export const Route = createFileRoute("/parametres-site")({ component: ParametresSitePage });
 
@@ -14,6 +15,7 @@ function ParametresSitePage() {
   const [theme, setTheme] = useState(() => lsGet("theme") ?? "light");
   const [notifs, setNotifs] = useState(() => lsGet("notifs") !== "off");
   const [lang, setLang] = useState(() => lsGet("lang") ?? "fr");
+  const [bgOpen, setBgOpen] = useState(false);
 
   if (!user) return null;
 
@@ -42,6 +44,14 @@ function ParametresSitePage() {
             <option value="dark">Sombre</option>
           </select>
         </Row>
+        <Row Icon={Wallpaper} label="Personnaliser l'arrière-plan du site">
+          <button
+            onClick={() => setBgOpen(true)}
+            style={{ padding: "8px 12px", borderRadius: 10, border: "1px solid #fed7aa", background: "#fff7ed", color: "#9a3412", fontWeight: 700, cursor: "pointer" }}
+          >
+            Personnaliser
+          </button>
+        </Row>
         <Row Icon={Globe} label="Langue">
           <select value={lang} onChange={(e) => { const v = e.target.value; setLang(v); lsSet("lang", v); window.dispatchEvent(new CustomEvent("lang-change", { detail: v })); }}>
             <option value="fr">Français</option>
@@ -66,6 +76,8 @@ function ParametresSitePage() {
           <LogOut size={18} /> Se déconnecter
         </button>
       </div>
+
+      {bgOpen && <BackgroundCustomizer onClose={() => setBgOpen(false)} />}
     </SiteLayout>
   );
 }
