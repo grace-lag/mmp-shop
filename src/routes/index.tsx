@@ -9,11 +9,11 @@ import { AnnonceStats } from "@/components/AnnonceStats";
 import { usePresenceMap, PresenceDot } from "@/lib/presence";
 
 import { useAuth } from "@/lib/auth/AuthProvider";
-import hero from "@/assets/mamarketplace-eshop-hero.jpg";
-import ad from "@/assets/ad-3.jpg";
-import adBillboard from "@/assets/ad-billboard.png.asset.json";
-import adPosters from "@/assets/ad-posters.png.asset.json";
-import adMarket from "@/assets/ad-market.png.asset.json";
+import hero from "@/assets/mamarketplace-eshop-hero.webp";
+import ad from "@/assets/ad-3.webp";
+import adBillboard from "@/assets/ad-billboard.webp.asset.json";
+import adPosters from "@/assets/ad-posters.webp.asset.json";
+import adMarket from "@/assets/ad-market.webp.asset.json";
 import { listBanners } from "@/lib/banners";
 
 const DEFAULT_ADS = [
@@ -29,7 +29,10 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "MMP Shop — MaMarketplace E-Shop | Acheter et vendre au Congo" },
       { name: "description", content: "MMP Shop (MaMarketplace E-Shop) : achetez et vendez au Congo. Annonces locales, boutiques, shorts vidéo, paiement et livraison au Congo-Brazzaville." },
+      { property: "og:title", content: "MMP Shop — Acheter et vendre au Congo" },
+      { property: "og:description", content: "Annonces locales, boutiques et shorts vidéo au Congo-Brazzaville." },
     ],
+    links: [{ rel: "preload", as: "image", href: hero, fetchpriority: "high" } as any],
   }),
   component: Index,
 });
