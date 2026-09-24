@@ -29,11 +29,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const whatsapp = meta.whatsapp || "";
       const { data: existing } = await (supabase as any)
         .from("profiles")
-        .select("nom, prenom, avatar_url, tel, whatsapp, email")
+        .select("nom, prenom, avatar_url, tel, whatsapp")
         .eq("id", u.id)
         .maybeSingle();
       const patch: Record<string, any> = { id: u.id };
-      if (!existing?.email && u.email) patch.email = u.email;
       if (!existing?.nom && nom) patch.nom = nom;
       if (!existing?.prenom && prenom) patch.prenom = prenom;
       if (!existing?.avatar_url && avatar_url) patch.avatar_url = avatar_url;

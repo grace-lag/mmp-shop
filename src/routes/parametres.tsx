@@ -35,7 +35,7 @@ function ParametresPage() {
     if (!user) return;
     (supabase as any)
       .from("profiles")
-      .select("nom,prenom,genre,date_naissance,tel,whatsapp,email,avatar_url")
+      .select("nom,prenom,genre,date_naissance,tel,whatsapp,avatar_url")
       .eq("id", user.id)
       .maybeSingle()
       .then(({ data }: any) => {
@@ -47,10 +47,10 @@ function ParametresPage() {
             date_naissance: (data as any).date_naissance ?? "",
             tel: data.tel ?? "",
             whatsapp: data.whatsapp ?? "",
-            email: data.email ?? user.email ?? "",
+            email: user.email ?? "",
             avatar_url: data.avatar_url ?? "",
           });
-          setNewEmail(data.email ?? user.email ?? "");
+          setNewEmail(user.email ?? "");
         }
       });
   }, [user]);
