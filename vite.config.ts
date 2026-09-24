@@ -16,6 +16,6 @@ export default defineConfig({
   // esnext output and render a blank page. Down-level the client bundle so the
   // site stays reachable on those devices.
   vite: {
-    build: { target: ["es2020", "safari14", "chrome80", "firefox78"] },
+    build: { target: "es2020" },
   },
 });
