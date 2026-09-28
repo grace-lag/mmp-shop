@@ -254,6 +254,11 @@ function AnnonceDetail() {
               </button>
             )}
           </div>
+          {!user && (
+            <p style={{ marginTop: 10, fontWeight: 600 }}>
+              Connectez-vous pour voir les coordonnées du vendeur et passer la commande.
+            </p>
+          )}
         </div>
       </div>
 
