@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "MMP Shop — Acheter et vendre au Congo" },
       { property: "og:description", content: "Annonces locales, boutiques et shorts vidéo au Congo-Brazzaville." },
     ],
-    links: [{ rel: "preload", as: "image", href: hero, fetchpriority: "high" } as any],
+    links: [{ rel: "preload", as: "image", href: hero, fetchPriority: "high" } as any],
   }),
   component: Index,
 });

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Crown, Globe2, PackageCheck, ShieldCheck } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { computeQuote, fcfa, getPremiumSettings, listPremiumProducts } from "@/lib/premium";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 export const Route = createFileRoute("/premium/")({
   head: () => ({
@@ -26,11 +27,31 @@ export const Route = createFileRoute("/premium/")({
 });
 
 function PremiumPage() {
-  const { data: settings } = useQuery({ queryKey: ["premium-settings"], queryFn: getPremiumSettings });
+  const { user, loading: authLoading } = useAuth();
+  const { data: settings } = useQuery({
+    queryKey: ["premium-settings"],
+    queryFn: getPremiumSettings,
+    enabled: !!user,
+  });
   const { data: products, isLoading } = useQuery({
     queryKey: ["premium-products"],
     queryFn: () => listPremiumProducts(),
+    enabled: !!user,
   });
+
+  if (authLoading) return <SiteLayout><p style={{ marginTop: 16 }}>Chargement...</p></SiteLayout>;
+  if (!user) {
+    return (
+      <SiteLayout>
+        <section style={{ marginTop: 24, textAlign: "center", padding: "32px 16px" }}>
+          <Crown size={36} style={{ margin: "0 auto 12px" }} />
+          <h1>MMP Premium</h1>
+          <p>Connectez-vous pour accéder à MMP Premium et passer une commande.</p>
+          <Link to="/login" className="btn-whatsapp">Se connecter</Link>
+        </section>
+      </SiteLayout>
+    );
+  }
 
   return (
     <SiteLayout>

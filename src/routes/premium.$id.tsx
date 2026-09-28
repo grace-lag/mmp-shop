@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { SiteLayout } from "@/components/SiteLayout";
 import { PremiumOrderForm } from "@/components/PremiumOrderForm";
 import { computeQuote, fcfa, getPremiumProduct, getPremiumSettings } from "@/lib/premium";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 export const Route = createFileRoute("/premium/$id")({
   head: () => ({
@@ -20,10 +21,12 @@ export const Route = createFileRoute("/premium/$id")({
 
 function PremiumProductPage() {
   const { id } = Route.useParams();
-  const { data: product, isLoading } = useQuery({ queryKey: ["premium-product", id], queryFn: () => getPremiumProduct(id) });
-  const { data: settings } = useQuery({ queryKey: ["premium-settings"], queryFn: getPremiumSettings });
+  const { user, loading: authLoading } = useAuth();
+  const { data: product, isLoading } = useQuery({ queryKey: ["premium-product", id], queryFn: () => getPremiumProduct(id), enabled: !!user });
+  const { data: settings } = useQuery({ queryKey: ["premium-settings"], queryFn: getPremiumSettings, enabled: !!user });
 
-  if (isLoading) return <SiteLayout><p style={{ marginTop: 16 }}>Chargement...</p></SiteLayout>;
+  if (authLoading || (user && isLoading)) return <SiteLayout><p style={{ marginTop: 16 }}>Chargement...</p></SiteLayout>;
+  if (!user) return <SiteLayout><p style={{ marginTop: 24 }}>Connectez-vous pour accéder à MMP Premium. <Link to="/login">Se connecter</Link></p></SiteLayout>;
   if (!product)
     return (
       <SiteLayout>

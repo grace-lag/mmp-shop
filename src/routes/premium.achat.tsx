@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
 import { PremiumOrderForm } from "@/components/PremiumOrderForm";
+import { useAuth } from "@/lib/auth/AuthProvider";
 
 export const Route = createFileRoute("/premium/achat")({
   head: () => ({
@@ -21,6 +22,10 @@ export const Route = createFileRoute("/premium/achat")({
 });
 
 function PremiumSourcingPage() {
+  const { user, loading } = useAuth();
+  if (loading) return <SiteLayout><p style={{ marginTop: 16 }}>Chargement...</p></SiteLayout>;
+  if (!user) return <SiteLayout><p style={{ marginTop: 24 }}>Connectez-vous pour accéder à MMP Premium. <Link to="/login">Se connecter</Link></p></SiteLayout>;
+
   return (
     <SiteLayout>
       <h1 style={{ marginTop: 16 }}>Faites-vous acheter un produit</h1>
