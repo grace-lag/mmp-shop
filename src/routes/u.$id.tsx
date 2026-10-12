@@ -27,7 +27,7 @@ function UserProfilePage() {
   const { data: profile } = useQuery({
     queryKey: ["profile-public", id],
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url,last_seen_at,created_at").eq("id", id).maybeSingle();
+      const { data } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url,last_seen_at,created_at").eq("id", id).maybeSingle();
       return data as any;
     },
   });

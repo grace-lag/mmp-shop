@@ -20,7 +20,7 @@ function Page() {
         .trim()
         .split(/\s+/)
         .filter((t: string) => t.length > 0);
-      let query = supabase.from("profiles").select("id,prenom,nom,avatar_url");
+      let query = supabase.from("public_profiles").select("id,prenom,nom,avatar_url");
       for (const t of tokens) {
         const like = `%${t}%`;
         query = query.or(`prenom.ilike.${like},nom.ilike.${like}`);

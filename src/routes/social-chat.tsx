@@ -52,7 +52,7 @@ function SocialChatPage() {
       }
       const ids = Array.from(map.keys());
       if (ids.length === 0) return [];
-      const { data: profs } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").in("id", ids);
+      const { data: profs } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url").in("id", ids);
       return ids.map((id) => ({ ...map.get(id)!, profile: (profs ?? []).find((p: any) => p.id === id) }));
     },
   });
@@ -64,7 +64,7 @@ function SocialChatPage() {
     queryFn: async () => {
       const term = `%${searchUser.trim()}%`;
       const { data } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("id,prenom,nom,avatar_url")
         .or(`prenom.ilike.${term},nom.ilike.${term}`)
         .limit(20);
@@ -76,7 +76,7 @@ function SocialChatPage() {
     queryKey: ["social-partner", validTo],
     enabled: !!validTo,
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").eq("id", validTo).maybeSingle();
+      const { data } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url").eq("id", validTo).maybeSingle();
       return data;
     },
   });

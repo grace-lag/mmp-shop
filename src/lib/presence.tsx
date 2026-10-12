@@ -16,7 +16,7 @@ export function usePresenceMap(userIds: (string | null | undefined)[]) {
     staleTime: 30_000,
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("id,last_seen_at")
         .in("id", ids);
       const map: Record<string, string | null> = {};

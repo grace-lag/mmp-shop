@@ -56,7 +56,7 @@ function Index() {
         .split(/\s+/)
         .filter((t) => t.length > 0);
       const { supabase } = await import("@/integrations/supabase/client");
-      let q = supabase.from("profiles").select("id,prenom,nom,avatar_url");
+      let q = supabase.from("public_profiles").select("id,prenom,nom,avatar_url");
       for (const t of tokens) {
         const like = `%${t}%`;
         q = q.or(`prenom.ilike.${like},nom.ilike.${like}`);

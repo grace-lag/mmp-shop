@@ -23,7 +23,7 @@ function TopLikesPage() {
       const uids = (likes ?? []).map((l: any) => l.user_id);
       let likers: any[] = [];
       if (uids.length) {
-        const { data: profs } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").in("id", uids);
+        const { data: profs } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url").in("id", uids);
         likers = profs ?? [];
       }
       return { top, likers };

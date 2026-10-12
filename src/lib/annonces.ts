@@ -148,7 +148,7 @@ export async function listComments(annonceId: string): Promise<any[]> {
   const ids = Array.from(new Set(rows.map((r) => r.user_id)));
   if (ids.length === 0) return rows;
   const { data: profs } = await supabase
-    .from("profiles")
+    .from("public_profiles")
     .select("id,prenom,nom,avatar_url")
     .in("id", ids);
   const map = new Map((profs ?? []).map((p: any) => [p.id, p]));
