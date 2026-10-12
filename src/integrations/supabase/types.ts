@@ -857,7 +857,45 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          account_type: string | null
+          avatar_url: string | null
+          business_name: string | null
+          business_year: number | null
+          created_at: string | null
+          genre: string | null
+          id: string | null
+          last_seen_at: string | null
+          nom: string | null
+          prenom: string | null
+        }
+        Insert: {
+          account_type?: string | null
+          avatar_url?: string | null
+          business_name?: string | null
+          business_year?: number | null
+          created_at?: string | null
+          genre?: string | null
+          id?: string | null
+          last_seen_at?: string | null
+          nom?: string | null
+          prenom?: string | null
+        }
+        Update: {
+          account_type?: string | null
+          avatar_url?: string | null
+          business_name?: string | null
+          business_year?: number | null
+          created_at?: string | null
+          genre?: string | null
+          id?: string | null
+          last_seen_at?: string | null
+          nom?: string | null
+          prenom?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       archive_conversation: {
@@ -870,6 +908,13 @@ export type Database = {
         Args: { _id: string }
         Returns: {
           phone: string
+          whatsapp: string
+        }[]
+      }
+      get_profile_contact: {
+        Args: { _id: string }
+        Returns: {
+          tel: string
           whatsapp: string
         }[]
       }
