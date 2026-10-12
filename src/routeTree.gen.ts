@@ -9,204 +9,59 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AideRouteImport } from './routes/aide'
-import { Route as AnnoncesRouteImport } from './routes/annonces'
-import { Route as AnnoncesActivesRouteImport } from './routes/annonces-actives'
-import { Route as AnnoncesExpireesRouteImport } from './routes/annonces-expirees'
-import { Route as ApercuRouteImport } from './routes/apercu'
-import { Route as BoutiqueRouteImport } from './routes/boutique'
-import { Route as CategoriesRouteImport } from './routes/categories'
-import { Route as ChatRouteImport } from './routes/chat'
-import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
-import { Route as CompteRouteImport } from './routes/compte'
-import { Route as ConditionsRouteImport } from './routes/conditions'
-import { Route as ConversationsRouteImport } from './routes/conversations'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as HistoriqueRouteImport } from './routes/historique'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
-import { Route as MesCommandesRouteImport } from './routes/mes-commandes'
-import { Route as MessagesNonLusRouteImport } from './routes/messages-non-lus'
-import { Route as NotificationsRouteImport } from './routes/notifications'
-import { Route as OffresEmploiRouteImport } from './routes/offres-emploi'
-import { Route as OptionsRouteImport } from './routes/options'
-import { Route as ParametresRouteImport } from './routes/parametres'
-import { Route as ParametresSiteRouteImport } from './routes/parametres-site'
-import { Route as PosterRouteImport } from './routes/poster'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as RechercheUtilisateurRouteImport } from './routes/recherche-utilisateur'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ShortsRouteImport } from './routes/shorts'
-import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SocialChatRouteImport } from './routes/social-chat'
-import { Route as AbonnesIdRouteImport } from './routes/abonnes.$id'
-import { Route as AdminBannedWordsRouteImport } from './routes/admin_.banned-words'
-import { Route as AdminBanniereRouteImport } from './routes/admin_.banniere'
-import { Route as AdminPremiumRouteImport } from './routes/admin_.premium'
-import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
-import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
-import { Route as CategoriesHabillementRouteImport } from './routes/categories.habillement'
-import { Route as ContactIdRouteImport } from './routes/contact.$id'
-import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
-import { Route as ModifierAnnonceIdRouteImport } from './routes/modifier-annonce.$id'
-import { Route as ModifierShortIdRouteImport } from './routes/modifier-short.$id'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as ShortsRouteImport } from './routes/shorts'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RechercheUtilisateurRouteImport } from './routes/recherche-utilisateur'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as PosterRouteImport } from './routes/poster'
+import { Route as ParametresSiteRouteImport } from './routes/parametres-site'
+import { Route as ParametresRouteImport } from './routes/parametres'
+import { Route as OptionsRouteImport } from './routes/options'
+import { Route as OffresEmploiRouteImport } from './routes/offres-emploi'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as MessagesNonLusRouteImport } from './routes/messages-non-lus'
+import { Route as MesCommandesRouteImport } from './routes/mes-commandes'
+import { Route as MentionsLegalesRouteImport } from './routes/mentions-legales'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as HistoriqueRouteImport } from './routes/historique'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as ConversationsRouteImport } from './routes/conversations'
+import { Route as ConditionsRouteImport } from './routes/conditions'
+import { Route as CompteRouteImport } from './routes/compte'
+import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
+import { Route as ChatRouteImport } from './routes/chat'
+import { Route as CategoriesRouteImport } from './routes/categories'
+import { Route as BoutiqueRouteImport } from './routes/boutique'
+import { Route as ApercuRouteImport } from './routes/apercu'
+import { Route as AnnoncesExpireesRouteImport } from './routes/annonces-expirees'
+import { Route as AnnoncesActivesRouteImport } from './routes/annonces-actives'
+import { Route as AnnoncesRouteImport } from './routes/annonces'
+import { Route as AideRouteImport } from './routes/aide'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as PremiumIndexRouteImport } from './routes/premium.index'
-import { Route as PremiumIdRouteImport } from './routes/premium.$id'
-import { Route as PremiumAchatRouteImport } from './routes/premium.achat'
-import { Route as TopLikesIdRouteImport } from './routes/top-likes.$id'
-import { Route as UIdRouteImport } from './routes/u.$id'
+import { Route as CategoriesIndexRouteImport } from './routes/categories.index'
 import { Route as VendeurIdRouteImport } from './routes/vendeur.$id'
+import { Route as UIdRouteImport } from './routes/u.$id'
+import { Route as TopLikesIdRouteImport } from './routes/top-likes.$id'
+import { Route as PremiumAchatRouteImport } from './routes/premium.achat'
+import { Route as PremiumIdRouteImport } from './routes/premium.$id'
+import { Route as ModifierShortIdRouteImport } from './routes/modifier-short.$id'
+import { Route as ModifierAnnonceIdRouteImport } from './routes/modifier-annonce.$id'
+import { Route as EvaluationsIdRouteImport } from './routes/evaluations.$id'
+import { Route as ContactIdRouteImport } from './routes/contact.$id'
+import { Route as CategoriesHabillementRouteImport } from './routes/categories.habillement'
+import { Route as AnnonceIdRouteImport } from './routes/annonce.$id'
+import { Route as AdminPremiumRouteImport } from './routes/admin_.premium'
+import { Route as AdminBanniereRouteImport } from './routes/admin_.banniere'
+import { Route as AdminBannedWordsRouteImport } from './routes/admin_.banned-words'
+import { Route as AbonnesIdRouteImport } from './routes/abonnes.$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AideRoute = AideRouteImport.update({
-  id: '/aide',
-  path: '/aide',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnnoncesRoute = AnnoncesRouteImport.update({
-  id: '/annonces',
-  path: '/annonces',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnnoncesActivesRoute = AnnoncesActivesRouteImport.update({
-  id: '/annonces-actives',
-  path: '/annonces-actives',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnnoncesExpireesRoute = AnnoncesExpireesRouteImport.update({
-  id: '/annonces-expirees',
-  path: '/annonces-expirees',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApercuRoute = ApercuRouteImport.update({
-  id: '/apercu',
-  path: '/apercu',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BoutiqueRoute = BoutiqueRouteImport.update({
-  id: '/boutique',
-  path: '/boutique',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CategoriesRoute = CategoriesRouteImport.update({
-  id: '/categories',
-  path: '/categories',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ChatRoute = ChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CompleteProfileRoute = CompleteProfileRouteImport.update({
-  id: '/complete-profile',
-  path: '/complete-profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CompteRoute = CompteRouteImport.update({
-  id: '/compte',
-  path: '/compte',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConditionsRoute = ConditionsRouteImport.update({
-  id: '/conditions',
-  path: '/conditions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConversationsRoute = ConversationsRouteImport.update({
-  id: '/conversations',
-  path: '/conversations',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HistoriqueRoute = HistoriqueRouteImport.update({
-  id: '/historique',
-  path: '/historique',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
-  id: '/mentions-legales',
-  path: '/mentions-legales',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MesCommandesRoute = MesCommandesRouteImport.update({
-  id: '/mes-commandes',
-  path: '/mes-commandes',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MessagesNonLusRoute = MessagesNonLusRouteImport.update({
-  id: '/messages-non-lus',
-  path: '/messages-non-lus',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OffresEmploiRoute = OffresEmploiRouteImport.update({
-  id: '/offres-emploi',
-  path: '/offres-emploi',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OptionsRoute = OptionsRouteImport.update({
-  id: '/options',
-  path: '/options',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ParametresRoute = ParametresRouteImport.update({
-  id: '/parametres',
-  path: '/parametres',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ParametresSiteRoute = ParametresSiteRouteImport.update({
-  id: '/parametres-site',
-  path: '/parametres-site',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PosterRoute = PosterRouteImport.update({
-  id: '/poster',
-  path: '/poster',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RechercheUtilisateurRoute = RechercheUtilisateurRouteImport.update({
-  id: '/recherche-utilisateur',
-  path: '/recherche-utilisateur',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ShortsRoute = ShortsRouteImport.update({
-  id: '/shorts',
-  path: '/shorts',
+const SocialChatRoute = SocialChatRouteImport.update({
+  id: '/social-chat',
+  path: '/social-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignupRoute = SignupRouteImport.update({
@@ -214,64 +69,154 @@ const SignupRoute = SignupRouteImport.update({
   path: '/signup',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SocialChatRoute = SocialChatRouteImport.update({
-  id: '/social-chat',
-  path: '/social-chat',
+const ShortsRoute = ShortsRouteImport.update({
+  id: '/shorts',
+  path: '/shorts',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AbonnesIdRoute = AbonnesIdRouteImport.update({
-  id: '/abonnes/$id',
-  path: '/abonnes/$id',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminBannedWordsRoute = AdminBannedWordsRouteImport.update({
-  id: '/admin_/banned-words',
-  path: '/admin/banned-words',
+const RechercheUtilisateurRoute = RechercheUtilisateurRouteImport.update({
+  id: '/recherche-utilisateur',
+  path: '/recherche-utilisateur',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminBanniereRoute = AdminBanniereRouteImport.update({
-  id: '/admin_/banniere',
-  path: '/admin/banniere',
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminPremiumRoute = AdminPremiumRouteImport.update({
-  id: '/admin_/premium',
-  path: '/admin/premium',
+const PosterRoute = PosterRouteImport.update({
+  id: '/poster',
+  path: '/poster',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AnnonceIdRoute = AnnonceIdRouteImport.update({
-  id: '/annonce/$id',
-  path: '/annonce/$id',
+const ParametresSiteRoute = ParametresSiteRouteImport.update({
+  id: '/parametres-site',
+  path: '/parametres-site',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
+const ParametresRoute = ParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OptionsRoute = OptionsRouteImport.update({
+  id: '/options',
+  path: '/options',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OffresEmploiRoute = OffresEmploiRouteImport.update({
+  id: '/offres-emploi',
+  path: '/offres-emploi',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesNonLusRoute = MessagesNonLusRouteImport.update({
+  id: '/messages-non-lus',
+  path: '/messages-non-lus',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MesCommandesRoute = MesCommandesRouteImport.update({
+  id: '/mes-commandes',
+  path: '/mes-commandes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MentionsLegalesRoute = MentionsLegalesRouteImport.update({
+  id: '/mentions-legales',
+  path: '/mentions-legales',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HistoriqueRoute = HistoriqueRouteImport.update({
+  id: '/historique',
+  path: '/historique',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConversationsRoute = ConversationsRouteImport.update({
+  id: '/conversations',
+  path: '/conversations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConditionsRoute = ConditionsRouteImport.update({
+  id: '/conditions',
+  path: '/conditions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompteRoute = CompteRouteImport.update({
+  id: '/compte',
+  path: '/compte',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompleteProfileRoute = CompleteProfileRouteImport.update({
+  id: '/complete-profile',
+  path: '/complete-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriesRoute = CategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BoutiqueRoute = BoutiqueRouteImport.update({
+  id: '/boutique',
+  path: '/boutique',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApercuRoute = ApercuRouteImport.update({
+  id: '/apercu',
+  path: '/apercu',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnoncesExpireesRoute = AnnoncesExpireesRouteImport.update({
+  id: '/annonces-expirees',
+  path: '/annonces-expirees',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnoncesActivesRoute = AnnoncesActivesRouteImport.update({
+  id: '/annonces-actives',
+  path: '/annonces-actives',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnoncesRoute = AnnoncesRouteImport.update({
+  id: '/annonces',
+  path: '/annonces',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AideRoute = AideRouteImport.update({
+  id: '/aide',
+  path: '/aide',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => CategoriesRoute,
-} as any)
-const CategoriesHabillementRoute = CategoriesHabillementRouteImport.update({
-  id: '/habillement',
-  path: '/habillement',
-  getParentRoute: () => CategoriesRoute,
-} as any)
-const ContactIdRoute = ContactIdRouteImport.update({
-  id: '/contact/$id',
-  path: '/contact/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EvaluationsIdRoute = EvaluationsIdRouteImport.update({
-  id: '/evaluations/$id',
-  path: '/evaluations/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ModifierAnnonceIdRoute = ModifierAnnonceIdRouteImport.update({
-  id: '/modifier-annonce/$id',
-  path: '/modifier-annonce/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ModifierShortIdRoute = ModifierShortIdRouteImport.update({
-  id: '/modifier-short/$id',
-  path: '/modifier-short/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PremiumIndexRoute = PremiumIndexRouteImport.update({
@@ -279,19 +224,14 @@ const PremiumIndexRoute = PremiumIndexRouteImport.update({
   path: '/premium/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PremiumIdRoute = PremiumIdRouteImport.update({
-  id: '/premium/$id',
-  path: '/premium/$id',
-  getParentRoute: () => rootRouteImport,
+const CategoriesIndexRoute = CategoriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CategoriesRoute,
 } as any)
-const PremiumAchatRoute = PremiumAchatRouteImport.update({
-  id: '/premium/achat',
-  path: '/premium/achat',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TopLikesIdRoute = TopLikesIdRouteImport.update({
-  id: '/top-likes/$id',
-  path: '/top-likes/$id',
+const VendeurIdRoute = VendeurIdRouteImport.update({
+  id: '/vendeur/$id',
+  path: '/vendeur/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UIdRoute = UIdRouteImport.update({
@@ -299,9 +239,69 @@ const UIdRoute = UIdRouteImport.update({
   path: '/u/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VendeurIdRoute = VendeurIdRouteImport.update({
-  id: '/vendeur/$id',
-  path: '/vendeur/$id',
+const TopLikesIdRoute = TopLikesIdRouteImport.update({
+  id: '/top-likes/$id',
+  path: '/top-likes/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumAchatRoute = PremiumAchatRouteImport.update({
+  id: '/premium/achat',
+  path: '/premium/achat',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PremiumIdRoute = PremiumIdRouteImport.update({
+  id: '/premium/$id',
+  path: '/premium/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModifierShortIdRoute = ModifierShortIdRouteImport.update({
+  id: '/modifier-short/$id',
+  path: '/modifier-short/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModifierAnnonceIdRoute = ModifierAnnonceIdRouteImport.update({
+  id: '/modifier-annonce/$id',
+  path: '/modifier-annonce/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvaluationsIdRoute = EvaluationsIdRouteImport.update({
+  id: '/evaluations/$id',
+  path: '/evaluations/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactIdRoute = ContactIdRouteImport.update({
+  id: '/contact/$id',
+  path: '/contact/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriesHabillementRoute = CategoriesHabillementRouteImport.update({
+  id: '/habillement',
+  path: '/habillement',
+  getParentRoute: () => CategoriesRoute,
+} as any)
+const AnnonceIdRoute = AnnonceIdRouteImport.update({
+  id: '/annonce/$id',
+  path: '/annonce/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPremiumRoute = AdminPremiumRouteImport.update({
+  id: '/admin_/premium',
+  path: '/admin/premium',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBanniereRoute = AdminBanniereRouteImport.update({
+  id: '/admin_/banniere',
+  path: '/admin/banniere',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBannedWordsRoute = AdminBannedWordsRouteImport.update({
+  id: '/admin_/banned-words',
+  path: '/admin/banned-words',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AbonnesIdRoute = AbonnesIdRouteImport.update({
+  id: '/abonnes/$id',
+  path: '/abonnes/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -665,214 +665,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/aide': {
-      id: '/aide'
-      path: '/aide'
-      fullPath: '/aide'
-      preLoaderRoute: typeof AideRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/annonces': {
-      id: '/annonces'
-      path: '/annonces'
-      fullPath: '/annonces'
-      preLoaderRoute: typeof AnnoncesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/annonces-actives': {
-      id: '/annonces-actives'
-      path: '/annonces-actives'
-      fullPath: '/annonces-actives'
-      preLoaderRoute: typeof AnnoncesActivesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/annonces-expirees': {
-      id: '/annonces-expirees'
-      path: '/annonces-expirees'
-      fullPath: '/annonces-expirees'
-      preLoaderRoute: typeof AnnoncesExpireesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/apercu': {
-      id: '/apercu'
-      path: '/apercu'
-      fullPath: '/apercu'
-      preLoaderRoute: typeof ApercuRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/boutique': {
-      id: '/boutique'
-      path: '/boutique'
-      fullPath: '/boutique'
-      preLoaderRoute: typeof BoutiqueRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/categories': {
-      id: '/categories'
-      path: '/categories'
-      fullPath: '/categories'
-      preLoaderRoute: typeof CategoriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/chat': {
-      id: '/chat'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/complete-profile': {
-      id: '/complete-profile'
-      path: '/complete-profile'
-      fullPath: '/complete-profile'
-      preLoaderRoute: typeof CompleteProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/compte': {
-      id: '/compte'
-      path: '/compte'
-      fullPath: '/compte'
-      preLoaderRoute: typeof CompteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/conditions': {
-      id: '/conditions'
-      path: '/conditions'
-      fullPath: '/conditions'
-      preLoaderRoute: typeof ConditionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/conversations': {
-      id: '/conversations'
-      path: '/conversations'
-      fullPath: '/conversations'
-      preLoaderRoute: typeof ConversationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/historique': {
-      id: '/historique'
-      path: '/historique'
-      fullPath: '/historique'
-      preLoaderRoute: typeof HistoriqueRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mentions-legales': {
-      id: '/mentions-legales'
-      path: '/mentions-legales'
-      fullPath: '/mentions-legales'
-      preLoaderRoute: typeof MentionsLegalesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mes-commandes': {
-      id: '/mes-commandes'
-      path: '/mes-commandes'
-      fullPath: '/mes-commandes'
-      preLoaderRoute: typeof MesCommandesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/messages-non-lus': {
-      id: '/messages-non-lus'
-      path: '/messages-non-lus'
-      fullPath: '/messages-non-lus'
-      preLoaderRoute: typeof MessagesNonLusRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/offres-emploi': {
-      id: '/offres-emploi'
-      path: '/offres-emploi'
-      fullPath: '/offres-emploi'
-      preLoaderRoute: typeof OffresEmploiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/options': {
-      id: '/options'
-      path: '/options'
-      fullPath: '/options'
-      preLoaderRoute: typeof OptionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/parametres': {
-      id: '/parametres'
-      path: '/parametres'
-      fullPath: '/parametres'
-      preLoaderRoute: typeof ParametresRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/parametres-site': {
-      id: '/parametres-site'
-      path: '/parametres-site'
-      fullPath: '/parametres-site'
-      preLoaderRoute: typeof ParametresSiteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/poster': {
-      id: '/poster'
-      path: '/poster'
-      fullPath: '/poster'
-      preLoaderRoute: typeof PosterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/recherche-utilisateur': {
-      id: '/recherche-utilisateur'
-      path: '/recherche-utilisateur'
-      fullPath: '/recherche-utilisateur'
-      preLoaderRoute: typeof RechercheUtilisateurRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/shorts': {
-      id: '/shorts'
-      path: '/shorts'
-      fullPath: '/shorts'
-      preLoaderRoute: typeof ShortsRouteImport
+    '/social-chat': {
+      id: '/social-chat'
+      path: '/social-chat'
+      fullPath: '/social-chat'
+      preLoaderRoute: typeof SocialChatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/signup': {
@@ -882,88 +679,214 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/social-chat': {
-      id: '/social-chat'
-      path: '/social-chat'
-      fullPath: '/social-chat'
-      preLoaderRoute: typeof SocialChatRouteImport
+    '/shorts': {
+      id: '/shorts'
+      path: '/shorts'
+      fullPath: '/shorts'
+      preLoaderRoute: typeof ShortsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/abonnes/$id': {
-      id: '/abonnes/$id'
-      path: '/abonnes/$id'
-      fullPath: '/abonnes/$id'
-      preLoaderRoute: typeof AbonnesIdRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin_/banned-words': {
-      id: '/admin_/banned-words'
-      path: '/admin/banned-words'
-      fullPath: '/admin/banned-words'
-      preLoaderRoute: typeof AdminBannedWordsRouteImport
+    '/recherche-utilisateur': {
+      id: '/recherche-utilisateur'
+      path: '/recherche-utilisateur'
+      fullPath: '/recherche-utilisateur'
+      preLoaderRoute: typeof RechercheUtilisateurRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin_/banniere': {
-      id: '/admin_/banniere'
-      path: '/admin/banniere'
-      fullPath: '/admin/banniere'
-      preLoaderRoute: typeof AdminBanniereRouteImport
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin_/premium': {
-      id: '/admin_/premium'
-      path: '/admin/premium'
-      fullPath: '/admin/premium'
-      preLoaderRoute: typeof AdminPremiumRouteImport
+    '/poster': {
+      id: '/poster'
+      path: '/poster'
+      fullPath: '/poster'
+      preLoaderRoute: typeof PosterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/annonce/$id': {
-      id: '/annonce/$id'
-      path: '/annonce/$id'
-      fullPath: '/annonce/$id'
-      preLoaderRoute: typeof AnnonceIdRouteImport
+    '/parametres-site': {
+      id: '/parametres-site'
+      path: '/parametres-site'
+      fullPath: '/parametres-site'
+      preLoaderRoute: typeof ParametresSiteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/categories/': {
-      id: '/categories/'
+    '/parametres': {
+      id: '/parametres'
+      path: '/parametres'
+      fullPath: '/parametres'
+      preLoaderRoute: typeof ParametresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/options': {
+      id: '/options'
+      path: '/options'
+      fullPath: '/options'
+      preLoaderRoute: typeof OptionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/offres-emploi': {
+      id: '/offres-emploi'
+      path: '/offres-emploi'
+      fullPath: '/offres-emploi'
+      preLoaderRoute: typeof OffresEmploiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages-non-lus': {
+      id: '/messages-non-lus'
+      path: '/messages-non-lus'
+      fullPath: '/messages-non-lus'
+      preLoaderRoute: typeof MessagesNonLusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mes-commandes': {
+      id: '/mes-commandes'
+      path: '/mes-commandes'
+      fullPath: '/mes-commandes'
+      preLoaderRoute: typeof MesCommandesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mentions-legales': {
+      id: '/mentions-legales'
+      path: '/mentions-legales'
+      fullPath: '/mentions-legales'
+      preLoaderRoute: typeof MentionsLegalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/historique': {
+      id: '/historique'
+      path: '/historique'
+      fullPath: '/historique'
+      preLoaderRoute: typeof HistoriqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conversations': {
+      id: '/conversations'
+      path: '/conversations'
+      fullPath: '/conversations'
+      preLoaderRoute: typeof ConversationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conditions': {
+      id: '/conditions'
+      path: '/conditions'
+      fullPath: '/conditions'
+      preLoaderRoute: typeof ConditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/compte': {
+      id: '/compte'
+      path: '/compte'
+      fullPath: '/compte'
+      preLoaderRoute: typeof CompteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/complete-profile': {
+      id: '/complete-profile'
+      path: '/complete-profile'
+      fullPath: '/complete-profile'
+      preLoaderRoute: typeof CompleteProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categories': {
+      id: '/categories'
+      path: '/categories'
+      fullPath: '/categories'
+      preLoaderRoute: typeof CategoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/boutique': {
+      id: '/boutique'
+      path: '/boutique'
+      fullPath: '/boutique'
+      preLoaderRoute: typeof BoutiqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apercu': {
+      id: '/apercu'
+      path: '/apercu'
+      fullPath: '/apercu'
+      preLoaderRoute: typeof ApercuRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/annonces-expirees': {
+      id: '/annonces-expirees'
+      path: '/annonces-expirees'
+      fullPath: '/annonces-expirees'
+      preLoaderRoute: typeof AnnoncesExpireesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/annonces-actives': {
+      id: '/annonces-actives'
+      path: '/annonces-actives'
+      fullPath: '/annonces-actives'
+      preLoaderRoute: typeof AnnoncesActivesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/annonces': {
+      id: '/annonces'
+      path: '/annonces'
+      fullPath: '/annonces'
+      preLoaderRoute: typeof AnnoncesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aide': {
+      id: '/aide'
+      path: '/aide'
+      fullPath: '/aide'
+      preLoaderRoute: typeof AideRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
       path: '/'
-      fullPath: '/categories/'
-      preLoaderRoute: typeof CategoriesIndexRouteImport
-      parentRoute: typeof CategoriesRoute
-    }
-    '/categories/habillement': {
-      id: '/categories/habillement'
-      path: '/habillement'
-      fullPath: '/categories/habillement'
-      preLoaderRoute: typeof CategoriesHabillementRouteImport
-      parentRoute: typeof CategoriesRoute
-    }
-    '/contact/$id': {
-      id: '/contact/$id'
-      path: '/contact/$id'
-      fullPath: '/contact/$id'
-      preLoaderRoute: typeof ContactIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/evaluations/$id': {
-      id: '/evaluations/$id'
-      path: '/evaluations/$id'
-      fullPath: '/evaluations/$id'
-      preLoaderRoute: typeof EvaluationsIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/modifier-annonce/$id': {
-      id: '/modifier-annonce/$id'
-      path: '/modifier-annonce/$id'
-      fullPath: '/modifier-annonce/$id'
-      preLoaderRoute: typeof ModifierAnnonceIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/modifier-short/$id': {
-      id: '/modifier-short/$id'
-      path: '/modifier-short/$id'
-      fullPath: '/modifier-short/$id'
-      preLoaderRoute: typeof ModifierShortIdRouteImport
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/premium/': {
@@ -973,25 +896,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PremiumIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/premium/$id': {
-      id: '/premium/$id'
-      path: '/premium/$id'
-      fullPath: '/premium/$id'
-      preLoaderRoute: typeof PremiumIdRouteImport
-      parentRoute: typeof rootRouteImport
+    '/categories/': {
+      id: '/categories/'
+      path: '/'
+      fullPath: '/categories/'
+      preLoaderRoute: typeof CategoriesIndexRouteImport
+      parentRoute: typeof CategoriesRoute
     }
-    '/premium/achat': {
-      id: '/premium/achat'
-      path: '/premium/achat'
-      fullPath: '/premium/achat'
-      preLoaderRoute: typeof PremiumAchatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/top-likes/$id': {
-      id: '/top-likes/$id'
-      path: '/top-likes/$id'
-      fullPath: '/top-likes/$id'
-      preLoaderRoute: typeof TopLikesIdRouteImport
+    '/vendeur/$id': {
+      id: '/vendeur/$id'
+      path: '/vendeur/$id'
+      fullPath: '/vendeur/$id'
+      preLoaderRoute: typeof VendeurIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/u/$id': {
@@ -1001,11 +917,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/vendeur/$id': {
-      id: '/vendeur/$id'
-      path: '/vendeur/$id'
-      fullPath: '/vendeur/$id'
-      preLoaderRoute: typeof VendeurIdRouteImport
+    '/top-likes/$id': {
+      id: '/top-likes/$id'
+      path: '/top-likes/$id'
+      fullPath: '/top-likes/$id'
+      preLoaderRoute: typeof TopLikesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium/achat': {
+      id: '/premium/achat'
+      path: '/premium/achat'
+      fullPath: '/premium/achat'
+      preLoaderRoute: typeof PremiumAchatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/premium/$id': {
+      id: '/premium/$id'
+      path: '/premium/$id'
+      fullPath: '/premium/$id'
+      preLoaderRoute: typeof PremiumIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modifier-short/$id': {
+      id: '/modifier-short/$id'
+      path: '/modifier-short/$id'
+      fullPath: '/modifier-short/$id'
+      preLoaderRoute: typeof ModifierShortIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modifier-annonce/$id': {
+      id: '/modifier-annonce/$id'
+      path: '/modifier-annonce/$id'
+      fullPath: '/modifier-annonce/$id'
+      preLoaderRoute: typeof ModifierAnnonceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evaluations/$id': {
+      id: '/evaluations/$id'
+      path: '/evaluations/$id'
+      fullPath: '/evaluations/$id'
+      preLoaderRoute: typeof EvaluationsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact/$id': {
+      id: '/contact/$id'
+      path: '/contact/$id'
+      fullPath: '/contact/$id'
+      preLoaderRoute: typeof ContactIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categories/habillement': {
+      id: '/categories/habillement'
+      path: '/habillement'
+      fullPath: '/categories/habillement'
+      preLoaderRoute: typeof CategoriesHabillementRouteImport
+      parentRoute: typeof CategoriesRoute
+    }
+    '/annonce/$id': {
+      id: '/annonce/$id'
+      path: '/annonce/$id'
+      fullPath: '/annonce/$id'
+      preLoaderRoute: typeof AnnonceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/premium': {
+      id: '/admin_/premium'
+      path: '/admin/premium'
+      fullPath: '/admin/premium'
+      preLoaderRoute: typeof AdminPremiumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/banniere': {
+      id: '/admin_/banniere'
+      path: '/admin/banniere'
+      fullPath: '/admin/banniere'
+      preLoaderRoute: typeof AdminBanniereRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin_/banned-words': {
+      id: '/admin_/banned-words'
+      path: '/admin/banned-words'
+      fullPath: '/admin/banned-words'
+      preLoaderRoute: typeof AdminBannedWordsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/abonnes/$id': {
+      id: '/abonnes/$id'
+      path: '/abonnes/$id'
+      fullPath: '/abonnes/$id'
+      preLoaderRoute: typeof AbonnesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
