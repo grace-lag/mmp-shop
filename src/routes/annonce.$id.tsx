@@ -52,7 +52,7 @@ function AnnonceDetail() {
     enabled: !!annonce?.seller_id,
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("id,prenom,nom,avatar_url,last_seen_at")
         .eq("id", annonce!.seller_id!)
         .maybeSingle();

@@ -349,7 +349,7 @@ function ShortCard({ short, onOpenComments }: { short: Short; onOpenComments: ()
     let cancelled = false;
     (async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("prenom,nom,avatar_url")
         .eq("id", short.user_id)
         .maybeSingle();

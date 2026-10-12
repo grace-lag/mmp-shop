@@ -47,8 +47,11 @@ function ContactContent({ id, user }: { id: string; user: any }) {
   const { data: profile, isLoading } = useQuery({
     queryKey: ["contact-profile", id],
     queryFn: async () => {
-      const { data } = await (supabase as any).from("profiles").select("id,prenom,nom,avatar_url,tel,whatsapp,last_seen_at,account_type,business_name").eq("id", id).maybeSingle();
-      return data;
+      const { data } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url,last_seen_at,account_type,business_name").eq("id", id).maybeSingle();
+      if (!data) return null;
+      const { data: contact } = await (supabase as any).rpc("get_profile_contact", { _id: id });
+      const c = Array.isArray(contact) ? contact[0] : contact;
+      return { ...data, tel: c?.tel ?? null, whatsapp: c?.whatsapp ?? null };
     },
   });
 

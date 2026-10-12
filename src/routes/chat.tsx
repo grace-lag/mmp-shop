@@ -68,7 +68,7 @@ function ChatPage() {
     enabled: !!validTo,
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("id, prenom, nom, avatar_url")
         .eq("id", validTo)
         .maybeSingle();
@@ -524,7 +524,7 @@ function ForwardModal({ message, userId, onClose, onSent }: { message: any; user
       }
       const arr = Array.from(ids);
       if (arr.length === 0) return [] as any[];
-      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").in("id", arr);
+      const { data } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url").in("id", arr);
       return data ?? [];
     },
   });

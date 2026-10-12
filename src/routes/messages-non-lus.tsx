@@ -40,7 +40,7 @@ function Page() {
     queryKey: ["unread-profiles", ids.sort().join(",")],
     enabled: ids.length > 0,
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").in("id", ids);
+      const { data } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url").in("id", ids);
       return data ?? [];
     },
   });

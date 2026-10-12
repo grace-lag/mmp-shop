@@ -22,7 +22,7 @@ function EvaluationsPage() {
       const uids = Array.from(new Set(list.map((r: any) => r.rater_id)));
       let profs: any[] = [];
       if (uids.length) {
-        const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").in("id", uids);
+        const { data } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url").in("id", uids);
         profs = data ?? [];
       }
       const map = new Map(profs.map((p) => [p.id, p]));

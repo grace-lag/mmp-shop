@@ -61,7 +61,7 @@ function NotificationsPage() {
     queryKey: ["notif-actors", actorIds.join(",")],
     enabled: actorIds.length > 0,
     queryFn: async () => {
-      const { data } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").in("id", actorIds);
+      const { data } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url").in("id", actorIds);
       const map: Record<string, any> = {};
       for (const p of data ?? []) map[(p as any).id] = p;
       return map;

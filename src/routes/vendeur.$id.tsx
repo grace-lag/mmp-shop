@@ -25,7 +25,7 @@ function VendeurPage() {
     queryKey: ["profile", id],
     refetchInterval: 60_000,
     queryFn: async () => {
-      const { data } = await (supabase as any).from("profiles").select("id,prenom,nom,avatar_url,last_seen_at,account_type,business_name,business_year").eq("id", id).maybeSingle();
+      const { data } = await (supabase as any).from("public_profiles").select("id,prenom,nom,avatar_url,last_seen_at,account_type,business_name,business_year").eq("id", id).maybeSingle();
       return data;
     },
   });

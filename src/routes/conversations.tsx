@@ -68,7 +68,7 @@ function ConversationsList({ userId }: { userId: string }) {
     enabled: partnerIds.length > 0,
     queryFn: async () => {
       const { data } = await supabase
-        .from("profiles")
+        .from("public_profiles")
         .select("id, prenom, nom, avatar_url")
         .in("id", partnerIds);
       return (data ?? []) as Profile[];

@@ -13,7 +13,7 @@ function AbonnesPage() {
       const { data: rows } = await supabase.from("seller_followers").select("follower_id,created_at").eq("seller_id", id).order("created_at", { ascending: false });
       const ids = (rows ?? []).map((r: any) => r.follower_id);
       if (ids.length === 0) return [];
-      const { data: profs } = await supabase.from("profiles").select("id,prenom,nom,avatar_url").in("id", ids);
+      const { data: profs } = await supabase.from("public_profiles").select("id,prenom,nom,avatar_url").in("id", ids);
       return profs ?? [];
     },
   });
